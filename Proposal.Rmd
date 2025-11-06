@@ -1,0 +1,46 @@
+---
+title: "Final Project Proposal"
+author: "Yirou Hu, Yaxuan Zheng, Ruihan Ding, Su Yan, Jinyao Jiao "
+date: "2025-11-05"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Group Members:
+
+Yaxuan Zheng       yz5248 
+
+Yirou Hu           yh3964 
+
+Ruihan Ding        rd3227 
+
+Su Yan				     sy3352
+
+Jinyao Jiao        jj3564
+
+# Tentative Project Title
+
+Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk: A Cox Survival Study
+
+# Motivation for This Project
+
+Type 2 diabetes (T2D) remains a critical public health challenge worldwide. Recent research indicates that psychological factors such as anxiety and depression, and behavioral factors like smoking, are meaningful predictors of T2D incidence. 
+
+# Intended Final Products
+
+- Writting report capturing data cleaning, exploratory analysis (e.g. Rank the covariates according to how strongly they relate to T2D), modeling, visualization(distribution plots, KM curves, etc.) and discussion, structured in R Markdown and published in the team’s GitHub repository to detailedly explain our propose and results.
+
+- Creating website summarizing motivation, methods, results, and key visual-insights directed to a broad audience.
+
+- A short (~2-minute) screencast embedded in the website walking through the major analyses and findings.
+
+# Anticipated Data Sources
+
+This study utilizes data from the United States National Health Interview Survey (NHIS) in 2024, a national survey that monitors the health of the U.S. population. NHIS statistics provide insights into the health of people of different ages, sexes, races and ethnicities, geographic locations, and social and economic circumstances, making it a valuable resource for studying complex diseases such as T2D. 
+
+
+
+
