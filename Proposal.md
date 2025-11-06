@@ -5,15 +5,15 @@ Yirou Hu, Yaxuan Zheng, Ruihan Ding, Su Yan, Jinyao Jiao
 
 Group Members:
 
-Yaxuan Zheng yz5248
+Yaxuan Zheng (yz5248)
 
-Yirou Hu yh3964
+Yirou Hu (yh3964)
 
-Ruihan Ding rd3227
+Ruihan Ding (rd3227)
 
-Su Yan sy3352
+Su Yan (sy3352)
 
-Jinyao Jiao jj3564
+Jinyao Jiao (jj3564)
 
 # Tentative Project Title
 
@@ -48,4 +48,50 @@ Interview Survey (NHIS) in 2024, a national survey that monitors the
 health of the U.S. population. NHIS statistics provide insights into the
 health of people of different ages, sexes, races and ethnicities,
 geographic locations, and social and economic circumstances, making it a
-valuable resource for studying complex diseases such as T2D. 
+valuable resource for studying complex diseases such as T2D.
+
+# Planned Analyses / Visualizations / Coding Challenges
+
+## Planned Analyses:
+
+- Kaplan–Meier survival curves stratified by levels of mental‐health and
+  smoking risk factors.
+
+- Single and Multivariable Cox proportional hazards models estimating
+  hazard ratios for T2D onset associated with anxiety, depression and
+  smoking, controlling for age, sex, BMI, socioeconomic status.
+
+- Assess potential interactive relationships between key factors
+  (including mental health indicators, smoking, and covariates like age,
+  BMI, or socioeconomic status) to identify which pairs exhibit stronger
+  synergistic or antagonistic effects on T2D risk.
+
+- Exploratory Spatial Data Analysis
+
+## Visualizations:
+
+Variable correlation hot map; KM curves; Forest plots of hazard ratios;
+Sex-strafitication; Age-Stratification; Variable interaction effect
+table; Survival curve; Scatter plot of EDA
+
+## Coding challenges:
+
+We may face challenges such as harmonizing variable definitions between
+earlier and updated datasets, dealing with missing data (through
+imputation or sensitivity analyses), automating reproducible workflows
+using git and R Markdown, and applying various models to explore the
+relationship between covariates and T2D.
+
+# Timeline
+
+| Date | Task | Due |
+|:---|:---|:---|
+| Nov 3 - 7 | Brainstorm and draft proposal | Written proposal document |
+| Nov 10-14 | Assign tasks & initial exploratory manipulation on data | Project review meeting with teaching team |
+| Nov 17 - 21 | Analysis & Coding | NA |
+| Nov 24 - 28 | Analysis & Coding | NA |
+| Dec 1 - 5 | Report & Webpage & Screencast | NA |
+| Dec 6 | Peer assessment | Finished project |
+| Dec 11 | Prepare for in class discussion | In class discussion of projects |
+
+Project Timeline
