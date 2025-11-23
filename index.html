@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -221,6 +222,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -360,6 +364,14 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Cohort Analysis of Mental Health, Smoking
@@ -400,17 +412,19 @@ representative, cross-sectional survey of the civilian
 noninstitutionalized U.S. population conducted by the National Center
 for Health Statistics (NCHS). T2D status, anxiety, depression, smoking,
 and relevant demographic and clinical covariates are derived from the
-publicly available NHIS person- and sample adult-level files.</p>
+publicly available NHIS sample adult-level files.</p>
 <p>Learn more about the data <a href="data.html">here</a>.</p>
 </div>
 <div id="statistical-analysis" class="section level3">
 <h3><strong>Statistical Analysis</strong></h3>
-<p>Accounting for the complex survey design through appropriate sampling
-weights and design variables, we fit generalized linear models (GLMs) to
-evaluate whether anxiety, depression, and smoking are significant
-predictors of T2D incidence after adjustment for key confounders and to
-explore their potential interaction effects. Further details on the
-analysis are provided <a href="analysis.html">here</a>.</p>
+<p>Accounting for the complex survey design using appropriate sampling
+weights and design variables, we fit generalized linear models (GLMs)
+with T2D status as the binary outcome and include all selected NHIS
+variables as candidate predictors in the same model. We then extend
+these models with interaction terms and use nested model comparisons to
+assess effect modification and potential confounding.</p>
+<p>Further details on the analysis are provided <a
+href="analysis.html">here</a>.</p>
 </div>
 <div id="our-team" class="section level3">
 <h3><strong>Our Team</strong></h3>
@@ -461,6 +475,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
