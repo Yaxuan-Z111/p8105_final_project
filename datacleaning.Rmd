@@ -88,7 +88,28 @@ nhis24_df = read_excel("adults_2024.xlsx") |>
       TRUE ~ CHLEV_A 
     )
   ) |>
-  filter(!CHLEV_Recoded %in% c(7, 8, 9))
+  filter(!CHLEV_Recoded %in% c(7, 8, 9)) |> 
+  mutate(
+    # Hypertension
+    HYP_Recoded = case_when(
+      HYPEV_A == 1 ~ 1,   # Yes hypertension -> 1
+      HYPEV_A == 2 ~ 0,   # No hypertension -> 0
+      TRUE ~ HYPEV_A)) |>
+  filter(!HYP_Recoded %in% c(7, 8, 9)) |>
+  mutate(
+    # Cirrhosis or liver condition
+    LIVER_Recoded = case_when(
+      LIVEREV_A == 1 ~ 1,   # Yes -> 1
+      LIVEREV_A == 2 ~ 0,   # No -> 0
+      TRUE ~ LIVEREV_A)) |>
+  filter(!LIVER_Recoded %in% c(7, 8, 9)) |> 
+  mutate(
+    # Stroke
+    STROKE_Recoded = case_when(
+      STREV_A == 1 ~ 1,   # Yes stroke -> 1
+      STREV_A == 2 ~ 0,   # No stroke -> 0
+      TRUE ~ STREV_A)) |>
+  filter(!STROKE_Recoded %in% c(7, 8, 9))
   
   
 ```
