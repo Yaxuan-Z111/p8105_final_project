@@ -64,6 +64,7 @@ if (window.hljs) {
 
 
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -380,6 +381,15 @@ div.tocify {
 
 
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ lubridate 1.9.4     ✔ tibble    3.3.0
+## ✔ purrr     1.1.0     ✔ tidyr     1.3.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <div id="statistical-description" class="section level1">
 <h1>Statistical Description</h1>
 <pre class="r"><code>table1 =
@@ -405,23 +415,23 @@ div.tocify {
   gt::opt_align_table_header(align = &quot;left&quot;)
 
 table1</code></pre>
-<div id="hliunbzuqn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hliunbzuqn table {
+<div id="fkkeftxust" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fkkeftxust table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hliunbzuqn thead, #hliunbzuqn tbody, #hliunbzuqn tfoot, #hliunbzuqn tr, #hliunbzuqn td, #hliunbzuqn th {
+#fkkeftxust thead, #fkkeftxust tbody, #fkkeftxust tfoot, #fkkeftxust tr, #fkkeftxust td, #fkkeftxust th {
   border-style: none;
 }
 
-#hliunbzuqn p {
+#fkkeftxust p {
   margin: 0;
   padding: 0;
 }
 
-#hliunbzuqn .gt_table {
+#fkkeftxust .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -447,12 +457,12 @@ table1</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_caption {
+#fkkeftxust .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hliunbzuqn .gt_title {
+#fkkeftxust .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -464,7 +474,7 @@ table1</code></pre>
   border-bottom-width: 0;
 }
 
-#hliunbzuqn .gt_subtitle {
+#fkkeftxust .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -476,7 +486,7 @@ table1</code></pre>
   border-top-width: 0;
 }
 
-#hliunbzuqn .gt_heading {
+#fkkeftxust .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -488,13 +498,13 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_bottom_border {
+#fkkeftxust .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_col_headings {
+#fkkeftxust .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -509,7 +519,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_col_heading {
+#fkkeftxust .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -529,7 +539,7 @@ table1</code></pre>
   overflow-x: hidden;
 }
 
-#hliunbzuqn .gt_column_spanner_outer {
+#fkkeftxust .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -541,15 +551,15 @@ table1</code></pre>
   padding-right: 4px;
 }
 
-#hliunbzuqn .gt_column_spanner_outer:first-child {
+#fkkeftxust .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hliunbzuqn .gt_column_spanner_outer:last-child {
+#fkkeftxust .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hliunbzuqn .gt_column_spanner {
+#fkkeftxust .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -561,11 +571,11 @@ table1</code></pre>
   width: 100%;
 }
 
-#hliunbzuqn .gt_spanner_row {
+#fkkeftxust .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hliunbzuqn .gt_group_heading {
+#fkkeftxust .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -591,7 +601,7 @@ table1</code></pre>
   text-align: left;
 }
 
-#hliunbzuqn .gt_empty_group_heading {
+#fkkeftxust .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -606,15 +616,15 @@ table1</code></pre>
   vertical-align: middle;
 }
 
-#hliunbzuqn .gt_from_md > :first-child {
+#fkkeftxust .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hliunbzuqn .gt_from_md > :last-child {
+#fkkeftxust .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hliunbzuqn .gt_row {
+#fkkeftxust .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -633,7 +643,7 @@ table1</code></pre>
   overflow-x: hidden;
 }
 
-#hliunbzuqn .gt_stub {
+#fkkeftxust .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -646,7 +656,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#hliunbzuqn .gt_stub_row_group {
+#fkkeftxust .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -660,15 +670,15 @@ table1</code></pre>
   vertical-align: top;
 }
 
-#hliunbzuqn .gt_row_group_first td {
+#fkkeftxust .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hliunbzuqn .gt_row_group_first th {
+#fkkeftxust .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hliunbzuqn .gt_summary_row {
+#fkkeftxust .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -678,16 +688,16 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#hliunbzuqn .gt_first_summary_row {
+#fkkeftxust .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_first_summary_row.thick {
+#fkkeftxust .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hliunbzuqn .gt_last_summary_row {
+#fkkeftxust .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -697,7 +707,7 @@ table1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_grand_summary_row {
+#fkkeftxust .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -707,7 +717,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#hliunbzuqn .gt_first_grand_summary_row {
+#fkkeftxust .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -717,7 +727,7 @@ table1</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_last_grand_summary_row_top {
+#fkkeftxust .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -727,11 +737,11 @@ table1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_striped {
+#fkkeftxust .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hliunbzuqn .gt_table_body {
+#fkkeftxust .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -740,7 +750,7 @@ table1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_footnotes {
+#fkkeftxust .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -754,7 +764,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_footnote {
+#fkkeftxust .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -763,7 +773,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#hliunbzuqn .gt_sourcenotes {
+#fkkeftxust .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -777,7 +787,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hliunbzuqn .gt_sourcenote {
+#fkkeftxust .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -785,72 +795,72 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#hliunbzuqn .gt_left {
+#fkkeftxust .gt_left {
   text-align: left;
 }
 
-#hliunbzuqn .gt_center {
+#fkkeftxust .gt_center {
   text-align: center;
 }
 
-#hliunbzuqn .gt_right {
+#fkkeftxust .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hliunbzuqn .gt_font_normal {
+#fkkeftxust .gt_font_normal {
   font-weight: normal;
 }
 
-#hliunbzuqn .gt_font_bold {
+#fkkeftxust .gt_font_bold {
   font-weight: bold;
 }
 
-#hliunbzuqn .gt_font_italic {
+#fkkeftxust .gt_font_italic {
   font-style: italic;
 }
 
-#hliunbzuqn .gt_super {
+#fkkeftxust .gt_super {
   font-size: 65%;
 }
 
-#hliunbzuqn .gt_footnote_marks {
+#fkkeftxust .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hliunbzuqn .gt_asterisk {
+#fkkeftxust .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hliunbzuqn .gt_indent_1 {
+#fkkeftxust .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hliunbzuqn .gt_indent_2 {
+#fkkeftxust .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hliunbzuqn .gt_indent_3 {
+#fkkeftxust .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hliunbzuqn .gt_indent_4 {
+#fkkeftxust .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hliunbzuqn .gt_indent_5 {
+#fkkeftxust .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hliunbzuqn .katex-display {
+#fkkeftxust .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hliunbzuqn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fkkeftxust div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -993,9 +1003,8 @@ table1</code></pre>
     <tr><td headers="label" class="gt_row gt_left">    4</td>
 <td headers="stat_0" class="gt_row gt_center">625 (2.6%)</td></tr>
   </tbody>
-  
-  <tfoot class="gt_footnotes">
-    <tr>
+  <tfoot>
+    <tr class="gt_footnotes">
       <td class="gt_footnote" colspan="2"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class='gt_from_md'>n (%); Mean (SD)</span></td>
     </tr>
   </tfoot>
@@ -1350,28 +1359,33 @@ Poor).</p>
 <div id="correlation-analysis" class="section level1">
 <h1>Correlation Analysis</h1>
 <p>To better understand the relationships between the variables in our
-dataset, we conducted a correlation analysis. The dataset was obtained
-from the 2024 NHIS (National Health Interview Survey), which contains
-information on demographic characteristics, health conditions, and
-behavioral factors for a nationally representative sample of adults. The
-cleaned dataset included variables such as age, sex, weight, height, and
-various health indicators.</p>
-<p>Why we conducted correlation analysis: Correlation analysis serves as
-a preliminary step to identify variables that are linearly associated.
-Understanding these relationships helps us:</p>
-<p>Detect potential multicollinearity before performing regression
-analyses or more complex modeling.</p>
-<p>Identify variables with meaningful associations that may warrant
-deeper investigation in subsequent analyses.</p>
-<p>Provide evidence-based justification for including or excluding
-certain variables in predictive or explanatory models.</p>
-<p>Method: We computed pairwise Pearson correlations for all numeric and
-binary-coded variables. For numeric vs binary variables, the
-point-biserial correlation is equivalent to Pearson correlation.
-Correlations with an absolute value greater than 0.3 were considered
-moderate or strong associations. Additionally, diagonal elements
-(self-correlations) were excluded from interpretation, and symmetric
-duplicates were removed to ensure clarity.</p>
+dataset, we find the need to conduct a correlation analysis. The
+original dataset was obtained from the 2024 NHIS (National Health
+Interview Survey), which contains information on demographic
+characteristics, health conditions, and behavioral factors for a
+nationally representative sample of adults. The cleaned dataset included
+variables such as age, sex, weight, height, and various health
+indicators.</p>
+<p><strong><em>Correlation analysis</em></strong> serves as a
+preliminary step to identify variables that are linearly associated.
+Understanding these relationships helps us: - Detect potential
+multicollinearity before performing regression analyses or more complex
+modeling. - Provide evidence-based justification for including or
+excluding certain variables in our following statistical models.</p>
+<p>We computed <strong><em>pairwise Pearson correlations</em></strong>
+for all numeric variables. Correlations with an absolute value greater
+than 0.3 are considered moderate or strong associations. Additionally,
+diagonal elements (self-correlations) were excluded from interpretation,
+and symmetric duplicates were removed to ensure clarity.</p>
+<p>To understand <strong><em>Coefficient of determination</em></strong>
+(<span class="math inline">\(R^2\)</span>), <span
+class="math inline">\(R^2\)</span> represents the proportion of the
+variance in one variable that is predictable from the other variable.
+For our selected threshold of <span class="math inline">\(r =
+0.3\)</span>: <span class="math display">\[R^2 = (0.3)^2 = 0.09\]</span>
+This means that for two variables correlated at <span
+class="math inline">\(r = 0.3\)</span>, 9% of the variation in one
+variable is explained by the other variable.</p>
 <pre class="r"><code># Select numeric variables
 numeric_vars &lt;- nhis24_df_fit[, sapply(nhis24_df_fit, is.numeric)]
 
@@ -1490,7 +1504,20 @@ print(cor_matrix)</code></pre>
 ## ANXEV_A       0.2511967150
 ## SMKEV_A       0.0794397042
 ## LONELY_A      1.0000000000</code></pre>
-<pre class="r"><code>heatmap(cor_matrix, symm = TRUE)</code></pre>
+<pre class="r"><code>cor_pt = as.data.frame(as.table(cor_matrix)) |&gt; 
+  ggplot(aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;,
+    midpoint = 0, 
+    name = &quot;Correlation&quot;  
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+cor_pt</code></pre>
 <p><img src="data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Key Findings: From our analysis, the following moderate-to-strong
 correlations were observed:</p>
@@ -1575,26 +1602,14 @@ knitr::kable(high_cor_unique, caption = &quot;Variables with Correlation &gt; 0.
 </tr>
 </tbody>
 </table>
-<p>Importance and Academic Support: Identifying these associations is
-crucial for informing future multivariate analyses, such as logistic
-regression or generalized linear models. For instance, strong
-correlations like height and weight or anxiety and depression suggest
-potential multicollinearity, which must be accounted for to prevent
-biased model estimates. Academic literature supports this approach; for
-example:</p>
-<p>Dormann et al. (2013) highlight that assessing correlations is a
-standard procedure for detecting multicollinearity in ecological and
-health data analyses.</p>
-<p>Studies on mental health populations have repeatedly observed strong
-comorbidity between anxiety and depression, consistent with our findings
-(Kessler et al., 2003).</p>
-<p>In summary, this correlation analysis provides a foundation for
-selecting variables and interpreting relationships in subsequent
-modeling, ensuring that our future in-depth analyses are both
-statistically sound and aligned with existing evidence.</p>
-</div>
-<div id="confounder-analysis" class="section level1">
-<h1>Confounder Analysis</h1>
+<p>By choosing <span class="math inline">\(r &gt; 0.3\)</span>, we are
+strategically focusing our analysis on variables that exhibit a
+relationship deemed moderate or stronger, filtering out very weak or
+negligible associations that may not be meaningful for our research or
+modeling goals.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Confounder Analysis</p>
+<p>======= &gt;&gt;&gt;&gt;&gt;&gt;&gt;
+33d1fa37086654d8e6ed30628456089f80fd3e50</p>
 </div>
 
 
