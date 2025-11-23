@@ -370,7 +370,6 @@ div.tocify {
 
 
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
-<pre><code>## Warning: package &#39;readxl&#39; was built under R version 4.5.2</code></pre>
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
 <p>This analysis aims to investigate factors associated with the
@@ -519,11 +518,8 @@ summary(glm_model)</code></pre>
 </div>
 <div id="model-results" class="section level3">
 <h3>Model Results</h3>
-<<<<<<< HEAD
-<pre class="r"><code>model_results_tidy = tidy(glm_model, conf.int = TRUE) |&gt;
-=======
 <pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) |&gt;
->>>>>>> b94f1a5a37cd9a1409ff0900d5d33a638c2163c8
+
   mutate(
     Beta = estimate,
     OR = exp(estimate),
@@ -1107,6 +1103,519 @@ fair/poor health, high cholesterol, hypertension) increase risk; and
 factors like stroke history, severe mobility difficulty, and some
 loneliness categories have CIs crossing 1, showing no significant
 association.</p>
+<pre class="r"><code>### Build Model without confounder
+
+
+df_model_conwo = 
+  nhis24_df_fit |&gt;
+  mutate(
+    # Outcome: DIBEV_A
+    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
+    
+    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
+    
+    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
+    
+    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
+    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
+    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
+    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
+    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
+    STREV_A = factor(STREV_A), # Codes 0, 1
+    MIEV_A = factor(MIEV_A), # Codes 0, 1
+    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
+    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
+    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
+    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
+    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
+    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
+  ) </code></pre>
+<pre class="r"><code>model_formula &lt;- DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+                           DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model &lt;- glm(
+  model_formula, 
+  data = df_model,
+  family = binomial(link = &quot;logit&quot;)
+)
+
+summary(glm_model)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = model_formula, family = binomial(link = &quot;logit&quot;), 
+##     data = df_model)
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -0.8305458  0.4033405  -2.059 0.039478 *  
+## WEIGHTLBTC_A  0.0019753  0.0002656   7.438 1.02e-13 ***
+## HEIGHTTC_A   -0.0439723  0.0066774  -6.585 4.54e-11 ***
+## DIFF_A1       0.3412926  0.0532778   6.406 1.49e-10 ***
+## DIFF_A2       0.5243196  0.0738511   7.100 1.25e-12 ***
+## DIFF_A3       0.4421386  0.1352006   3.270 0.001075 ** 
+## LSATIS4_A1   -0.1863379  0.0963371  -1.934 0.053085 .  
+## PHSTAT_A1     0.7172978  0.0522966  13.716  &lt; 2e-16 ***
+## CHLEV_A1      0.8235807  0.0461509  17.845  &lt; 2e-16 ***
+## HYPEV_A1      0.9971622  0.0496452  20.086  &lt; 2e-16 ***
+## LIVEREV_A1    0.6341245  0.1336490   4.745 2.09e-06 ***
+## STREV_A1      0.0919913  0.0817218   1.126 0.260308    
+## MIEV_A1       0.3108152  0.0867263   3.584 0.000339 ***
+## ANGEV_A1      0.0361691  0.1113181   0.325 0.745244    
+## CHDEV_A1      0.3221200  0.0719183   4.479 7.50e-06 ***
+## DEPEV_A1      0.1203290  0.0633300   1.900 0.057429 .  
+## ANXEV_A1     -0.1859314  0.0650717  -2.857 0.004272 ** 
+## SMKEV_A1     -0.0202076  0.0442679  -0.456 0.648041    
+## LONELY_A1    -0.0254681  0.0537393  -0.474 0.635557    
+## LONELY_A2     0.0152676  0.0568901   0.268 0.788414    
+## LONELY_A3    -0.2178835  0.1394693  -1.562 0.118233    
+## LONELY_A4     0.1244614  0.1225349   1.016 0.309762    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 17357  on 23625  degrees of freedom
+## Residual deviance: 14865  on 23604  degrees of freedom
+## AIC: 14909
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+<div id="model-results-compared-with-the-regional-one"
+class="section level3">
+<h3>Model Results compared with the regional one</h3>
+<pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) |&gt;
+
+  mutate(
+    Beta = estimate,
+    OR = exp(estimate),
+    Lower_CI = exp(conf.low),
+    Upper_CI = exp(conf.high),
+    
+    # Clean up term names for presentation
+    term = gsub(&quot;`&quot;, &quot;&quot;, term), 
+    term = case_when(
+        term == &quot;(Intercept)&quot; ~ &quot;Intercept&quot;,
+        
+        # Difficulty Walking (0: No Difficulty)
+        term == &quot;DIFF_A1&quot; ~ &quot;DIFF_A: Some Difficulty (vs No Difficulty)&quot;,
+        term == &quot;DIFF_A2&quot; ~ &quot;DIFF_A: A lot of Difficulty (vs No Difficulty)&quot;,
+        term == &quot;DIFF_A3&quot; ~ &quot;DIFF_A: Cannot do (vs No Difficulty)&quot;,
+        
+        
+        # Life Satisfaction (0: Satisfied/Very Satisfied)
+        term == &quot;LSATIS4_A1&quot; ~ &quot;LSATIS4_A: Dissatisfied (vs Satisfied)&quot;,
+        
+        # Health Status (0: Good/VGood/Excellent Health)
+        term == &quot;PHSTAT_A1&quot; ~ &quot;PHSTAT_A: Fair/Poor Health (vs Good Health)&quot;,
+        
+        # Loneliness (0: Never Lonely)
+        term == &quot;LONELY_A1&quot; ~ &quot;LONELY_A: Rarely Lonely (vs Never Lonely)&quot;,
+        term == &quot;LONELY_A2&quot; ~ &quot;LONELY_A: Sometimes Lonely (vs Never Lonely)&quot;,
+        term == &quot;LONELY_A3&quot; ~ &quot;LONELY_A: Usually Lonely (vs Never Lonely)&quot;,
+        term == &quot;LONELY_A4&quot; ~ &quot;LONELY_A: Always Lonely (vs Never Lonely)&quot;,
+        
+        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
+        term == &quot;CHLEV_A1&quot; ~ &quot;CHLEV_A: High Cholesterol (Yes)&quot;,
+        term == &quot;HYPEV_A1&quot; ~ &quot;HYPEV_A: Hypertension (Yes)&quot;,
+        term == &quot;LIVEREV_A1&quot; ~ &quot;LIVEREV_A: Liver Disease (Yes)&quot;,
+        term == &quot;STREV_A1&quot; ~ &quot;STREV_A: Stroke (Yes)&quot;,
+        term == &quot;MIEV_A1&quot; ~ &quot;MIEV_A: Myocardial Infarction (Yes)&quot;,
+        term == &quot;ANGEV_A1&quot; ~ &quot;ANGEV_A: Angina (Yes)&quot;,
+        term == &quot;CHDEV_A1&quot; ~ &quot;CHDEV_A: CHD (Yes)&quot;,
+        term == &quot;DEPEV_A1&quot; ~ &quot;DEPEV_A: Depression (Yes)&quot;,
+        term == &quot;ANXEV_A1&quot; ~ &quot;ANXEV_A: Anxiety (Yes)&quot;,
+        term == &quot;SMKEV_A1&quot; ~ &quot;SMKEV_A: Smoker (Yes)&quot;,
+        
+        # Continuous Variables
+    
+        term == &quot;WEIGHTLBTC_A&quot; ~ &quot;WEIGHTLBTC_A (Per lb)&quot;,
+        term == &quot;HEIGHTTC_A&quot; ~ &quot;HEIGHTTC_A (Per unit)&quot;,
+        TRUE ~ term
+    ),
+    p.value = format.pval(p.value, digits = 3, eps = 0.001)
+  ) |&gt;
+  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
+
+# Generate kable table
+model_results_tidy |&gt;
+  mutate(
+    OR_CI = paste0(round(OR, 3), &quot; (&quot;, round(Lower_CI, 3), &quot; - &quot;, round(Upper_CI, 3), &quot;)&quot;),
+    Beta = round(Beta, 4)
+  ) |&gt;
+  select(Term, Beta, OR_CI, p.value) |&gt;
+  kable(
+    caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)&quot;,
+    col.names = c(&quot;Predictor Term&quot;, &quot;Coefficient (Beta)&quot;, &quot;Adjusted OR (95% CI)&quot;, &quot;P-value&quot;),
+    align = c(&#39;l&#39;, &#39;r&#39;, &#39;r&#39;, &#39;r&#39;),
+    booktabs = TRUE
+  ) |&gt;
+  kable_styling(
+    full_width = TRUE, 
+    position = &quot;left&quot;,
+    latex_options = &quot;hold_position&quot;
+  ) |&gt;
+  add_header_above(c(&quot; &quot; = 2, &quot;Odds Ratio&quot; = 1, &quot; &quot; = 1)) %&gt;%
+  footnote(
+    general = &quot;Reference Outcome: No Diabetes (DIBEV_A = 0).&quot;,
+    threeparttable = TRUE
+  )</code></pre>
+<table class="table" style="border-bottom: 0;">
+<caption>
+Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds
+Ratios)
+</caption>
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="2">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Odds Ratio
+</div>
+</th>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Predictor Term
+</th>
+<th style="text-align:right;">
+Coefficient (Beta)
+</th>
+<th style="text-align:right;">
+Adjusted OR (95% CI)
+</th>
+<th style="text-align:right;">
+P-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Intercept
+</td>
+<td style="text-align:right;">
+-0.8305
+</td>
+<td style="text-align:right;">
+0.436 (0.198 - 0.961)
+</td>
+<td style="text-align:right;">
+0.03948
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WEIGHTLBTC_A (Per lb)
+</td>
+<td style="text-align:right;">
+0.0020
+</td>
+<td style="text-align:right;">
+1.002 (1.001 - 1.002)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HEIGHTTC_A (Per unit)
+</td>
+<td style="text-align:right;">
+-0.0440
+</td>
+<td style="text-align:right;">
+0.957 (0.945 - 0.97)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: Some Difficulty (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+0.3413
+</td>
+<td style="text-align:right;">
+1.407 (1.267 - 1.561)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: A lot of Difficulty (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+0.5243
+</td>
+<td style="text-align:right;">
+1.689 (1.461 - 1.951)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: Cannot do (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+0.4421
+</td>
+<td style="text-align:right;">
+1.556 (1.189 - 2.022)
+</td>
+<td style="text-align:right;">
+0.00107
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LSATIS4_A: Dissatisfied (vs Satisfied)
+</td>
+<td style="text-align:right;">
+-0.1863
+</td>
+<td style="text-align:right;">
+0.83 (0.686 - 1.001)
+</td>
+<td style="text-align:right;">
+0.05309
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PHSTAT_A: Fair/Poor Health (vs Good Health)
+</td>
+<td style="text-align:right;">
+0.7173
+</td>
+<td style="text-align:right;">
+2.049 (1.849 - 2.27)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHLEV_A: High Cholesterol (Yes)
+</td>
+<td style="text-align:right;">
+0.8236
+</td>
+<td style="text-align:right;">
+2.279 (2.082 - 2.495)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HYPEV_A: Hypertension (Yes)
+</td>
+<td style="text-align:right;">
+0.9972
+</td>
+<td style="text-align:right;">
+2.711 (2.46 - 2.989)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LIVEREV_A: Liver Disease (Yes)
+</td>
+<td style="text-align:right;">
+0.6341
+</td>
+<td style="text-align:right;">
+1.885 (1.447 - 2.444)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STREV_A: Stroke (Yes)
+</td>
+<td style="text-align:right;">
+0.0920
+</td>
+<td style="text-align:right;">
+1.096 (0.933 - 1.285)
+</td>
+<td style="text-align:right;">
+0.26031
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MIEV_A: Myocardial Infarction (Yes)
+</td>
+<td style="text-align:right;">
+0.3108
+</td>
+<td style="text-align:right;">
+1.365 (1.15 - 1.616)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANGEV_A: Angina (Yes)
+</td>
+<td style="text-align:right;">
+0.0362
+</td>
+<td style="text-align:right;">
+1.037 (0.832 - 1.287)
+</td>
+<td style="text-align:right;">
+0.74524
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHDEV_A: CHD (Yes)
+</td>
+<td style="text-align:right;">
+0.3221
+</td>
+<td style="text-align:right;">
+1.38 (1.198 - 1.588)
+</td>
+<td style="text-align:right;">
+&lt; 0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DEPEV_A: Depression (Yes)
+</td>
+<td style="text-align:right;">
+0.1203
+</td>
+<td style="text-align:right;">
+1.128 (0.996 - 1.276)
+</td>
+<td style="text-align:right;">
+0.05743
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANXEV_A: Anxiety (Yes)
+</td>
+<td style="text-align:right;">
+-0.1859
+</td>
+<td style="text-align:right;">
+0.83 (0.73 - 0.943)
+</td>
+<td style="text-align:right;">
+0.00427
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SMKEV_A: Smoker (Yes)
+</td>
+<td style="text-align:right;">
+-0.0202
+</td>
+<td style="text-align:right;">
+0.98 (0.898 - 1.069)
+</td>
+<td style="text-align:right;">
+0.64804
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Rarely Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+-0.0255
+</td>
+<td style="text-align:right;">
+0.975 (0.877 - 1.083)
+</td>
+<td style="text-align:right;">
+0.63556
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Sometimes Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+0.0153
+</td>
+<td style="text-align:right;">
+1.015 (0.908 - 1.135)
+</td>
+<td style="text-align:right;">
+0.78841
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Usually Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+-0.2179
+</td>
+<td style="text-align:right;">
+0.804 (0.608 - 1.051)
+</td>
+<td style="text-align:right;">
+0.11823
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Always Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+0.1245
+</td>
+<td style="text-align:right;">
+1.133 (0.888 - 1.435)
+</td>
+<td style="text-align:right;">
+0.30976
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Reference Outcome: No Diabetes (DIBEV_A = 0).
+</td>
+</tr>
+</tfoot>
+</table>
 </div>
 
 

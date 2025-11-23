@@ -101,11 +101,10 @@ summary(glm_model)
 ### Model Results
 
 ```{r}
-<<<<<<< HEAD
-model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
-=======
+
+
 model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
->>>>>>> b94f1a5a37cd9a1409ff0900d5d33a638c2163c8
+
   mutate(
     Beta = estimate,
     OR = exp(estimate),
@@ -223,3 +222,136 @@ print(forest_plots)
 ```
 
 This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., underweight BMI, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., overweight/obese BMI, liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
+
+
+
+
+
+```{r}
+### Build Model without confounder
+
+
+df_model_conwo = 
+  nhis24_df_fit |>
+  mutate(
+    # Outcome: DIBEV_A
+    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
+    
+    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
+    
+    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
+    
+    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
+    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
+    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
+    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
+    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
+    STREV_A = factor(STREV_A), # Codes 0, 1
+    MIEV_A = factor(MIEV_A), # Codes 0, 1
+    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
+    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
+    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
+    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
+    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
+    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
+  ) 
+```
+
+```{r}
+model_formula <- DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+                           DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model <- glm(
+  model_formula, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(glm_model)
+```
+
+### Model Results compared with the regional one
+
+```{r}
+
+
+
+model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
+
+  mutate(
+    Beta = estimate,
+    OR = exp(estimate),
+    Lower_CI = exp(conf.low),
+    Upper_CI = exp(conf.high),
+    
+    # Clean up term names for presentation
+    term = gsub("`", "", term), 
+    term = case_when(
+        term == "(Intercept)" ~ "Intercept",
+        
+        # Difficulty Walking (0: No Difficulty)
+        term == "DIFF_A1" ~ "DIFF_A: Some Difficulty (vs No Difficulty)",
+        term == "DIFF_A2" ~ "DIFF_A: A lot of Difficulty (vs No Difficulty)",
+        term == "DIFF_A3" ~ "DIFF_A: Cannot do (vs No Difficulty)",
+        
+        
+        # Life Satisfaction (0: Satisfied/Very Satisfied)
+        term == "LSATIS4_A1" ~ "LSATIS4_A: Dissatisfied (vs Satisfied)",
+        
+        # Health Status (0: Good/VGood/Excellent Health)
+        term == "PHSTAT_A1" ~ "PHSTAT_A: Fair/Poor Health (vs Good Health)",
+        
+        # Loneliness (0: Never Lonely)
+        term == "LONELY_A1" ~ "LONELY_A: Rarely Lonely (vs Never Lonely)",
+        term == "LONELY_A2" ~ "LONELY_A: Sometimes Lonely (vs Never Lonely)",
+        term == "LONELY_A3" ~ "LONELY_A: Usually Lonely (vs Never Lonely)",
+        term == "LONELY_A4" ~ "LONELY_A: Always Lonely (vs Never Lonely)",
+        
+        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
+        term == "CHLEV_A1" ~ "CHLEV_A: High Cholesterol (Yes)",
+        term == "HYPEV_A1" ~ "HYPEV_A: Hypertension (Yes)",
+        term == "LIVEREV_A1" ~ "LIVEREV_A: Liver Disease (Yes)",
+        term == "STREV_A1" ~ "STREV_A: Stroke (Yes)",
+        term == "MIEV_A1" ~ "MIEV_A: Myocardial Infarction (Yes)",
+        term == "ANGEV_A1" ~ "ANGEV_A: Angina (Yes)",
+        term == "CHDEV_A1" ~ "CHDEV_A: CHD (Yes)",
+        term == "DEPEV_A1" ~ "DEPEV_A: Depression (Yes)",
+        term == "ANXEV_A1" ~ "ANXEV_A: Anxiety (Yes)",
+        term == "SMKEV_A1" ~ "SMKEV_A: Smoker (Yes)",
+        
+        # Continuous Variables
+    
+        term == "WEIGHTLBTC_A" ~ "WEIGHTLBTC_A (Per lb)",
+        term == "HEIGHTTC_A" ~ "HEIGHTTC_A (Per unit)",
+        TRUE ~ term
+    ),
+    p.value = format.pval(p.value, digits = 3, eps = 0.001)
+  ) |>
+  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
+
+# Generate kable table
+model_results_tidy |>
+  mutate(
+    OR_CI = paste0(round(OR, 3), " (", round(Lower_CI, 3), " - ", round(Upper_CI, 3), ")"),
+    Beta = round(Beta, 4)
+  ) |>
+  select(Term, Beta, OR_CI, p.value) |>
+  kable(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)",
+    col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
+    align = c('l', 'r', 'r', 'r'),
+    booktabs = TRUE
+  ) |>
+  kable_styling(
+    full_width = TRUE, 
+    position = "left",
+    latex_options = "hold_position"
+  ) |>
+  add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) %>%
+  footnote(
+    general = "Reference Outcome: No Diabetes (DIBEV_A = 0).",
+    threeparttable = TRUE
+  )
+```

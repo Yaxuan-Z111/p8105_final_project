@@ -338,3 +338,7 @@ Dormann et al. (2013) highlight that assessing correlations is a standard proced
 Studies on mental health populations have repeatedly observed strong comorbidity between anxiety and depression, consistent with our findings (Kessler et al., 2003).
 
 In summary, this correlation analysis provides a foundation for selecting variables and interpreting relationships in subsequent modeling, ensuring that our future in-depth analyses are both statistically sound and aligned with existing evidence.
+
+
+
+
