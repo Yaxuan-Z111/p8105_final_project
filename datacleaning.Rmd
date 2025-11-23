@@ -17,7 +17,8 @@ library(dplyr)
 ```
 
 ```{r}
-nhis24_df = read_excel("adults_2024.xlsx") |>
+nhis24_df = 
+  read_excel("data/adults_2024.xlsx") |>
   select(-REGION) |>
   # Dealing with outcome variable
   mutate(
