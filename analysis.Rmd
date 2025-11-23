@@ -101,7 +101,11 @@ summary(glm_model)
 ### Model Results
 
 ```{r}
+<<<<<<< HEAD
+model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
+=======
 model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
+>>>>>>> b94f1a5a37cd9a1409ff0900d5d33a638c2163c8
   mutate(
     Beta = estimate,
     OR = exp(estimate),
