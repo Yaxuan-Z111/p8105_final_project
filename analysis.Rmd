@@ -37,3 +37,67 @@ $$
 + \beta_{11} \cdot \text{HYPEV_A} + \beta_{12} \cdot \text{LIVEREV_A} + \beta_{13} \cdot \text{STREV_A} + \beta_{14} \cdot \text{MIEV_A} + \beta_{15} \cdot \text{ANGEV_A} \\
 + \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} + \beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} + \beta_{20} \cdot \text{LONELY_A}
 $$
+
+### Build Model
+
+
+```{r}
+df_model = 
+  nhis24_df_fit |>
+  mutate(
+    # Outcome: DIBEV_A
+    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
+    
+    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
+    SEX_A = factor(SEX_A), # Assume 1/2 coding is acceptable
+    BMICATD_A = factor(BMICATD_A), # Codes 0, 1, 2, 3
+    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
+    EDUCP_A = factor(EDUCP_A), # Codes 0, 1, 2
+    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
+    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
+    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
+    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
+    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
+    STREV_A = factor(STREV_A), # Codes 0, 1
+    MIEV_A = factor(MIEV_A), # Codes 0, 1
+    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
+    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
+    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
+    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
+    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
+    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
+  ) 
+```
+
+```{r}
+model_formula <- DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A + 
+                           DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model <- glm(
+  model_formula, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(glm_model)
+```
+
+### Model Results
+
+```{r}
+tidy_results = 
+  glm_model |>
+  tidy(conf.int = TRUE, exponentiate = TRUE) |>
+   rename(
+     OR = estimate,
+     CI_low = conf.low,
+     CI_high = conf.high
+)
+
+kable(tidy_results, digits = 4, caption = "Logistic Regression Model Results") |>
+kable_styling(full_width = FALSE)
+
+```
+
