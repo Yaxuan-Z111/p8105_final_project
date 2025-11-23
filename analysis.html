@@ -35,6 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -401,6 +403,805 @@ logit link is fitted.</p>
 \beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} +
 \beta_{20} \cdot \text{LONELY_A}
 \]</span></p>
+</div>
+<div id="build-model" class="section level3">
+<h3>Build Model</h3>
+<pre class="r"><code>df_model = 
+  nhis24_df_fit |&gt;
+  mutate(
+    # Outcome: DIBEV_A
+    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
+    
+    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
+    SEX_A = factor(SEX_A), # Assume 1/2 coding is acceptable
+    BMICATD_A = factor(BMICATD_A), # Codes 0, 1, 2, 3
+    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
+    EDUCP_A = factor(EDUCP_A), # Codes 0, 1, 2
+    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
+    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
+    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
+    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
+    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
+    STREV_A = factor(STREV_A), # Codes 0, 1
+    MIEV_A = factor(MIEV_A), # Codes 0, 1
+    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
+    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
+    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
+    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
+    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
+    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
+  ) </code></pre>
+<pre class="r"><code>model_formula &lt;- DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A + 
+                           DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model &lt;- glm(
+  model_formula, 
+  data = df_model,
+  family = binomial(link = &quot;logit&quot;)
+)
+
+summary(glm_model)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = model_formula, family = binomial(link = &quot;logit&quot;), 
+##     data = df_model)
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -3.3804123  0.5948181  -5.683 1.32e-08 ***
+## SEX_A1        0.2679901  0.0622719   4.304 1.68e-05 ***
+## AGEP_A        0.0212543  0.0019510  10.894  &lt; 2e-16 ***
+## BMICATD_A1   -1.1100671  0.3522212  -3.152  0.00162 ** 
+## BMICATD_A2    0.5043795  0.0659413   7.649 2.03e-14 ***
+## BMICATD_A3    0.9985941  0.0693331  14.403  &lt; 2e-16 ***
+## WEIGHTLBTC_A  0.0012410  0.0003787   3.277  0.00105 ** 
+## HEIGHTTC_A   -0.0288851  0.0096941  -2.980  0.00289 ** 
+## DIFF_A1       0.1613321  0.0555216   2.906  0.00366 ** 
+## DIFF_A2       0.3171973  0.0766891   4.136 3.53e-05 ***
+## DIFF_A3       0.2415579  0.1393943   1.733  0.08311 .  
+## EDUCP_A1     -0.1094541  0.0523165  -2.092  0.03642 *  
+## EDUCP_A2     -0.3220990  0.0548189  -5.876 4.21e-09 ***
+## LSATIS4_A1   -0.1229233  0.0976854  -1.258  0.20826    
+## PHSTAT_A1     0.6949544  0.0532801  13.043  &lt; 2e-16 ***
+## CHLEV_A1      0.7451109  0.0469785  15.861  &lt; 2e-16 ***
+## HYPEV_A1      0.7553104  0.0513709  14.703  &lt; 2e-16 ***
+## LIVEREV_A1    0.6563458  0.1354417   4.846 1.26e-06 ***
+## STREV_A1      0.1061399  0.0827067   1.283  0.19938    
+## MIEV_A1       0.2843106  0.0876442   3.244  0.00118 ** 
+## ANGEV_A1      0.0081820  0.1125910   0.073  0.94207    
+## CHDEV_A1      0.2292477  0.0733358   3.126  0.00177 ** 
+## DEPEV_A1      0.1614773  0.0644540   2.505  0.01223 *  
+## ANXEV_A1     -0.0823857  0.0666432  -1.236  0.21638    
+## SMKEV_A1     -0.0874370  0.0452642  -1.932  0.05340 .  
+## LONELY_A1     0.0409552  0.0547341   0.748  0.45431    
+## LONELY_A2     0.0683829  0.0577379   1.184  0.23627    
+## LONELY_A3    -0.1803688  0.1416713  -1.273  0.20297    
+## LONELY_A4     0.1505242  0.1238934   1.215  0.22439    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 17357  on 23625  degrees of freedom
+## Residual deviance: 14423  on 23597  degrees of freedom
+## AIC: 14481
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+<div id="model-results" class="section level3">
+<h3>Model Results</h3>
+<pre class="r"><code>tidy_results = 
+  glm_model |&gt;
+  tidy(conf.int = TRUE, exponentiate = TRUE) |&gt;
+   rename(
+     OR = estimate,
+     CI_low = conf.low,
+     CI_high = conf.high
+)
+
+kable(tidy_results, digits = 4, caption = &quot;Logistic Regression Model Results&quot;) |&gt;
+kable_styling(full_width = FALSE)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Logistic Regression Model Results
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+OR
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
+CI_low
+</th>
+<th style="text-align:right;">
+CI_high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+0.0340
+</td>
+<td style="text-align:right;">
+0.5948
+</td>
+<td style="text-align:right;">
+-5.6831
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+0.0106
+</td>
+<td style="text-align:right;">
+0.1091
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEX_A1
+</td>
+<td style="text-align:right;">
+1.3073
+</td>
+<td style="text-align:right;">
+0.0623
+</td>
+<td style="text-align:right;">
+4.3035
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.1571
+</td>
+<td style="text-align:right;">
+1.4771
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AGEP_A
+</td>
+<td style="text-align:right;">
+1.0215
+</td>
+<td style="text-align:right;">
+0.0020
+</td>
+<td style="text-align:right;">
+10.8941
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.0176
+</td>
+<td style="text-align:right;">
+1.0254
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A1
+</td>
+<td style="text-align:right;">
+0.3295
+</td>
+<td style="text-align:right;">
+0.3522
+</td>
+<td style="text-align:right;">
+-3.1516
+</td>
+<td style="text-align:right;">
+0.0016
+</td>
+<td style="text-align:right;">
+0.1536
+</td>
+<td style="text-align:right;">
+0.6209
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A2
+</td>
+<td style="text-align:right;">
+1.6560
+</td>
+<td style="text-align:right;">
+0.0659
+</td>
+<td style="text-align:right;">
+7.6489
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.4561
+</td>
+<td style="text-align:right;">
+1.8857
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A3
+</td>
+<td style="text-align:right;">
+2.7145
+</td>
+<td style="text-align:right;">
+0.0693
+</td>
+<td style="text-align:right;">
+14.4028
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+2.3713
+</td>
+<td style="text-align:right;">
+3.1120
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WEIGHTLBTC_A
+</td>
+<td style="text-align:right;">
+1.0012
+</td>
+<td style="text-align:right;">
+0.0004
+</td>
+<td style="text-align:right;">
+3.2765
+</td>
+<td style="text-align:right;">
+0.0011
+</td>
+<td style="text-align:right;">
+1.0005
+</td>
+<td style="text-align:right;">
+1.0020
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HEIGHTTC_A
+</td>
+<td style="text-align:right;">
+0.9715
+</td>
+<td style="text-align:right;">
+0.0097
+</td>
+<td style="text-align:right;">
+-2.9797
+</td>
+<td style="text-align:right;">
+0.0029
+</td>
+<td style="text-align:right;">
+0.9532
+</td>
+<td style="text-align:right;">
+0.9902
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A1
+</td>
+<td style="text-align:right;">
+1.1751
+</td>
+<td style="text-align:right;">
+0.0555
+</td>
+<td style="text-align:right;">
+2.9058
+</td>
+<td style="text-align:right;">
+0.0037
+</td>
+<td style="text-align:right;">
+1.0536
+</td>
+<td style="text-align:right;">
+1.3098
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A2
+</td>
+<td style="text-align:right;">
+1.3733
+</td>
+<td style="text-align:right;">
+0.0767
+</td>
+<td style="text-align:right;">
+4.1361
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.1809
+</td>
+<td style="text-align:right;">
+1.5951
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A3
+</td>
+<td style="text-align:right;">
+1.2732
+</td>
+<td style="text-align:right;">
+0.1394
+</td>
+<td style="text-align:right;">
+1.7329
+</td>
+<td style="text-align:right;">
+0.0831
+</td>
+<td style="text-align:right;">
+0.9654
+</td>
+<td style="text-align:right;">
+1.6680
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EDUCP_A1
+</td>
+<td style="text-align:right;">
+0.8963
+</td>
+<td style="text-align:right;">
+0.0523
+</td>
+<td style="text-align:right;">
+-2.0922
+</td>
+<td style="text-align:right;">
+0.0364
+</td>
+<td style="text-align:right;">
+0.8089
+</td>
+<td style="text-align:right;">
+0.9930
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EDUCP_A2
+</td>
+<td style="text-align:right;">
+0.7246
+</td>
+<td style="text-align:right;">
+0.0548
+</td>
+<td style="text-align:right;">
+-5.8757
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+0.6507
+</td>
+<td style="text-align:right;">
+0.8067
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LSATIS4_A1
+</td>
+<td style="text-align:right;">
+0.8843
+</td>
+<td style="text-align:right;">
+0.0977
+</td>
+<td style="text-align:right;">
+-1.2584
+</td>
+<td style="text-align:right;">
+0.2083
+</td>
+<td style="text-align:right;">
+0.7288
+</td>
+<td style="text-align:right;">
+1.0690
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PHSTAT_A1
+</td>
+<td style="text-align:right;">
+2.0036
+</td>
+<td style="text-align:right;">
+0.0533
+</td>
+<td style="text-align:right;">
+13.0434
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.8046
+</td>
+<td style="text-align:right;">
+2.2238
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHLEV_A1
+</td>
+<td style="text-align:right;">
+2.1067
+</td>
+<td style="text-align:right;">
+0.0470
+</td>
+<td style="text-align:right;">
+15.8607
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.9218
+</td>
+<td style="text-align:right;">
+2.3104
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HYPEV_A1
+</td>
+<td style="text-align:right;">
+2.1283
+</td>
+<td style="text-align:right;">
+0.0514
+</td>
+<td style="text-align:right;">
+14.7031
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.9251
+</td>
+<td style="text-align:right;">
+2.3547
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LIVEREV_A1
+</td>
+<td style="text-align:right;">
+1.9277
+</td>
+<td style="text-align:right;">
+0.1354
+</td>
+<td style="text-align:right;">
+4.8460
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+<td style="text-align:right;">
+1.4741
+</td>
+<td style="text-align:right;">
+2.5078
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STREV_A1
+</td>
+<td style="text-align:right;">
+1.1120
+</td>
+<td style="text-align:right;">
+0.0827
+</td>
+<td style="text-align:right;">
+1.2833
+</td>
+<td style="text-align:right;">
+0.1994
+</td>
+<td style="text-align:right;">
+0.9443
+</td>
+<td style="text-align:right;">
+1.3060
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MIEV_A1
+</td>
+<td style="text-align:right;">
+1.3288
+</td>
+<td style="text-align:right;">
+0.0876
+</td>
+<td style="text-align:right;">
+3.2439
+</td>
+<td style="text-align:right;">
+0.0012
+</td>
+<td style="text-align:right;">
+1.1182
+</td>
+<td style="text-align:right;">
+1.5768
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANGEV_A1
+</td>
+<td style="text-align:right;">
+1.0082
+</td>
+<td style="text-align:right;">
+0.1126
+</td>
+<td style="text-align:right;">
+0.0727
+</td>
+<td style="text-align:right;">
+0.9421
+</td>
+<td style="text-align:right;">
+0.8069
+</td>
+<td style="text-align:right;">
+1.2549
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHDEV_A1
+</td>
+<td style="text-align:right;">
+1.2577
+</td>
+<td style="text-align:right;">
+0.0733
+</td>
+<td style="text-align:right;">
+3.1260
+</td>
+<td style="text-align:right;">
+0.0018
+</td>
+<td style="text-align:right;">
+1.0885
+</td>
+<td style="text-align:right;">
+1.4511
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DEPEV_A1
+</td>
+<td style="text-align:right;">
+1.1752
+</td>
+<td style="text-align:right;">
+0.0645
+</td>
+<td style="text-align:right;">
+2.5053
+</td>
+<td style="text-align:right;">
+0.0122
+</td>
+<td style="text-align:right;">
+1.0353
+</td>
+<td style="text-align:right;">
+1.3329
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANXEV_A1
+</td>
+<td style="text-align:right;">
+0.9209
+</td>
+<td style="text-align:right;">
+0.0666
+</td>
+<td style="text-align:right;">
+-1.2362
+</td>
+<td style="text-align:right;">
+0.2164
+</td>
+<td style="text-align:right;">
+0.8077
+</td>
+<td style="text-align:right;">
+1.0489
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SMKEV_A1
+</td>
+<td style="text-align:right;">
+0.9163
+</td>
+<td style="text-align:right;">
+0.0453
+</td>
+<td style="text-align:right;">
+-1.9317
+</td>
+<td style="text-align:right;">
+0.0534
+</td>
+<td style="text-align:right;">
+0.8384
+</td>
+<td style="text-align:right;">
+1.0012
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A1
+</td>
+<td style="text-align:right;">
+1.0418
+</td>
+<td style="text-align:right;">
+0.0547
+</td>
+<td style="text-align:right;">
+0.7483
+</td>
+<td style="text-align:right;">
+0.4543
+</td>
+<td style="text-align:right;">
+0.9355
+</td>
+<td style="text-align:right;">
+1.1594
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A2
+</td>
+<td style="text-align:right;">
+1.0708
+</td>
+<td style="text-align:right;">
+0.0577
+</td>
+<td style="text-align:right;">
+1.1844
+</td>
+<td style="text-align:right;">
+0.2363
+</td>
+<td style="text-align:right;">
+0.9559
+</td>
+<td style="text-align:right;">
+1.1987
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A3
+</td>
+<td style="text-align:right;">
+0.8350
+</td>
+<td style="text-align:right;">
+0.1417
+</td>
+<td style="text-align:right;">
+-1.2731
+</td>
+<td style="text-align:right;">
+0.2030
+</td>
+<td style="text-align:right;">
+0.6288
+</td>
+<td style="text-align:right;">
+1.0964
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A4
+</td>
+<td style="text-align:right;">
+1.1624
+</td>
+<td style="text-align:right;">
+0.1239
+</td>
+<td style="text-align:right;">
+1.2149
+</td>
+<td style="text-align:right;">
+0.2244
+</td>
+<td style="text-align:right;">
+0.9087
+</td>
+<td style="text-align:right;">
+1.4773
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
