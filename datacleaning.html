@@ -291,6 +291,7 @@ $(document).ready(function () {
 <div id="cleaning" class="section level1">
 <h1>cleaning</h1>
 <p>Yirou Hu 2025-11-20</p>
+<<<<<<< HEAD
 <div id="cleaning-dataset" class="section level2">
 <h2>cleaning dataset</h2>
 <pre class="r"><code>library(tidyverse)
@@ -465,6 +466,135 @@ $(document).ready(function () {
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
+=======
+<h2 id="cleaning-dataset">cleaning dataset</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>nhis24_df <span class="ot">=</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">read_excel</span>(<span class="st">&quot;data/adults_2024.xlsx&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>REGION) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="co"># Dealing with outcome variable</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="co"># DIBEV_A</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="at">Diabetes =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>      DIBEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,  </span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>      DIBEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,  </span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> DIBEV_A </span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    )</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Diabetes <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="co"># Dealing with covariates</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="co"># BMI</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    <span class="at">BMI_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>      BMICATD_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,  <span class="co"># Underweight -&gt; 1</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>      BMICATD_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,  <span class="co"># Healthy weight -&gt; 0</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>      BMICATD_A <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="dv">2</span>,  <span class="co"># Overweight -&gt; 2</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>      BMICATD_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>) <span class="sc">~</span> <span class="dv">3</span>,  <span class="co"># Class 1, 2, 3 Obesity -&gt; 3</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> BMICATD_A </span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>    )</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>  <span class="fu">filter</span>(BMI_Recoded <span class="sc">!=</span> <span class="dv">9</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>    <span class="co"># Difficulty in walking</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>    <span class="at">DIFF_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>      DIFF_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,  <span class="co"># No difficulty -&gt; 0</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>      DIFF_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">1</span>,  <span class="co"># Some difficulty -&gt; 1</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>      DIFF_A <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="dv">2</span>,  <span class="co"># A lot of difficulty -&gt; 2</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>      DIFF_A <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="dv">3</span>,  <span class="co"># Cannot do at all -&gt; 3</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> DIFF_A </span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>    )</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>DIFF_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>    <span class="co"># Education</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a>    <span class="at">EDUC_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>      EDUCP_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">00</span>, <span class="dv">01</span>, <span class="dv">02</span>, <span class="dv">03</span>, <span class="dv">04</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a>      EDUCP_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">05</span>, <span class="dv">06</span>, <span class="dv">07</span>) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>      EDUCP_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">08</span>, <span class="dv">09</span>, <span class="dv">10</span>) <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EDUCP_A </span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>    )</span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>EDUC_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">97</span>, <span class="dv">98</span>, <span class="dv">99</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>    <span class="co"># Life satisfaction</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a>    <span class="at">LSATIS4_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>      LSATIS4_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="sc">~</span> <span class="dv">0</span>,  <span class="co"># Very satisfied, Satisfied -&gt; 0</span></span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>      LSATIS4_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>) <span class="sc">~</span> <span class="dv">1</span>,  <span class="co"># Dissatisfied, Very dissatisfied -&gt; 1</span></span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> LSATIS4_A </span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a>    )</span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>LSATIS4_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a>    <span class="co"># Health status</span></span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a>    <span class="at">PHSTAT_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a>      PHSTAT_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">~</span> <span class="dv">0</span>,  <span class="co"># Excellent, Very good, Good -&gt; 0</span></span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a>      PHSTAT_A <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>) <span class="sc">~</span> <span class="dv">1</span>,  <span class="co"># Fair, Poor -&gt; 1</span></span>
+<span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PHSTAT_A </span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a>    )</span>
+<span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>PHSTAT_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>    <span class="co"># Cholesterol </span></span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>    <span class="at">CHLEV_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>      CHLEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,  <span class="co"># never had high cholesterol -&gt; 0</span></span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>      CHLEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,  <span class="co"># had high cholesterol -&gt; 1</span></span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> CHLEV_A </span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>    )</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>CHLEV_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a>    <span class="co"># Hypertension</span></span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a>    <span class="at">HYP_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a>      HYPEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,   <span class="co"># Yes hypertension -&gt; 1</span></span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a>      HYPEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,   <span class="co"># No hypertension -&gt; 0</span></span>
+<span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> HYPEV_A)) <span class="sc">|&gt;</span></span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>HYP_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a>    <span class="co"># Cirrhosis or liver condition</span></span>
+<span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a>    <span class="at">LIVER_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>      LIVEREV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,   <span class="co"># Yes -&gt; 1</span></span>
+<span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a>      LIVEREV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,   <span class="co"># No -&gt; 0</span></span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> LIVEREV_A)) <span class="sc">|&gt;</span></span>
+<span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>LIVER_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a>    <span class="co"># Stroke</span></span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>    <span class="at">STROKE_Recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-91"><a href="#cb2-91" tabindex="-1"></a>      STREV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,   <span class="co"># Yes stroke -&gt; 1</span></span>
+<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a>      STREV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,   <span class="co"># No stroke -&gt; 0</span></span>
+<span id="cb2-93"><a href="#cb2-93" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> STREV_A)) <span class="sc">|&gt;</span></span>
+<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>STROKE_Recoded <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>))<span class="sc">|&gt;</span></span>
+<span id="cb2-95"><a href="#cb2-95" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a>    <span class="co"># Recode MIEV_A</span></span>
+<span id="cb2-97"><a href="#cb2-97" tabindex="-1"></a>    <span class="at">MIEV_A_recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a>      MIEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb2-99"><a href="#cb2-99" tabindex="-1"></a>      MIEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb2-101"><a href="#cb2-101" tabindex="-1"></a>    ),</span>
+<span id="cb2-102"><a href="#cb2-102" tabindex="-1"></a>    </span>
+<span id="cb2-103"><a href="#cb2-103" tabindex="-1"></a>    <span class="co"># Recode ANGEV_A</span></span>
+<span id="cb2-104"><a href="#cb2-104" tabindex="-1"></a>    <span class="at">ANGEV_A_recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-105"><a href="#cb2-105" tabindex="-1"></a>      ANGEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb2-106"><a href="#cb2-106" tabindex="-1"></a>      ANGEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb2-107"><a href="#cb2-107" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb2-108"><a href="#cb2-108" tabindex="-1"></a>    ),</span>
+<span id="cb2-109"><a href="#cb2-109" tabindex="-1"></a>    </span>
+<span id="cb2-110"><a href="#cb2-110" tabindex="-1"></a>    <span class="co"># Recode CHDEV_A</span></span>
+<span id="cb2-111"><a href="#cb2-111" tabindex="-1"></a>    <span class="at">CHDEV_A_recoded =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-112"><a href="#cb2-112" tabindex="-1"></a>      CHDEV_A <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb2-113"><a href="#cb2-113" tabindex="-1"></a>      CHDEV_A <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb2-114"><a href="#cb2-114" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb2-115"><a href="#cb2-115" tabindex="-1"></a>    )</span>
+<span id="cb2-116"><a href="#cb2-116" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-117"><a href="#cb2-117" tabindex="-1"></a>  </span>
+<span id="cb2-118"><a href="#cb2-118" tabindex="-1"></a>  <span class="co"># Delete rows where any recoded variable became NA (invalid values like 7/8/9/etc)</span></span>
+<span id="cb2-119"><a href="#cb2-119" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb2-120"><a href="#cb2-120" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(MIEV_A_recoded),</span>
+<span id="cb2-121"><a href="#cb2-121" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(ANGEV_A_recoded),</span>
+<span id="cb2-122"><a href="#cb2-122" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(CHDEV_A_recoded)</span>
+<span id="cb2-123"><a href="#cb2-123" tabindex="-1"></a>  )</span></code></pre></div>
+>>>>>>> b57db8e12f62c17de60603c6196cc1fe9efc3418
 
 </body>
 </html>
