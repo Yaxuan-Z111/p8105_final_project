@@ -20,6 +20,13 @@ library(dplyr)
 nhis24_df = 
   read_excel("adults_2024.xlsx") |>
   select(-REGION) |>
+  # ---- Sex ----
+  mutate(
+    SEX_A = case_when(
+      SEX_A == 1 ~ 1,
+      SEX_A == 2 ~ 0,
+    )
+  ) |>
 
   # ---- Outcome: Diabetes ----
   mutate(
