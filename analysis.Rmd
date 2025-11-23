@@ -101,7 +101,7 @@ summary(glm_model)
 ### Model Results
 
 ```{r}
-model_results_tidy <- tidy(glm_model, conf.int = TRUE) %>%
+model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
   mutate(
     Beta = estimate,
     OR = exp(estimate),
@@ -159,27 +159,27 @@ model_results_tidy <- tidy(glm_model, conf.int = TRUE) %>%
         TRUE ~ term
     ),
     p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) %>%
+  ) |>
   select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
 
 # Generate kable table
-model_results_tidy %>%
+model_results_tidy |>
   mutate(
     OR_CI = paste0(round(OR, 3), " (", round(Lower_CI, 3), " - ", round(Upper_CI, 3), ")"),
     Beta = round(Beta, 4)
-  ) %>%
-  select(Term, Beta, OR_CI, p.value) %>%
+  ) |>
+  select(Term, Beta, OR_CI, p.value) |>
   kable(
     caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)",
     col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
     align = c('l', 'r', 'r', 'r'),
     booktabs = TRUE
-  ) %>%
+  ) |>
   kable_styling(
     full_width = TRUE, 
     position = "left",
     latex_options = "hold_position"
-  ) %>%
+  ) |>
   add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) %>%
   footnote(
     general = "Reference Outcome: No Diabetes (DIBEV_A = 0).",
@@ -187,3 +187,35 @@ model_results_tidy %>%
   )
 ```
 
+### Forest Results
+First of all, we filter out terms that are very close to 1 with wide CIs and non-significant to reduce clutter. Secondly, we order the terms for better visualization, e.g., by OR value.
+```{r}
+forest_data = 
+  model_results_tidy |>
+  filter(Term != "Intercept") |>
+  mutate(Term = fct_reorder(Term, OR, .desc = TRUE)) 
+
+forest_plots = 
+ggplot(forest_data, aes(x = OR, y = Term)) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  geom_pointrange(aes(xmin = Lower_CI, xmax = Upper_CI), size = 0.3) +
+  scale_x_log10(breaks = c(0.1, 0.2, 0.5, 1, 2, 5, 10),
+                labels = c("0.1", "0.2", "0.5", "1", "2", "5", "10")) + 
+  labs(
+    title = "Forest Plot of Adjusted Odds Ratios for Diabetes Diagnosis",
+    x = "Adjusted Odds Ratio (log scale)",
+    y = "Predictor Term"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.y = element_text(size = 9, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    panel.grid.minor.x = element_blank() # Remove minor grid lines on x-axis
+  )
+
+print(forest_plots)
+```
+
+This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., underweight BMI, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., overweight/obese BMI, liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
