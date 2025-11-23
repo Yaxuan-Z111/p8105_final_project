@@ -1,0 +1,46 @@
+---
+title: "data"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+library("gtsummary")
+library("gt")
+library("here")
+```
+
+
+```{r}
+source(here("data", "datacleaning.R"))
+```
+
+# Statistical Description
+```{r}
+table1 =
+  nhis24_df_fit |>
+  tbl_summary(
+    missing = "no",
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    type = list(
+      all_categorical() ~ "categorical"
+    )
+  ) |>
+  bold_labels() |>
+  as_gt() |>
+  gt::tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_title(groups = "title")
+  ) |>
+  gt::opt_table_outline() |>
+  gt::opt_row_striping() |>
+  gt::opt_align_table_header(align = "left")
+
+table1
+```
+
