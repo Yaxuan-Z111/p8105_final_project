@@ -9,8 +9,6 @@ Yirou Hu
 library(tidyverse)
 ```
 
-    ## Warning: package 'dplyr' was built under R version 4.5.2
-
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
     ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
@@ -24,11 +22,6 @@ library(tidyverse)
 
 ``` r
 library(readxl)
-```
-
-    ## Warning: package 'readxl' was built under R version 4.5.2
-
-``` r
 library(dplyr)
 ```
 
@@ -77,5 +70,53 @@ nhis24_df = read_excel("adults_2024.xlsx") |>
       TRUE ~ EDUCP_A 
     )
   ) |>
-  filter(!EDUC_Recoded %in% c(97, 98, 99))
+  filter(!EDUC_Recoded %in% c(97, 98, 99)) |> 
+  mutate(
+    # Life satisfaction
+    LSATIS4_Recoded = case_when(
+      LSATIS4_A %in% c(1, 2) ~ 0,  # Very satisfied, Satisfied -> 0
+      LSATIS4_A %in% c(3, 4) ~ 1,  # Dissatisfied, Very dissatisfied -> 1
+      TRUE ~ LSATIS4_A 
+    )
+  ) |>
+  filter(!LSATIS4_Recoded %in% c(7, 8, 9)) |>
+  mutate(
+    # Health status
+    PHSTAT_Recoded = case_when(
+      PHSTAT_A %in% c(1, 2, 3) ~ 0,  # Excellent, Very good, Good -> 0
+      PHSTAT_A %in% c(4, 5) ~ 1,  # Fair, Poor -> 1
+      TRUE ~ PHSTAT_A 
+    )
+  ) |>
+  filter(!PHSTAT_Recoded %in% c(7, 8, 9)) |> 
+  mutate(
+    # Cholesterol 
+    CHLEV_Recoded = case_when(
+      CHLEV_A == 2 ~ 0,  # never had high cholesterol -> 0
+      CHLEV_A == 1 ~ 1,  # had high cholesterol -> 1
+      TRUE ~ CHLEV_A 
+    )
+  ) |>
+  filter(!CHLEV_Recoded %in% c(7, 8, 9)) |> 
+  mutate(
+    # Hypertension
+    HYP_Recoded = case_when(
+      HYPEV_A == 1 ~ 1,   # Yes hypertension -> 1
+      HYPEV_A == 2 ~ 0,   # No hypertension -> 0
+      TRUE ~ HYPEV_A)) |>
+  filter(!HYP_Recoded %in% c(7, 8, 9)) |>
+  mutate(
+    # Cirrhosis or liver condition
+    LIVER_Recoded = case_when(
+      LIVEREV_A == 1 ~ 1,   # Yes -> 1
+      LIVEREV_A == 2 ~ 0,   # No -> 0
+      TRUE ~ LIVEREV_A)) |>
+  filter(!LIVER_Recoded %in% c(7, 8, 9)) |> 
+  mutate(
+    # Stroke
+    STROKE_Recoded = case_when(
+      STREV_A == 1 ~ 1,   # Yes stroke -> 1
+      STREV_A == 2 ~ 0,   # No stroke -> 0
+      TRUE ~ STREV_A)) |>
+  filter(!STROKE_Recoded %in% c(7, 8, 9))
 ```
