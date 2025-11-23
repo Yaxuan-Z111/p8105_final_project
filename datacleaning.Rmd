@@ -1,0 +1,69 @@
+---
+title: "cleaning"
+author: "Yirou Hu"
+date: "2025-11-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## cleaning dataset
+```{r}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+```
+
+```{r}
+nhis24_df = read_excel("adults_2024.xlsx") |>
+  select(-REGION) |>
+  # Dealing with outcome variable
+  mutate(
+    # DIBEV_A
+    Diabetes = case_when(
+      DIBEV_A == 1 ~ 1,  
+      DIBEV_A == 2 ~ 0,  
+      TRUE ~ DIBEV_A 
+    )
+  ) |>
+  filter(!Diabetes %in% c(7, 8, 9)) |>
+  # Dealing with covariates
+  mutate(
+    # BMI
+    BMI_Recoded = case_when(
+      BMICATD_A == 1 ~ 1,  # Underweight -> 1
+      BMICATD_A == 2 ~ 0,  # Healthy weight -> 0
+      BMICATD_A == 3 ~ 2,  # Overweight -> 2
+      BMICATD_A %in% c(4, 5, 6) ~ 3,  # Class 1, 2, 3 Obesity -> 3
+      TRUE ~ BMICATD_A 
+    )
+  ) |>
+  filter(BMI_Recoded != 9) |>
+  mutate(
+    # Difficulty in walking
+    DIFF_Recoded = case_when(
+      DIFF_A == 1 ~ 0,  # No difficulty -> 0
+      DIFF_A == 2 ~ 1,  # Some difficulty -> 1
+      DIFF_A == 3 ~ 2,  # A lot of difficulty -> 2
+      DIFF_A == 4 ~ 3,  # Cannot do at all -> 3
+      TRUE ~ DIFF_A 
+    )
+  ) |>
+  filter(!DIFF_Recoded %in% c(7, 8, 9)) |>
+  mutate(
+    # Education
+    EDUC_Recoded = case_when(
+      EDUCP_A %in% c(00, 01, 02, 03, 04) ~ 0,
+      EDUCP_A %in% c(05, 06, 07) ~ 1,
+      EDUCP_A %in% c(08, 09, 10) ~ 2,
+      TRUE ~ EDUCP_A 
+    )
+  ) |>
+  filter(!EDUC_Recoded %in% c(97, 98, 99))
+  
+  
+```
+
+
