@@ -341,6 +341,7 @@ Studies on mental health populations have repeatedly observed strong comorbidity
 
 In summary, this correlation analysis provides a foundation for selecting variables and interpreting relationships in subsequent modeling, ensuring that our future in-depth analyses are both statistically sound and aligned with existing evidence.
 
+<<<<<<< HEAD
 # Confounder Analysis
 
 
@@ -358,6 +359,8 @@ In summary, this correlation analysis provides a foundation for selecting variab
 
 
 
+=======
+>>>>>>> 33d1fa37086654d8e6ed30628456089f80fd3e50
 
 
 
