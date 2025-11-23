@@ -13,6 +13,7 @@ library(broom)
 library(knitr)
 library(kableExtra)
 library("here")
+library(ggplot2)
 ```
 
 ```{r}
@@ -20,11 +21,11 @@ source(here("data", "datacleaning.R"))
 ```
 
 
-### Introduction
+# Introduction
 
 This analysis aims to investigate factors associated with the likelihood of being diagnosed with diabetes (DIBEV_A) using a multivariable logistic regression model. Covariates include demographic, lifestyle, physical health, and chronic disease indicators.
 
-### Methodology
+# Methodology
 
 The outcome variable, `DIBEV_A`, is a binary indicator representing whether an individual has been diagnosed with diabetes (0 = No diabetes, 1 = Diabetes diagnosis). Given the binary nature of the outcome, a logistic regression model within the Generalized Linear Model (GLM) framework was employed. Logistic regression is appropriate for modeling the probability of an event occurring while ensuring predicted probabilities remain between 0 and 1, using a logit link to relate the linear combination of predictors to the log-odds of the outcome.
 
@@ -52,7 +53,7 @@ $$
 + \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} + \beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} + \beta_{20} \cdot \text{LONELY_A}
 $$
 
-### Build Model
+# Build Model
 
 
 ```{r}
@@ -98,13 +99,49 @@ glm_model <- glm(
 summary(glm_model)
 ```
 
-### Model Results
+## histogram of P-value
+```{r}
+glm_summary = summary(glm_model)
+
+p_values_df = data.frame(
+  Variable = rownames(glm_summary$coefficients),
+  P_value = glm_summary$coefficients[, "Pr(>|z|)"]
+)
+
+# Remove intercept
+p_values_df = 
+  p_values_df[p_values_df$Variable != "(Intercept)", ]
+
+P_value_hisg =
+  p_values_df|>
+  ggplot(aes(x = reorder(Variable, P_value), y = P_value)) +
+  geom_bar(
+    stat = "identity",
+    fill = ifelse(p_values_df$P_value < 0.05, "red", "skyblue")
+  ) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "black") +
+  coord_flip() +
+  labs(
+    title = "P-values from Logistic Regression",
+    x = "Variables",
+    y = "P-value"
+  ) +
+  theme_minimal()
+
+P_value_hisg
+```
+
+# Model Results
 
 ```{r}
+<<<<<<< HEAD
 
 
 model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
 
+=======
+model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
+>>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
   mutate(
     Beta = estimate,
     OR = exp(estimate),
@@ -190,7 +227,7 @@ model_results_tidy |>
   )
 ```
 
-### Forest Results
+# Forest Results
 First of all, we filter out terms that are very close to 1 with wide CIs and non-significant to reduce clutter. Secondly, we order the terms for better visualization, e.g., by OR value.
 ```{r}
 forest_data = 
@@ -225,6 +262,7 @@ This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, whe
 
 
 
+<<<<<<< HEAD
 
 
 ```{r}
@@ -355,3 +393,165 @@ model_results_tidy |>
     threeparttable = TRUE
   )
 ```
+=======
+# Interpretation of Model Coefficients
+
+Below is the interpretation of the logistic regression output, with each variable summarized under its own subsection.
+
+---
+
+### Sex
+#### Male vs Female
+- Coefficient β = –0.4402  
+- OR = 0.644 (95% CI: 0.602–0.688), *p* < 0.001  
+
+Males had significantly lower odds of diabetes compared with females after adjusting for all covariates.
+
+---
+
+### Age
+#### Continuous (per year increase)
+- OR = 1.002 (95% CI: 1.000–1.003), *p* = 0.0156  
+
+Older age was a small but statistically significant risk factor for diabetes.
+
+---
+
+### Smoking
+#### Smoker vs Non-Smoker
+- OR = 0.916 (95% CI: 0.838–1.001), *p* = 0.0534  
+
+Smoking showed a borderline non-significant inverse association.  
+There is no strong evidence of an association between smoking and diabetes in this adjusted model.
+
+---
+
+### Loneliness
+Compared with the “Never Lonely” reference group:
+
+- Rarely lonely: OR = 1.042, *p* = 0.4543  
+- Sometimes lonely: OR = 1.071, *p* = 0.2363  
+- Usually lonely: OR = 0.835, *p* = 0.2029  
+- Always lonely: OR = 1.162, *p* = 0.2244  
+
+None of the loneliness categories were statistically significant.  
+Loneliness does not appear to be independently associated with diabetes risk.
+
+---
+
+### Education
+#### Medium Education vs Low Education
+- OR = 0.896 (95% CI: 0.809–0.993), *p* = 0.0364  
+
+#### High Education vs Low Education
+- OR = 0.725 (95% CI: 0.651–0.807), *p* < 0.001  
+
+Higher education was protective.  
+Those with high education had markedly lower odds of diabetes.
+
+---
+
+### BMI Category
+Reference = BMI category 0 (Normal weight)
+
+- Underweight: OR = 1.887, *p* < 0.001  
+- Overweight: OR = 2.314, *p* < 0.001  
+- Obesity (Class I–III): OR = 4.491, *p* < 0.001  
+
+BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model.
+
+---
+
+### Difficulty Walking (Mobility)
+Reference = No difficulty
+
+- Some difficulty: OR = 1.173, *p* = 0.0037  
+- A lot of difficulty: OR = 1.373, *p* < 0.001  
+- Cannot do at all: OR = 1.273, *p* = 0.0831  
+
+Greater mobility limitations were associated with higher odds of diabetes.
+
+---
+
+### Life Satisfaction
+- Dissatisfied vs satisfied: OR = 0.884, *p* = 0.2083 → Not significant  
+
+---
+
+### General Health Status
+#### Fair/Poor vs Good/Very Good/Excellent
+- OR = 2.004 (95% CI: 1.805–2.224), *p* < 0.001  
+
+Poor health was a strong predictor of diabetes.
+
+---
+
+### High Cholesterol
+- OR = 2.107, *p* < 0.001  
+
+A strong and significant association.
+
+---
+
+### Hypertension
+- OR = 2.128, *p* < 0.001  
+
+Hypertension was one of the largest predictors, more than doubling the odds of diabetes.
+
+---
+
+### Liver Disease
+- OR = 1.928, *p* < 0.001  
+
+Individuals with liver disease had nearly double the odds of diabetes.
+
+---
+
+### Stroke
+- OR = 1.112, *p* = 0.199  
+
+Not statistically significant.
+
+---
+
+### Myocardial Infarction
+- OR = 1.329 (95% CI: 1.118–1.577), *p* = 0.0012  
+
+History of myocardial infarction was positively associated with diabetes.
+
+---
+
+### Angina
+- OR = 1.008, *p* = 0.942  
+
+No association.
+
+---
+
+### Coronary Heart Disease (CHD)
+- OR = 1.258 (95% CI: 1.089–1.451), *p* = 0.0018  
+
+CHD was a significant predictor of diabetes.
+
+---
+
+### Depression
+- OR = 1.175 (95% CI: 1.035–1.333), *p* = 0.0122  
+
+Depression was significantly associated with increased diabetes odds.
+
+---
+
+### Anxiety
+- OR = 0.921 (95% CI: 0.808–1.049), *p* = 0.216  
+
+Anxiety was not significantly related to diabetes.
+
+---
+
+### Summary of Findings
+Overall, the multivariable logistic regression analysis identifies several strong predictors of diabetes. Obesity, hypertension, high cholesterol, liver disease, poor general health, and myocardial infarction were among the strongest risk factors, each contributing substantially to elevated diabetes odds. Higher education showed a consistent protective effect. Mobility limitations were also associated with greater risk, illustrating the interconnected nature of physical functioning and metabolic health. While depression was significantly associated with increased diabetes risk, other psychosocial factors such as anxiety and loneliness were not significant in this adjusted model. Smoking likewise showed no significant association. Collectively, these findings highlight the multifactorial nature of diabetes, involving biological, behavioral, and socioeconomic determinants.
+
+
+
+>>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
