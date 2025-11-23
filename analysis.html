@@ -370,6 +370,7 @@ div.tocify {
 
 
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 4.5.2</code></pre>
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
 <p>This analysis aims to investigate factors associated with the
@@ -520,7 +521,11 @@ summary(glm_model)</code></pre>
 </div>
 <div id="model-results" class="section level3">
 <h3>Model Results</h3>
+<<<<<<< HEAD
 <pre class="r"><code>model_results_tidy = tidy(glm_model, conf.int = TRUE) |&gt;
+=======
+<pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) |&gt;
+>>>>>>> b94f1a5a37cd9a1409ff0900d5d33a638c2163c8
   mutate(
     Beta = estimate,
     OR = exp(estimate),
@@ -578,27 +583,27 @@ summary(glm_model)</code></pre>
         TRUE ~ term
     ),
     p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) %&gt;%
+  ) |&gt;
   select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
 
 # Generate kable table
-model_results_tidy %&gt;%
+model_results_tidy |&gt;
   mutate(
     OR_CI = paste0(round(OR, 3), &quot; (&quot;, round(Lower_CI, 3), &quot; - &quot;, round(Upper_CI, 3), &quot;)&quot;),
     Beta = round(Beta, 4)
-  ) %&gt;%
-  select(Term, Beta, OR_CI, p.value) %&gt;%
+  ) |&gt;
+  select(Term, Beta, OR_CI, p.value) |&gt;
   kable(
     caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)&quot;,
     col.names = c(&quot;Predictor Term&quot;, &quot;Coefficient (Beta)&quot;, &quot;Adjusted OR (95% CI)&quot;, &quot;P-value&quot;),
     align = c(&#39;l&#39;, &#39;r&#39;, &#39;r&#39;, &#39;r&#39;),
     booktabs = TRUE
-  ) %&gt;%
+  ) |&gt;
   kable_styling(
     full_width = TRUE, 
     position = &quot;left&quot;,
     latex_options = &quot;hold_position&quot;
-  ) %&gt;%
+  ) |&gt;
   add_header_above(c(&quot; &quot; = 2, &quot;Odds Ratio&quot; = 1, &quot; &quot; = 1)) %&gt;%
   footnote(
     general = &quot;Reference Outcome: No Diabetes (DIBEV_A = 0).&quot;,
@@ -1057,6 +1062,53 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </tr>
 </tfoot>
 </table>
+</div>
+<div id="forest-results" class="section level3">
+<h3>Forest Results</h3>
+<p>First of all, we filter out terms that are very close to 1 with wide
+CIs and non-significant to reduce clutter. Secondly, we order the terms
+for better visualization, e.g., by OR value.</p>
+<pre class="r"><code>forest_data = 
+  model_results_tidy |&gt;
+  filter(Term != &quot;Intercept&quot;) |&gt;
+  mutate(Term = fct_reorder(Term, OR, .desc = TRUE)) 
+
+forest_plots = 
+ggplot(forest_data, aes(x = OR, y = Term)) +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  geom_pointrange(aes(xmin = Lower_CI, xmax = Upper_CI), size = 0.3) +
+  scale_x_log10(breaks = c(0.1, 0.2, 0.5, 1, 2, 5, 10),
+                labels = c(&quot;0.1&quot;, &quot;0.2&quot;, &quot;0.5&quot;, &quot;1&quot;, &quot;2&quot;, &quot;5&quot;, &quot;10&quot;)) + 
+  labs(
+    title = &quot;Forest Plot of Adjusted Odds Ratios for Diabetes Diagnosis&quot;,
+    x = &quot;Adjusted Odds Ratio (log scale)&quot;,
+    y = &quot;Predictor Term&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+    axis.text.y = element_text(size = 9, face = &quot;bold&quot;),
+    axis.title.x = element_text(size = 10, face = &quot;bold&quot;),
+    axis.title.y = element_text(size = 10, face = &quot;bold&quot;),
+    panel.grid.minor.x = element_blank() # Remove minor grid lines on x-axis
+  )
+
+print(forest_plots)</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This forest plot displays adjusted odds ratios (ORs) for diabetes
+diagnosis, where the y-axis lists predictors (with reference groups in
+parentheses), and the x-axis (log scale) shows ORs (dashed red line at
+OR=1, no association). Based on the plots, we used the 95% confidence
+interval (CI) exclusion of 1 as the measure of statistical significance,
+several variables demonstrated a significant independent association
+with a diabetes diagnosis. Predictors with OR &lt; 1 and 95% CIs not
+crossing 1 (e.g., underweight BMI, higher education, lower loneliness,
+smoking, anxiety) are linked to lower diabetes risk; those with OR &gt;
+1 and significant CIs (e.g., overweight/obese BMI, liver disease,
+fair/poor health, high cholesterol, hypertension) increase risk; and
+factors like stroke history, severe mobility difficulty, and some
+loneliness categories have CIs crossing 1, showing no significant
+association.</p>
 </div>
 
 
