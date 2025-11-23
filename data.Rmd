@@ -44,3 +44,62 @@ table1 =
 table1
 ```
 
+# Correlation Analysis
+To better understand the relationships between the variables in our dataset, we conducted a correlation analysis. The dataset was obtained from the 2024 NHIS (National Health Interview Survey), which contains information on demographic characteristics, health conditions, and behavioral factors for a nationally representative sample of adults. The cleaned dataset included variables such as age, sex, weight, height, and various health indicators.
+
+Why we conducted correlation analysis:
+Correlation analysis serves as a preliminary step to identify variables that are linearly associated. Understanding these relationships helps us:
+
+Detect potential multicollinearity before performing regression analyses or more complex modeling.
+
+Identify variables with meaningful associations that may warrant deeper investigation in subsequent analyses.
+
+Provide evidence-based justification for including or excluding certain variables in predictive or explanatory models.
+
+Method:
+We computed pairwise Pearson correlations for all numeric and binary-coded variables. For numeric vs binary variables, the point-biserial correlation is equivalent to Pearson correlation. Correlations with an absolute value greater than 0.3 were considered moderate or strong associations. Additionally, diagonal elements (self-correlations) were excluded from interpretation, and symmetric duplicates were removed to ensure clarity.
+```{r}
+# Select numeric variables
+numeric_vars <- nhis24_df_fit[, sapply(nhis24_df_fit, is.numeric)]
+
+# Compute correlation matrix
+cor_matrix <- cor(numeric_vars, use = "pairwise.complete.obs")
+
+# Show matrix
+print(cor_matrix)
+
+heatmap(cor_matrix, symm = TRUE)
+```
+
+Key Findings:
+From our analysis, the following moderate-to-strong correlations were observed:
+```{r}
+# > 0.03 in cor_matrix
+# Convert correlation matrix to a data frame
+cor_df <- as.data.frame(as.table(cor_matrix))
+
+# Rename columns
+colnames(cor_df) <- c("Var1", "Var2", "Correlation")
+# Filter |correlation| > 0.3 but exclude self-correlations
+high_cor <- cor_df |> 
+  filter(abs(Correlation) > 0.3 & Var1 != Var2)
+
+# remove duplicate
+high_cor_unique <- high_cor %>%
+  rowwise() %>%
+  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) %>%
+  distinct(pair, .keep_all = TRUE) %>%
+  select(-pair) |> 
+  arrange(desc(Correlation))
+
+knitr::kable(high_cor_unique, caption = "Variables with Correlation > 0.3")
+```
+
+Importance and Academic Support:
+Identifying these associations is crucial for informing future multivariate analyses, such as logistic regression or generalized linear models. For instance, strong correlations like height and weight or anxiety and depression suggest potential multicollinearity, which must be accounted for to prevent biased model estimates. Academic literature supports this approach; for example:
+
+Dormann et al. (2013) highlight that assessing correlations is a standard procedure for detecting multicollinearity in ecological and health data analyses.
+
+Studies on mental health populations have repeatedly observed strong comorbidity between anxiety and depression, consistent with our findings (Kessler et al., 2003).
+
+In summary, this correlation analysis provides a foundation for selecting variables and interpreting relationships in subsequent modeling, ensuring that our future in-depth analyses are both statistically sound and aligned with existing evidence.
