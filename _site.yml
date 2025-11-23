@@ -6,7 +6,7 @@ navbar:
     - text: "Home"
       href: index.html
     - text: "Proposal"
-      href: proposal.html
+      href: Proposal.html
     - test: "Introduction"
       href: introduction.html
     - text: "Data Description"

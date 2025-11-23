@@ -109,7 +109,36 @@ nhis24_df = read_excel("adults_2024.xlsx") |>
       STREV_A == 1 ~ 1,   # Yes stroke -> 1
       STREV_A == 2 ~ 0,   # No stroke -> 0
       TRUE ~ STREV_A)) |>
-  filter(!STROKE_Recoded %in% c(7, 8, 9))
+  filter(!STROKE_Recoded %in% c(7, 8, 9))|>
+  mutate(
+    # Recode MIEV_A
+    MIEV_A_recoded = case_when(
+      MIEV_A == 1 ~ 1,
+      MIEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
+    # Recode ANGEV_A
+    ANGEV_A_recoded = case_when(
+      ANGEV_A == 1 ~ 1,
+      ANGEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
+    # Recode CHDEV_A
+    CHDEV_A_recoded = case_when(
+      CHDEV_A == 1 ~ 1,
+      CHDEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  
+  # Delete rows where any recoded variable became NA (invalid values like 7/8/9/etc)
+  filter(
+    !is.na(MIEV_A_recoded),
+    !is.na(ANGEV_A_recoded),
+    !is.na(CHDEV_A_recoded)
+  )
   
   
 ```
