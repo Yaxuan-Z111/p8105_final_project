@@ -520,7 +520,7 @@ summary(glm_model)</code></pre>
 </div>
 <div id="model-results" class="section level3">
 <h3>Model Results</h3>
-<pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) %&gt;%
+<pre class="r"><code>model_results_tidy = tidy(glm_model, conf.int = TRUE) |&gt;
   mutate(
     Beta = estimate,
     OR = exp(estimate),
