@@ -3,6 +3,7 @@ title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk"
 
 output: 
   html_document:
+    code_folding: hide
     toc: true
     toc_float: true
     theme: simplex

@@ -2,6 +2,7 @@
 title: "Analysis"
 output:
   html_document:
+    code_folding: hide
     toc: true
     toc_float: true
 ---
@@ -133,11 +134,8 @@ P_value_hisg
 # Model Results
 
 ```{r}
-model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
-<<<<<<< HEAD
-  model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
-=======
->>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
+model_results_tidy = 
+  tidy(glm_model, conf.int = TRUE) |>
   mutate(
     Beta = estimate,
     OR = exp(estimate),
