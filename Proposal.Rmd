@@ -1,13 +1,10 @@
 ---
-title: "Final Project Proposal"
-author: "Yirou Hu, Yaxuan Zheng, Ruihan Ding, Su Yan, Jinyao Jiao "
-date: "2025-11-05"
-output: github_document
+title: "Proposal"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 Group Members:
 

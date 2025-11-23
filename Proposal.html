@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Proposal</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="introduction.html"></a>
+</li>
+<li>
+  <a href="data.html">Data Description</a>
+</li>
+<li>
+  <a href="eda.html">Plot Results</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Proposal</h1>
+
+</div>
+
+
+<p>Group Members:</p>
+<p>Yaxuan Zheng (yz5248)</p>
+<p>Yirou Hu (yh3964)</p>
+<p>Ruihan Ding (rd3227)</p>
+<p>Su Yan (sy3352)</p>
+<p>Jinyao Jiao (jj3564)</p>
+<div id="tentative-project-title" class="section level1">
+<h1>Tentative Project Title</h1>
+<p>Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk: A
+Cox Survival Study</p>
+</div>
+<div id="motivation-for-this-project" class="section level1">
+<h1>Motivation for This Project</h1>
+<p>Type 2 diabetes (T2D) remains a critical public health challenge
+worldwide. Recent research indicates that psychological factors such as
+anxiety and depression, and behavioral factors like smoking, are
+meaningful predictors of T2D incidence.</p>
+</div>
+<div id="intended-final-products" class="section level1">
+<h1>Intended Final Products</h1>
+<ul>
+<li><p>Writting report capturing data cleaning, exploratory analysis
+(e.g. Rank the covariates according to how strongly they relate to T2D),
+modeling, visualization(distribution plots, KM curves, etc.) and
+discussion, structured in R Markdown and published in the team’s GitHub
+repository to detailedly explain our propose and results.</p></li>
+<li><p>Creating website summarizing motivation, methods, results, and
+key visual-insights directed to a broad audience.</p></li>
+<li><p>A short (~2-minute) screencast embedded in the website walking
+through the major analyses and findings.</p></li>
+</ul>
+</div>
+<div id="anticipated-data-sources" class="section level1">
+<h1>Anticipated Data Sources</h1>
+<p>This study utilizes data from the United States National Health
+Interview Survey (NHIS) in 2024, a national survey that monitors the
+health of the U.S. population. NHIS statistics provide insights into the
+health of people of different ages, sexes, races and ethnicities,
+geographic locations, and social and economic circumstances, making it a
+valuable resource for studying complex diseases such as T2D.</p>
+</div>
+<div id="planned-analyses-visualizations-coding-challenges"
+class="section level1">
+<h1>Planned Analyses / Visualizations / Coding Challenges</h1>
+<div id="planned-analyses" class="section level2">
+<h2>Planned Analyses:</h2>
+<ul>
+<li><p>Kaplan–Meier survival curves stratified by levels of
+mental‐health and smoking risk factors.</p></li>
+<li><p>Single and Multivariable Cox proportional hazards models
+estimating hazard ratios for T2D onset associated with anxiety,
+depression and smoking, controlling for age, sex, BMI, socioeconomic
+status.</p></li>
+<li><p>Assess potential interactive relationships between key factors
+(including mental health indicators, smoking, and covariates like age,
+BMI, or socioeconomic status) to identify which pairs exhibit stronger
+synergistic or antagonistic effects on T2D risk.</p></li>
+<li><p>Exploratory Spatial Data Analysis</p></li>
+</ul>
+</div>
+<div id="visualizations" class="section level2">
+<h2>Visualizations:</h2>
+<p>Variable correlation hot map; KM curves; Forest plots of hazard
+ratios; Sex-strafitication; Age-Stratification; Variable interaction
+effect table; Survival curve; Scatter plot of EDA</p>
+</div>
+<div id="coding-challenges" class="section level2">
+<h2>Coding challenges:</h2>
+<p>We may face challenges such as harmonizing variable definitions
+between earlier and updated datasets, dealing with missing data (through
+imputation or sensitivity analyses), automating reproducible workflows
+using git and R Markdown, and applying various models to explore the
+relationship between covariates and T2D.</p>
+</div>
+</div>
+<div id="timeline" class="section level1">
+<h1>Timeline</h1>
+<table>
+<caption>Project Timeline</caption>
+<colgroup>
+<col width="10%" />
+<col width="50%" />
+<col width="38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Date</th>
+<th align="left">Task</th>
+<th align="left">Due</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Nov 3 - 7</td>
+<td align="left">Brainstorm and draft proposal</td>
+<td align="left">Written proposal document</td>
+</tr>
+<tr class="even">
+<td align="left">Nov 10-14</td>
+<td align="left">Assign tasks &amp; initial exploratory manipulation on
+data</td>
+<td align="left">Project review meeting with teaching team</td>
+</tr>
+<tr class="odd">
+<td align="left">Nov 17 - 21</td>
+<td align="left">Analysis &amp; Coding</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Nov 24 - 28</td>
+<td align="left">Analysis &amp; Coding</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Dec 1 - 5</td>
+<td align="left">Report &amp; Webpage &amp; Screencast</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Dec 6</td>
+<td align="left">Peer assessment</td>
+<td align="left">Finished project</td>
+</tr>
+<tr class="odd">
+<td align="left">Dec 11</td>
+<td align="left">Prepare for in class discussion</td>
+<td align="left">In class discussion of projects</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
