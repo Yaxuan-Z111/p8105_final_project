@@ -1,5 +1,5 @@
 ---
-title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk: A Cox Survival Study"
+title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk"
 
 output: 
   html_document:
