@@ -1837,6 +1837,9 @@ LONELY_A: Always Lonely (vs Never Lonely)
   mutate(
     OR_change_pct   = (OR_full - OR_noconf) / OR_noconf * 100,
     Beta_change_pct = (Beta_full - Beta_noconf) / Beta_noconf * 100
+  ) |&gt; 
+  filter(
+    Term != &quot;Intercept&quot;
   )
 
 compare_table |&gt;
@@ -1888,20 +1891,6 @@ OR (Full model)
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-Intercept
-</td>
-<td style="text-align:right;">
-0.436
-</td>
-<td style="text-align:right;">
-0.034
-</td>
-<td style="text-align:right;">
--92.2
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 SEX_A1
@@ -2296,6 +2285,29 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </tr>
 </tbody>
 </table>
+<p>Make a plot showing the comparison.</p>
+<pre class="r"><code>compare_table |&gt;
+  filter(!is.na(OR_noconf), !is.na(OR_full)) |&gt;
+  mutate(
+    big_change = ifelse(abs(OR_change_pct) &gt;= 10, &quot;&gt;= 10%&quot;, &quot;&lt; 10%&quot;)
+  ) |&gt;
+  ggplot(aes(x = Term, y = OR_change_pct, fill = big_change)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
+  coord_flip() +
+  scale_fill_manual(values = c(&quot;&lt; 10%&quot; = &quot;grey80&quot;, &quot;&gt;= 10%&quot; = &quot;tomato&quot;)) +
+  labs(
+    title = &quot;% Change in Odds Ratios After Adjusting for Confounders&quot;,
+    x = &quot;Predictor Term&quot;,
+    y = &quot;% Change in OR (Full vs. Reduced Model)&quot;,
+    fill = &quot;Absolute change&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+    legend.position = &quot;bottom&quot;
+  )</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>When comparing models with and without adjustment for the
 prespecified confounders (age, sex, BMI, and education), most predictors
 show relatively small changes in their odds ratios (ORs), generally

@@ -516,6 +516,9 @@ compare_table =
   mutate(
     OR_change_pct   = (OR_full - OR_noconf) / OR_noconf * 100,
     Beta_change_pct = (Beta_full - Beta_noconf) / Beta_noconf * 100
+  ) |> 
+  filter(
+    Term != "Intercept"
   )
 
 compare_table |>
@@ -546,6 +549,33 @@ compare_table |>
     position      = "left",
     latex_options = "hold_position"
   )
+```
+
+Make a plot showing the comparison.
+
+```{r}
+compare_table |>
+  filter(!is.na(OR_noconf), !is.na(OR_full)) |>
+  mutate(
+    big_change = ifelse(abs(OR_change_pct) >= 10, ">= 10%", "< 10%")
+  ) |>
+  ggplot(aes(x = Term, y = OR_change_pct, fill = big_change)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_fill_manual(values = c("< 10%" = "grey80", ">= 10%" = "tomato")) +
+  labs(
+    title = "% Change in Odds Ratios After Adjusting for Confounders",
+    x = "Predictor Term",
+    y = "% Change in OR (Full vs. Reduced Model)",
+    fill = "Absolute change"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+
 ```
 
 When comparing models with and without adjustment for the prespecified confounders (age, sex, BMI, and education), most predictors show relatively small changes in their odds ratios (ORs), generally within ±10% (e.g., life satisfaction, self-rated health, high cholesterol, liver disease, stroke, myocardial infarction, angina, CHD, depression, smoking, and loneliness). This suggests that these associations are fairly robust to adjustment for demographic and anthropometric factors.
