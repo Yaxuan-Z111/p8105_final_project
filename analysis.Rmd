@@ -1,0 +1,39 @@
+---
+title: "Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r include = FALSE}
+library(tidyverse)
+library(dplyr)
+library(broom)
+library(knitr)
+library(kableExtra)
+library("here")
+```
+
+```{r}
+source(here("data", "datacleaning.R"))
+```
+
+
+### Introduction
+
+This analysis aims to investigate factors associated with the likelihood of being diagnosed with diabetes (DIBEV_A) using a multivariable logistic regression model. Covariates include demographic, lifestyle, physical health, and chronic disease indicators.
+
+### Methodology
+
+The outcome variable, DIBEV_A, is coded as a binary factor (0 = No diabetes, 1 = Diabetes diagnosis). Several categorical predictors are converted to factor type, and continuous variables such as age, height, and weight are included directly. A logistic regression model with a logit link is fitted.
+
+The original model : 
+
+$$
+\text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMICATD_A} + \beta_4 \cdot \text{WEIGHTLBTC_A} + \beta_5 \cdot \text{HEIGHTTC_A} \\
++ \beta_6 \cdot \text{DIFF_A} + \beta_7 \cdot \text{EDUCP_A} + \beta_8 \cdot \text{LSATIS4_A} + \beta_9 \cdot \text{PHSTAT_A} + \beta_{10} \cdot \text{CHLEV_A} \\
++ \beta_{11} \cdot \text{HYPEV_A} + \beta_{12} \cdot \text{LIVEREV_A} + \beta_{13} \cdot \text{STREV_A} + \beta_{14} \cdot \text{MIEV_A} + \beta_{15} \cdot \text{ANGEV_A} \\
++ \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} + \beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} + \beta_{20} \cdot \text{LONELY_A}
+$$
