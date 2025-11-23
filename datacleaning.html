@@ -253,7 +253,7 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="proposal.html">Proposal</a>
+  <a href="Proposal.html">Proposal</a>
 </li>
 <li>
   <a href="introduction.html"></a>
@@ -301,7 +301,7 @@ $(document).ready(function () {
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+## ✔ ggplot2   4.0.0     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ## ✔ purrr     1.1.0     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -431,6 +431,42 @@ library(dplyr)</code></pre>
     !is.na(MIEV_A_recoded),
     !is.na(ANGEV_A_recoded),
     !is.na(CHDEV_A_recoded)
+  ) |&gt;
+  
+  # cleaning Refused / Not ascertained / Don&#39;t know columns in Depression, Anxiety, Smoking, Lonelyness
+  filter(
+    LONELY_A != 7 &amp; LONELY_A != 8 &amp; LONELY_A != 9,
+    SMKEV_A  != 7 &amp; SMKEV_A  != 8 &amp; SMKEV_A  != 9,
+    DEPEV_A  != 7 &amp; DEPEV_A  != 8 &amp; DEPEV_A  != 9,
+    ANXEV_A  != 7 &amp; ANXEV_A  != 8 &amp; ANXEV_A  != 9
+  ) |&gt;
+  
+  mutate(
+    lonely = case_when(
+      LONELY_A == 5 ~ 0,
+      LONELY_A == 4 ~ 1,
+      LONELY_A == 3 ~ 2,
+      LONELY_A == 2 ~ 3,
+      LONELY_A == 1 ~ 4,
+    ),
+    
+    # Smoking: 1=yes, 2=no
+    smoke = case_when(
+      SMKEV_A == 1 ~ 1,
+      SMKEV_A == 2 ~ 0
+    ),
+    
+    # Depression: 1=yes, 2=no
+    depression = case_when(
+      DEPEV_A == 1 ~ 1,
+      DEPEV_A == 2 ~ 0
+    ),
+    
+    # Anxiety: 1=yes, 2=no
+    anxiety = case_when(
+      ANXEV_A == 1 ~ 1,
+      ANXEV_A == 2 ~ 0
+    )
   )</code></pre>
 </div>
 
