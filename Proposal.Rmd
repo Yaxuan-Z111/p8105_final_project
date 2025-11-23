@@ -5,12 +5,8 @@ output:
     toc: true
     toc_float: true
 ---
-```{r echo=FALSE}
-library(knitr)
-library(dplyr)
-```
 
-# Group Members:
+Group Members:
 
 Yaxuan Zheng (yz5248)
 
@@ -24,78 +20,11 @@ Jinyao Jiao (jj3564)
 
 # Tentative Project Title
 
-Cross-Sectional Analysis of Different Covariates and Type 2 Diabetes Risk: A Generalized Linear Model Approach
+Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk: A Cox Survival Study
 
-# Purpose and Importance of T2D Analysis
+# Motivation for This Project
 
-Type 2 diabetes (T2D) remains a critical public health challenge worldwide. While age and BMI are primary risk factors, psychological factors such as anxiety, depression, and loneliness, alongside behavioral factors like smoking, are increasingly recognized as meaningful predictors of T2D prevalence.
-
-Our project focuses on quantifying the strength and significance (coefficients) of the association between these non-traditional psychosocial and lifestyle factors and the prevalence of T2D, utilizing the robust Generalized Linear Model (Logistic Regression) framework. This analysis will provide detailed description of coefficient, offering crucial insights for public health interventions targeting T2D prevention.
-
-# Variables
-
-## Primary Outcome Table
-```{r}
-primary_outcome_df <- data.frame(
-  Variable = c("`DIBEV_A`"),
-  Description = c("Ever had diabetes"),
-  Type = c("Dichotomous"),
-  Coding_in_Analysis = c("**1 (Yes) vs 0 (No)**")
-)
-
-kable(
-  primary_outcome_df,
-  col.names = c("Variable", "Description", "Type", "Coding in Analysis"),
-  caption = "Primary Outcome Variable",
-  align = "l"
-)
-```
-
-## Covariates Table
-```{r}
-
-covariates_df <- data.frame(
-  Variable = c(
-    "`SEX_A`", "`AGEP_A`", "`REGION`", "`BMICATD_A`", "`WEIGHTLBTC_A`", 
-    "`HEIGHTTC_A`", "`DIFF_A`", "`DIBAGETC_A`", "`DIBTYPE_A`", "`EDUCP_A`", 
-    "`LSATIS4_A`", "`PHSTAT_A`", "`CHLEV_A`", "`HYPEV_A`", "`LIVEREV_A`", 
-    "`STREV_A`", "`MIEV_A`", "`ANGEV_A`", "`CHDEV_A`", "`DEPEV_A`", 
-    "`ANXEV_A`", "`SMKEV_A`", "`LONELY_A`"
-  ),
-  Description = c(
-    "Sex", "Age (Top-coded)", "Geographical Region", "Categorical BMI", "Weight (lbs, Top-coded)", 
-    "Height (in, Top-coded)", "Difficulty walking/climbing", "Age first diagnosed (Type 2)", 
-    "Type of diabetes", "Educational level", "Life satisfaction", "General health status (Self-rated)", 
-    "Ever had high cholesterol", "Ever had hypertension", "Ever had liver condition/cirrhosis", 
-    "Ever had a stroke", "Ever had a heart attack (MI)", "Ever had angina", 
-    "Ever had coronary heart disease", "Ever had depression", "Ever had anxiety disorder", 
-    "Ever smoked 100 cigarettes", "Frequency of feeling lonely"
-  ),
-  Category = c(
-    "Demographic", "Demographic", "Demographic", "Anthropometric", "Anthropometric", 
-    "Anthropometric", "Functional Status", "Diabetes Detail", "Diabetes Detail", "Socioeconomic", 
-    "Psychosocial", "General Health", "Comorbidity", "Comorbidity", "Comorbidity", 
-    "Comorbidity", "Comorbidity", "Comorbidity", "Comorbidity", "Psychosocial", 
-    "Psychosocial", "Lifestyle", "Psychosocial"
-  ),
-  Type = c(
-    "Dichotomous", "Continuous", "Categorical", "Ordinal", "Continuous", 
-    "Continuous", "Ordinal", "Continuous", "Categorical", "Ordinal", 
-    "Ordinal", "Ordinal", "Dichotomous", "Dichotomous", "Dichotomous", 
-    "Dichotomous", "Dichotomous", "Dichotomous", "Dichotomous", "Dichotomous", 
-    "Dichotomous", "Dichotomous", "Ordinal"
-  )
-)
-
-kable(
-  covariates_df,
-  col.names = c("Variable", "Description", "Category", "Type"),
-  caption = "Comprehensive Covariates",
-  align = "l"
-)
-
-```
-
+Type 2 diabetes (T2D) remains a critical public health challenge worldwide. Recent research indicates that psychological factors such as anxiety and depression, and behavioral factors like smoking, are meaningful predictors of T2D incidence. 
 
 # Intended Final Products
 

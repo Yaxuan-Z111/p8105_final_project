@@ -11,12 +11,12 @@
 
 
 
-<title>Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk</title>
+<title>Analysis</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -362,68 +362,45 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Cohort Analysis of Mental Health, Smoking
-and Type 2 Diabetes Risk</h1>
+<h1 class="title toc-ignore">Analysis</h1>
 
 </div>
 
 
-<div id="overview" class="section level3">
-<h3><strong>Overview</strong></h3>
-<p>This project investigates whether anxiety, depression, and smoking
-are significant predictors of T2D incidence, after accounting for key
-demographic and clinical covariates. The goal is to quantify their
-independent and joint associations with T2D risk and to assess whether
-these factors should be considered in risk stratification and prevention
-strategies.</p>
-<p>The link to the repository of this project can be found <a
-href="https://github.com/Yaxuan-Z111/p8105_final_project">here</a>.</p>
+<pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 4.5.2</code></pre>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>This analysis aims to investigate factors associated with the
+likelihood of being diagnosed with diabetes (DIBEV_A) using a
+multivariable logistic regression model. Covariates include demographic,
+lifestyle, physical health, and chronic disease indicators.</p>
 </div>
-<div id="type-ii-diabetes" class="section level3">
-<h3><strong>Type II Diabetes</strong></h3>
-<p>Type 2 diabetes (T2D) is a major global public health problem. In the
-United States alone, more than 38 million people are living with
-diabetes, and an estimated 90%–95% of these cases are type 2 diabetes.
-As a chronic condition, T2D is associated with substantial morbidity and
-an average reduction in life expectancy of around ten years. At the same
-time, T2D can often be prevented or delayed through evidence-based
-lifestyle changes, including weight management, healthy eating, and
-regular physical activity. (CDC, 2024)</p>
-<p><img src="image/type_2_diabetes.png" style="width:40.0%" /></p>
-</div>
-<div id="data-source" class="section level3">
-<h3><strong>Data Source</strong></h3>
-<p>We use data from the <a
-href="https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html">2024
-National Health Interview Survey (NHIS)</a>, a nationally
-representative, cross-sectional survey of the civilian
-noninstitutionalized U.S. population conducted by the National Center
-for Health Statistics (NCHS). T2D status, anxiety, depression, smoking,
-and relevant demographic and clinical covariates are derived from the
-publicly available NHIS person- and sample adult-level files.</p>
-<p>Learn more about the data <a href="data.html">here</a>.</p>
-</div>
-<div id="statistical-analysis" class="section level3">
-<h3><strong>Statistical Analysis</strong></h3>
-<p>Accounting for the complex survey design through appropriate sampling
-weights and design variables, we fit generalized linear models (GLMs) to
-evaluate whether anxiety, depression, and smoking are significant
-predictors of T2D incidence after adjustment for key confounders and to
-explore their potential interaction effects. Further details on the
-analysis are provided <a href="analysis.html">here</a>.</p>
-</div>
-<div id="our-team" class="section level3">
-<h3><strong>Our Team</strong></h3>
-<p>Yaxuan Zheng (yz5248)</p>
-<p>Yirou Hu (yh3964)</p>
-<p>Ruihan Ding (rd3227)</p>
-<p>Su Yan (sy3352)</p>
-<p>Jinyao Jiao (jj3564)</p>
-</div>
-<div id="screencast" class="section level3">
-<h3><strong>Screencast</strong></h3>
-<p>Click on the video below to explore the capabilities of this site and
-enjoy a summary of our key highlights.</p>
+<div id="methodology" class="section level3">
+<h3>Methodology</h3>
+<p>The outcome variable, DIBEV_A, is coded as a binary factor (0 = No
+diabetes, 1 = Diabetes diagnosis). Several categorical predictors are
+converted to factor type, and continuous variables such as age, height,
+and weight are included directly. A logistic regression model with a
+logit link is fitted.</p>
+<p>The original model :</p>
+<p><span class="math display">\[
+\text{Logit}(P(\text{DIBEV_A}=1)) =
+\log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) =
+\beta_0 \\
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3
+\cdot \text{BMICATD_A} + \beta_4 \cdot \text{WEIGHTLBTC_A} + \beta_5
+\cdot \text{HEIGHTTC_A} \\
++ \beta_6 \cdot \text{DIFF_A} + \beta_7 \cdot \text{EDUCP_A} + \beta_8
+\cdot \text{LSATIS4_A} + \beta_9 \cdot \text{PHSTAT_A} + \beta_{10}
+\cdot \text{CHLEV_A} \\
++ \beta_{11} \cdot \text{HYPEV_A} + \beta_{12} \cdot \text{LIVEREV_A} +
+\beta_{13} \cdot \text{STREV_A} + \beta_{14} \cdot \text{MIEV_A} +
+\beta_{15} \cdot \text{ANGEV_A} \\
++ \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} +
+\beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} +
+\beta_{20} \cdot \text{LONELY_A}
+\]</span></p>
 </div>
 
 
