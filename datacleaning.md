@@ -7,20 +7,6 @@ Yirou Hu
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-    ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-    ## ✔ purrr     1.1.0     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
 library(readxl)
 library(dplyr)
 ```
@@ -118,5 +104,34 @@ nhis24_df = read_excel("adults_2024.xlsx") |>
       STREV_A == 1 ~ 1,   # Yes stroke -> 1
       STREV_A == 2 ~ 0,   # No stroke -> 0
       TRUE ~ STREV_A)) |>
-  filter(!STROKE_Recoded %in% c(7, 8, 9))
+  filter(!STROKE_Recoded %in% c(7, 8, 9))|>
+  mutate(
+    # Recode MIEV_A
+    MIEV_A_recoded = case_when(
+      MIEV_A == 1 ~ 1,
+      MIEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
+    # Recode ANGEV_A
+    ANGEV_A_recoded = case_when(
+      ANGEV_A == 1 ~ 1,
+      ANGEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
+    # Recode CHDEV_A
+    CHDEV_A_recoded = case_when(
+      CHDEV_A == 1 ~ 1,
+      CHDEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  
+  # Delete rows where any recoded variable became NA (invalid values like 7/8/9/etc)
+  filter(
+    !is.na(MIEV_A_recoded),
+    !is.na(ANGEV_A_recoded),
+    !is.na(CHDEV_A_recoded)
+  )
 ```
