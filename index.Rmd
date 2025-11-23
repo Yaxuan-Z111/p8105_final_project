@@ -22,13 +22,15 @@ Type 2 diabetes (T2D) is a major global public health problem. In the United Sta
 
 ### **Data Source**
 
-We use data from the [2024 National Health Interview Survey (NHIS)](https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html), a nationally representative, cross-sectional survey of the civilian noninstitutionalized U.S. population conducted by the National Center for Health Statistics (NCHS). T2D status, anxiety, depression, smoking, and relevant demographic and clinical covariates are derived from the publicly available NHIS person- and sample adult-level files. 
+We use data from the [2024 National Health Interview Survey (NHIS)](https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html), a nationally representative, cross-sectional survey of the civilian noninstitutionalized U.S. population conducted by the National Center for Health Statistics (NCHS). T2D status, anxiety, depression, smoking, and relevant demographic and clinical covariates are derived from the publicly available NHIS sample adult-level files. 
 
 Learn more about the data [here](data.html).
 
 ### **Statistical Analysis**
 
-Accounting for the complex survey design through appropriate sampling weights and design variables, we fit generalized linear models (GLMs) to evaluate whether anxiety, depression, and smoking are significant predictors of T2D incidence after adjustment for key confounders and to explore their potential interaction effects. Further details on the analysis are provided [here](analysis.html).
+Accounting for the complex survey design using appropriate sampling weights and design variables, we fit generalized linear models (GLMs) with T2D status as the binary outcome and include all selected NHIS variables as candidate predictors in the same model. We then extend these models with interaction terms and use nested model comparisons to assess effect modification and potential confounding. 
+
+Further details on the analysis are provided [here](analysis.html).
 
 ### **Our Team**
 

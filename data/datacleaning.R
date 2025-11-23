@@ -138,4 +138,4 @@ nhis24_df_fit <-
     CHLEV_A, HYPEV_A, LIVEREV_A, STREV_A,
     MIEV_A, ANGEV_A, CHDEV_A,
     DEPEV_A, ANXEV_A, SMKEV_A, LONELY_A
-
+  )
