@@ -43,6 +43,241 @@ table1 =
 
 table1
 ```
+## Variable Descriptions
+
+### SEX_A
+#### Original Meaning
+SEX_A identifies the biological sex of the respondent (1 = Male, 2 = Female) as defined in the NHIS adult codebook.
+
+#### Recoding
+The variable was recoded into a binary indicator where:
+
+- 1 = Male  
+- 0 = Female  
+
+---
+
+### AGEP_A
+#### Original Meaning
+AGEP_A represents the respondent’s age in years.
+
+#### Recoding
+No recoding was performed; the variable is used as a continuous numeric measure.
+
+---
+
+### DIBEV_A
+#### Original Meaning
+Indicates whether the respondent has ever been told by a doctor that they have diabetes (1 = Yes, 2 = No).
+
+#### Recoding
+The variable was converted to:
+
+- 1 = Diabetes  
+- 0 = No diabetes  
+- Responses 7, 8, and 9 (refused/don’t know/not ascertained) were removed.
+
+---
+
+### BMICATD_A
+#### Original Meaning
+BMI category assigned based on measured height and weight:  
+1 = Underweight  
+2 = Healthy weight  
+3 = Overweight  
+4–6 = Obesity classes I–III  
+
+#### Recoding
+BMI was regrouped into four meaningful analytic categories:
+
+- 0 = Healthy weight  
+- 1 = Underweight  
+- 2 = Overweight  
+- 3 = Obesity (classes I–III combined)
+
+---
+
+### WEIGHTLBTC_A
+#### Original Meaning
+Measured body weight in pounds.
+
+---
+
+### HEIGHTTC_A
+#### Original Meaning
+Measured height in inches.
+
+---
+
+### DIFF_A
+#### Original Meaning
+Self-reported difficulty walking or climbing steps (1 = None, 2 = Some, 3 = A lot, 4 = Cannot do).
+
+#### Recoding
+Recoded as:
+
+- 0 = No difficulty  
+- 1 = Some difficulty  
+- 2 = A lot of difficulty  
+- 3 = Cannot do  
+
+---
+
+### EDUCP_A
+#### Original Meaning
+Highest educational attainment (ranging from no schooling to graduate degree).
+
+#### Recoding
+Grouped as:
+
+- 0 = Low education  
+- 1 = Medium education  
+- 2 = High education  
+
+---
+
+### LSATIS4_A
+#### Original Meaning
+Life satisfaction rating (1 = Very satisfied → 4 = Very dissatisfied).
+
+#### Recoding
+Combined into:
+
+- 0 = Satisfied (1–2)  
+- 1 = Dissatisfied (3–4)
+
+---
+
+### PHSTAT_A
+#### Original Meaning
+General health status (Excellent / Very good / Good / Fair / Poor).
+
+#### Recoding
+Reclassified into:
+
+- 0 = Good health (Excellent–Good)  
+- 1 = Poor health (Fair/Poor)
+
+---
+
+### CHLEV_A
+#### Original Meaning
+History of high cholesterol (1 = Yes, 2 = No).
+
+#### Recoding
+Converted to:
+
+- 1 = Yes  
+- 0 = No  
+
+---
+
+### HYPEV_A
+#### Original Meaning
+History of hypertension.
+
+#### Recoding
+
+- 1 = Yes
+- 0 = No.
+
+---
+
+### LIVEREV_A
+#### Original Meaning
+History of liver disease.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### STREV_A
+#### Original Meaning
+History of stroke.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### MIEV_A
+#### Original Meaning
+History of myocardial infarction (heart attack).
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### ANGEV_A
+#### Original Meaning
+History of angina.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### CHDEV_A
+#### Original Meaning
+History of coronary heart disease.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### DEPEV_A
+#### Original Meaning
+Ever told had depression.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### ANXEV_A
+#### Original Meaning
+Ever told had anxiety.
+
+#### Recoding
+- 1 = Yes
+- 0 = No.
+
+---
+
+### SMKEV_A
+#### Original Meaning
+Smoking history (1 = Yes, 2 = No).
+
+#### Recoding
+Binary coding:
+- 1 = Yes (Ever smoked) 
+- 0 = No (Never smoked) 
+
+---
+
+### LONELY_A
+#### Original Meaning
+Frequency of loneliness (1 = Always → 5 = Never).
+
+#### Recoding
+Converted to an ordered scale:
+
+- 4 = Always lonely  
+- 3 = Often  
+- 2 = Sometimes  
+- 1 = Rarely  
+- 0 = Never  
+
+
 
 # Correlation Analysis
 
