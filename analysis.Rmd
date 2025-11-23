@@ -133,29 +133,30 @@ P_value_hisg
 
 # Model Results
 
+Tidy results.
+
 ```{r}
-<<<<<<< HEAD
-model_results_tidy = 
-  tidy(glm_model, conf.int = TRUE) |>
-=======
-<<<<<<< HEAD
+tidy_logit <- function(model) {
+  broom::tidy(model, conf.int = TRUE) |>
+    mutate(
+      Beta     = estimate,
+      OR       = exp(estimate),
+      Lower_CI = exp(conf.low),
+      Upper_CI = exp(conf.high),
+      p.value  = format.pval(p.value, digits = 3, eps = 0.001)
+    ) |>
+    select(term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}
+```
 
+Clean up term names for presentation.
 
-model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
-
-=======
-model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
->>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
->>>>>>> 33d1fa37086654d8e6ed30628456089f80fd3e50
-  mutate(
-    Beta = estimate,
-    OR = exp(estimate),
-    Lower_CI = exp(conf.low),
-    Upper_CI = exp(conf.high),
-    
-    # Clean up term names for presentation
-    term = gsub("`", "", term), 
-    term = case_when(
+```{r}
+clean_term_labels <- function(df) {
+  df |>
+    mutate(
+      term = gsub("`", "", term),
+      Term = case_when(
         term == "(Intercept)" ~ "Intercept",
         term == "SEX_A2" ~ "SEX_A: Female (vs Male)",
         
@@ -201,34 +202,58 @@ model_results_tidy = tidy(glm_model, conf.int = TRUE) |>
         term == "AGEP_A" ~ "AGEP_A (Per Year)",
         term == "WEIGHTLBTC_A" ~ "WEIGHTLBTC_A (Per lb)",
         term == "HEIGHTTC_A" ~ "HEIGHTTC_A (Per unit)",
+        
         TRUE ~ term
-    ),
-    p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) |>
-  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
+      )
+    ) |>
+    select(Term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}
+```
 
-# Generate kable table
-model_results_tidy |>
-  mutate(
-    OR_CI = paste0(round(OR, 3), " (", round(Lower_CI, 3), " - ", round(Upper_CI, 3), ")"),
-    Beta = round(Beta, 4)
-  ) |>
-  select(Term, Beta, OR_CI, p.value) |>
-  kable(
-    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)",
-    col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
-    align = c('l', 'r', 'r', 'r'),
-    booktabs = TRUE
-  ) |>
-  kable_styling(
-    full_width = TRUE, 
-    position = "left",
-    latex_options = "hold_position"
-  ) |>
-  add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) %>%
-  footnote(
-    general = "Reference Outcome: No Diabetes (DIBEV_A = 0).",
-    threeparttable = TRUE
+Generate kable table.
+
+```{r}
+format_logit_table <- function(df,
+                               caption,
+                               footnote_text = "Reference Outcome: No Diabetes (DIBEV_A = 0).") {
+  df |>
+    dplyr::mutate(
+      OR_CI = paste0(
+        round(OR, 3), " (",
+        round(Lower_CI, 3), " - ",
+        round(Upper_CI, 3), ")"
+      ),
+      Beta = round(Beta, 4)
+    ) |>
+    dplyr::select(Term, Beta, OR_CI, p.value) |>
+    knitr::kable(
+      caption   = caption,
+      col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
+      align     = c("l", "r", "r", "r"),
+      booktabs  = TRUE
+    ) |>
+    kableExtra::kable_styling(
+      full_width    = TRUE,
+      position      = "left",
+      latex_options = "hold_position"
+    ) |>
+    kableExtra::add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) |>
+    kableExtra::footnote(
+      general        = footnote_text,
+      threeparttable = TRUE
+    )
+}
+```
+
+```{r}
+model_results_tidy = 
+  glm_model |>
+  tidy_logit() |>
+  clean_term_labels()
+
+model_results_tidy |> 
+  format_logit_table(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)"
   )
 ```
 
@@ -270,134 +295,7 @@ This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, whe
 <<<<<<< HEAD
 
 
-```{r}
-### Build Model without confounder
 
-
-df_model_conwo = 
-  nhis24_df_fit |>
-  mutate(
-    # Outcome: DIBEV_A
-    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
-    
-    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
-    
-    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
-    
-    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
-    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
-    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
-    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
-    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
-    STREV_A = factor(STREV_A), # Codes 0, 1
-    MIEV_A = factor(MIEV_A), # Codes 0, 1
-    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
-    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
-    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
-    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
-    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
-    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
-  ) 
-```
-
-```{r}
-model_formula <- DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
-                           DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
-                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
-                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
-
-glm_model <- glm(
-  model_formula, 
-  data = df_model,
-  family = binomial(link = "logit")
-)
-
-summary(glm_model)
-```
-
-### Model Results compared with the regional one
-
-```{r}
-
-
-
-model_results_tidy <- tidy(glm_model, conf.int = TRUE) |>
-
-  mutate(
-    Beta = estimate,
-    OR = exp(estimate),
-    Lower_CI = exp(conf.low),
-    Upper_CI = exp(conf.high),
-    
-    # Clean up term names for presentation
-    term = gsub("`", "", term), 
-    term = case_when(
-        term == "(Intercept)" ~ "Intercept",
-        
-        # Difficulty Walking (0: No Difficulty)
-        term == "DIFF_A1" ~ "DIFF_A: Some Difficulty (vs No Difficulty)",
-        term == "DIFF_A2" ~ "DIFF_A: A lot of Difficulty (vs No Difficulty)",
-        term == "DIFF_A3" ~ "DIFF_A: Cannot do (vs No Difficulty)",
-        
-        
-        # Life Satisfaction (0: Satisfied/Very Satisfied)
-        term == "LSATIS4_A1" ~ "LSATIS4_A: Dissatisfied (vs Satisfied)",
-        
-        # Health Status (0: Good/VGood/Excellent Health)
-        term == "PHSTAT_A1" ~ "PHSTAT_A: Fair/Poor Health (vs Good Health)",
-        
-        # Loneliness (0: Never Lonely)
-        term == "LONELY_A1" ~ "LONELY_A: Rarely Lonely (vs Never Lonely)",
-        term == "LONELY_A2" ~ "LONELY_A: Sometimes Lonely (vs Never Lonely)",
-        term == "LONELY_A3" ~ "LONELY_A: Usually Lonely (vs Never Lonely)",
-        term == "LONELY_A4" ~ "LONELY_A: Always Lonely (vs Never Lonely)",
-        
-        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
-        term == "CHLEV_A1" ~ "CHLEV_A: High Cholesterol (Yes)",
-        term == "HYPEV_A1" ~ "HYPEV_A: Hypertension (Yes)",
-        term == "LIVEREV_A1" ~ "LIVEREV_A: Liver Disease (Yes)",
-        term == "STREV_A1" ~ "STREV_A: Stroke (Yes)",
-        term == "MIEV_A1" ~ "MIEV_A: Myocardial Infarction (Yes)",
-        term == "ANGEV_A1" ~ "ANGEV_A: Angina (Yes)",
-        term == "CHDEV_A1" ~ "CHDEV_A: CHD (Yes)",
-        term == "DEPEV_A1" ~ "DEPEV_A: Depression (Yes)",
-        term == "ANXEV_A1" ~ "ANXEV_A: Anxiety (Yes)",
-        term == "SMKEV_A1" ~ "SMKEV_A: Smoker (Yes)",
-        
-        # Continuous Variables
-    
-        term == "WEIGHTLBTC_A" ~ "WEIGHTLBTC_A (Per lb)",
-        term == "HEIGHTTC_A" ~ "HEIGHTTC_A (Per unit)",
-        TRUE ~ term
-    ),
-    p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) |>
-  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
-
-# Generate kable table
-model_results_tidy |>
-  mutate(
-    OR_CI = paste0(round(OR, 3), " (", round(Lower_CI, 3), " - ", round(Upper_CI, 3), ")"),
-    Beta = round(Beta, 4)
-  ) |>
-  select(Term, Beta, OR_CI, p.value) |>
-  kable(
-    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)",
-    col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
-    align = c('l', 'r', 'r', 'r'),
-    booktabs = TRUE
-  ) |>
-  kable_styling(
-    full_width = TRUE, 
-    position = "left",
-    latex_options = "hold_position"
-  ) |>
-  add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) %>%
-  footnote(
-    general = "Reference Outcome: No Diabetes (DIBEV_A = 0).",
-    threeparttable = TRUE
-  )
-```
 =======
 # Interpretation of Model Coefficients
 
@@ -557,6 +455,99 @@ Anxiety was not significantly related to diabetes.
 ### Summary of Findings
 Overall, the multivariable logistic regression analysis identifies several strong predictors of diabetes. Obesity, hypertension, high cholesterol, liver disease, poor general health, and myocardial infarction were among the strongest risk factors, each contributing substantially to elevated diabetes odds. Higher education showed a consistent protective effect. Mobility limitations were also associated with greater risk, illustrating the interconnected nature of physical functioning and metabolic health. While depression was significantly associated with increased diabetes risk, other psychosocial factors such as anxiety and loneliness were not significant in this adjusted model. Smoking likewise showed no significant association. Collectively, these findings highlight the multifactorial nature of diabetes, involving biological, behavioral, and socioeconomic determinants.
 
+# Test for confounders
 
+Build model without confounders.
 
->>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
+```{r}
+model_formula_noconf = DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+                           DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model_noconf = glm(
+  model_formula_noconf, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(glm_model_noconf)
+```
+
+Model without confounders result:
+
+```{r}
+model_results_tidy_noconf =
+  glm_model_noconf |>
+  tidy_logit() |>
+  clean_term_labels() 
+
+model_results_tidy_noconf |> 
+  format_logit_table(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios) Without Confounders"
+  )
+```
+
+Compare with the original data.
+
+```{r}
+compare_table = 
+  model_results_tidy |>
+  select(
+    Term,
+    Beta_full     = Beta,
+    OR_full       = OR,
+    Lower_full    = Lower_CI,
+    Upper_full    = Upper_CI,
+    p_full        = p.value
+  ) |>
+  full_join(
+    model_results_tidy_noconf |>
+      select(
+        Term,
+        Beta_noconf  = Beta,
+        OR_noconf    = OR,
+        Lower_noconf = Lower_CI,
+        Upper_noconf = Upper_CI,
+        p_noconf     = p.value
+      ),
+    by = "Term"
+  ) |>
+  mutate(
+    OR_change_pct   = (OR_full - OR_noconf) / OR_noconf * 100,
+    Beta_change_pct = (Beta_full - Beta_noconf) / Beta_noconf * 100
+  )
+
+compare_table |>
+  mutate(
+    OR_full     = round(OR_full, 3),
+    OR_noconf   = round(OR_noconf, 3),
+    OR_change_pct = round(OR_change_pct, 1)
+  ) |>
+  select(
+    Term,
+    OR_noconf,
+    OR_full,
+    OR_change_pct
+  ) |>
+  knitr::kable(
+    caption   = "Comparison of Odds Ratios With and Without Prespecified Confounders",
+    col.names = c(
+      "Predictor Term",
+      "OR (Model without confounders)",
+      "OR (Full model)",
+      "% Change in OR"
+    ),
+    align    = c("l", "r", "r", "r"),
+    booktabs = TRUE
+  ) |>
+  kableExtra::kable_styling(
+    full_width    = FALSE,
+    position      = "left",
+    latex_options = "hold_position"
+  )
+```
+
+When comparing models with and without adjustment for the prespecified confounders (age, sex, BMI, and education), most predictors show relatively small changes in their odds ratios (ORs), generally within ±10% (e.g., life satisfaction, self-rated health, high cholesterol, liver disease, stroke, myocardial infarction, angina, CHD, depression, smoking, and loneliness). This suggests that these associations are fairly robust to adjustment for demographic and anthropometric factors.
+
+In contrast, the ORs for mobility difficulty (DIFF_A) and hypertension (HYPEV_A) are noticeably attenuated after adjustment: the ORs for different levels of walking difficulty decrease by about 16–19%, and the OR for hypertension decreases by about 22%, indicating meaningful confounding by age, sex, BMI, and education. For anxiety (ANXEV_A), the OR moves toward the null by around 11%, suggesting that the apparent protective association in the unadjusted model is partly explained by confounding. Overall, these results support treating demographic and BMI-related variables as important confounders, particularly for mobility difficulty and hypertension in relation to diabetes risk.

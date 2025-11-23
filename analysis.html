@@ -382,13 +382,8 @@ div.tocify {
 
 
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
-<<<<<<< HEAD
-<div id="introduction" class="section level3">
-<h3>Introduction</h3>
-=======
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
->>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
 <p>This analysis aims to investigate factors associated with the
 likelihood of being diagnosed with diabetes (DIBEV_A) using a
 multivariable logistic regression model. Covariates include demographic,
@@ -564,31 +559,27 @@ P_value_hisg =
 P_value_hisg</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<<<<<<< HEAD
-<div id="model-results" class="section level3">
-<h3>Model Results</h3>
-<pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) |&gt;
-
-=======
 </div>
 <div id="model-results" class="section level1">
 <h1>Model Results</h1>
-<<<<<<< HEAD
-<pre class="r"><code>model_results_tidy = 
-  tidy(glm_model, conf.int = TRUE) |&gt;
-=======
-<pre class="r"><code>model_results_tidy = tidy(glm_model, conf.int = TRUE) |&gt;
->>>>>>> 34f3a2c59c8b25458854e9ad7928c28c8faa8846
->>>>>>> 33d1fa37086654d8e6ed30628456089f80fd3e50
-  mutate(
-    Beta = estimate,
-    OR = exp(estimate),
-    Lower_CI = exp(conf.low),
-    Upper_CI = exp(conf.high),
-    
-    # Clean up term names for presentation
-    term = gsub(&quot;`&quot;, &quot;&quot;, term), 
-    term = case_when(
+<p>Tidy results.</p>
+<pre class="r"><code>tidy_logit &lt;- function(model) {
+  broom::tidy(model, conf.int = TRUE) |&gt;
+    mutate(
+      Beta     = estimate,
+      OR       = exp(estimate),
+      Lower_CI = exp(conf.low),
+      Upper_CI = exp(conf.high),
+      p.value  = format.pval(p.value, digits = 3, eps = 0.001)
+    ) |&gt;
+    select(term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}</code></pre>
+<p>Clean up term names for presentation.</p>
+<pre class="r"><code>clean_term_labels &lt;- function(df) {
+  df |&gt;
+    mutate(
+      term = gsub(&quot;`&quot;, &quot;&quot;, term),
+      Term = case_when(
         term == &quot;(Intercept)&quot; ~ &quot;Intercept&quot;,
         term == &quot;SEX_A2&quot; ~ &quot;SEX_A: Female (vs Male)&quot;,
         
@@ -634,34 +625,51 @@ P_value_hisg</code></pre>
         term == &quot;AGEP_A&quot; ~ &quot;AGEP_A (Per Year)&quot;,
         term == &quot;WEIGHTLBTC_A&quot; ~ &quot;WEIGHTLBTC_A (Per lb)&quot;,
         term == &quot;HEIGHTTC_A&quot; ~ &quot;HEIGHTTC_A (Per unit)&quot;,
+        
         TRUE ~ term
-    ),
-    p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) |&gt;
-  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
+      )
+    ) |&gt;
+    select(Term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}</code></pre>
+<p>Generate kable table.</p>
+<pre class="r"><code>format_logit_table &lt;- function(df,
+                               caption,
+                               footnote_text = &quot;Reference Outcome: No Diabetes (DIBEV_A = 0).&quot;) {
+  df |&gt;
+    dplyr::mutate(
+      OR_CI = paste0(
+        round(OR, 3), &quot; (&quot;,
+        round(Lower_CI, 3), &quot; - &quot;,
+        round(Upper_CI, 3), &quot;)&quot;
+      ),
+      Beta = round(Beta, 4)
+    ) |&gt;
+    dplyr::select(Term, Beta, OR_CI, p.value) |&gt;
+    knitr::kable(
+      caption   = caption,
+      col.names = c(&quot;Predictor Term&quot;, &quot;Coefficient (Beta)&quot;, &quot;Adjusted OR (95% CI)&quot;, &quot;P-value&quot;),
+      align     = c(&quot;l&quot;, &quot;r&quot;, &quot;r&quot;, &quot;r&quot;),
+      booktabs  = TRUE
+    ) |&gt;
+    kableExtra::kable_styling(
+      full_width    = TRUE,
+      position      = &quot;left&quot;,
+      latex_options = &quot;hold_position&quot;
+    ) |&gt;
+    kableExtra::add_header_above(c(&quot; &quot; = 2, &quot;Odds Ratio&quot; = 1, &quot; &quot; = 1)) |&gt;
+    kableExtra::footnote(
+      general        = footnote_text,
+      threeparttable = TRUE
+    )
+}</code></pre>
+<pre class="r"><code>model_results_tidy = 
+  glm_model |&gt;
+  tidy_logit() |&gt;
+  clean_term_labels()
 
-# Generate kable table
-model_results_tidy |&gt;
-  mutate(
-    OR_CI = paste0(round(OR, 3), &quot; (&quot;, round(Lower_CI, 3), &quot; - &quot;, round(Upper_CI, 3), &quot;)&quot;),
-    Beta = round(Beta, 4)
-  ) |&gt;
-  select(Term, Beta, OR_CI, p.value) |&gt;
-  kable(
-    caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)&quot;,
-    col.names = c(&quot;Predictor Term&quot;, &quot;Coefficient (Beta)&quot;, &quot;Adjusted OR (95% CI)&quot;, &quot;P-value&quot;),
-    align = c(&#39;l&#39;, &#39;r&#39;, &#39;r&#39;, &#39;r&#39;),
-    booktabs = TRUE
-  ) |&gt;
-  kable_styling(
-    full_width = TRUE, 
-    position = &quot;left&quot;,
-    latex_options = &quot;hold_position&quot;
-  ) |&gt;
-  add_header_above(c(&quot; &quot; = 2, &quot;Odds Ratio&quot; = 1, &quot; &quot; = 1)) %&gt;%
-  footnote(
-    general = &quot;Reference Outcome: No Diabetes (DIBEV_A = 0).&quot;,
-    threeparttable = TRUE
+model_results_tidy |&gt; 
+  format_logit_table(
+    caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)&quot;
   )</code></pre>
 <table class="table" style="border-bottom: 0;">
 <caption>
@@ -1148,7 +1156,7 @@ ggplot(forest_data, aes(x = OR, y = Term)) +
   )
 
 print(forest_plots)</code></pre>
-<p><img src="analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>This forest plot displays adjusted odds ratios (ORs) for diabetes
 diagnosis, where the y-axis lists predictors (with reference groups in
 parentheses), and the x-axis (log scale) shows ORs (dashed red line at
@@ -1163,48 +1171,245 @@ fair/poor health, high cholesterol, hypertension) increase risk; and
 factors like stroke history, severe mobility difficulty, and some
 loneliness categories have CIs crossing 1, showing no significant
 association.</p>
-<pre class="r"><code>### Build Model without confounder
-
-
-df_model_conwo = 
-  nhis24_df_fit |&gt;
-  mutate(
-    # Outcome: DIBEV_A
-    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
-    
-    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
-    
-    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
-    
-    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
-    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
-    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
-    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
-    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
-    STREV_A = factor(STREV_A), # Codes 0, 1
-    MIEV_A = factor(MIEV_A), # Codes 0, 1
-    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
-    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
-    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
-    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
-    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
-    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
-  ) </code></pre>
-<pre class="r"><code>model_formula &lt;- DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<p>======= # Interpretation of Model Coefficients</p>
+<p>Below is the interpretation of the logistic regression output, with
+each variable summarized under its own subsection.</p>
+<hr />
+<div id="sex" class="section level3">
+<h3>Sex</h3>
+<div id="male-vs-female" class="section level4">
+<h4>Male vs Female</h4>
+<ul>
+<li>Coefficient β = –0.4402<br />
+</li>
+<li>OR = 0.644 (95% CI: 0.602–0.688), <em>p</em> &lt; 0.001</li>
+</ul>
+<p>Males had significantly lower odds of diabetes compared with females
+after adjusting for all covariates.</p>
+<hr />
+</div>
+</div>
+<div id="age" class="section level3">
+<h3>Age</h3>
+<div id="continuous-per-year-increase" class="section level4">
+<h4>Continuous (per year increase)</h4>
+<ul>
+<li>OR = 1.002 (95% CI: 1.000–1.003), <em>p</em> = 0.0156</li>
+</ul>
+<p>Older age was a small but statistically significant risk factor for
+diabetes.</p>
+<hr />
+</div>
+</div>
+<div id="smoking" class="section level3">
+<h3>Smoking</h3>
+<div id="smoker-vs-non-smoker" class="section level4">
+<h4>Smoker vs Non-Smoker</h4>
+<ul>
+<li>OR = 0.916 (95% CI: 0.838–1.001), <em>p</em> = 0.0534</li>
+</ul>
+<p>Smoking showed a borderline non-significant inverse
+association.<br />
+There is no strong evidence of an association between smoking and
+diabetes in this adjusted model.</p>
+<hr />
+</div>
+</div>
+<div id="loneliness" class="section level3">
+<h3>Loneliness</h3>
+<p>Compared with the “Never Lonely” reference group:</p>
+<ul>
+<li>Rarely lonely: OR = 1.042, <em>p</em> = 0.4543<br />
+</li>
+<li>Sometimes lonely: OR = 1.071, <em>p</em> = 0.2363<br />
+</li>
+<li>Usually lonely: OR = 0.835, <em>p</em> = 0.2029<br />
+</li>
+<li>Always lonely: OR = 1.162, <em>p</em> = 0.2244</li>
+</ul>
+<p>None of the loneliness categories were statistically
+significant.<br />
+Loneliness does not appear to be independently associated with diabetes
+risk.</p>
+<hr />
+</div>
+<div id="education" class="section level3">
+<h3>Education</h3>
+<div id="medium-education-vs-low-education" class="section level4">
+<h4>Medium Education vs Low Education</h4>
+<ul>
+<li>OR = 0.896 (95% CI: 0.809–0.993), <em>p</em> = 0.0364</li>
+</ul>
+</div>
+<div id="high-education-vs-low-education" class="section level4">
+<h4>High Education vs Low Education</h4>
+<ul>
+<li>OR = 0.725 (95% CI: 0.651–0.807), <em>p</em> &lt; 0.001</li>
+</ul>
+<p>Higher education was protective.<br />
+Those with high education had markedly lower odds of diabetes.</p>
+<hr />
+</div>
+</div>
+<div id="bmi-category" class="section level3">
+<h3>BMI Category</h3>
+<p>Reference = BMI category 0 (Normal weight)</p>
+<ul>
+<li>Underweight: OR = 1.887, <em>p</em> &lt; 0.001<br />
+</li>
+<li>Overweight: OR = 2.314, <em>p</em> &lt; 0.001<br />
+</li>
+<li>Obesity (Class I–III): OR = 4.491, <em>p</em> &lt; 0.001</li>
+</ul>
+<p>BMI demonstrated a strong dose-response relationship, with obesity
+being the strongest risk factor in the model.</p>
+<hr />
+</div>
+<div id="difficulty-walking-mobility" class="section level3">
+<h3>Difficulty Walking (Mobility)</h3>
+<p>Reference = No difficulty</p>
+<ul>
+<li>Some difficulty: OR = 1.173, <em>p</em> = 0.0037<br />
+</li>
+<li>A lot of difficulty: OR = 1.373, <em>p</em> &lt; 0.001<br />
+</li>
+<li>Cannot do at all: OR = 1.273, <em>p</em> = 0.0831</li>
+</ul>
+<p>Greater mobility limitations were associated with higher odds of
+diabetes.</p>
+<hr />
+</div>
+<div id="life-satisfaction" class="section level3">
+<h3>Life Satisfaction</h3>
+<ul>
+<li>Dissatisfied vs satisfied: OR = 0.884, <em>p</em> = 0.2083 → Not
+significant</li>
+</ul>
+<hr />
+</div>
+<div id="general-health-status" class="section level3">
+<h3>General Health Status</h3>
+<div id="fairpoor-vs-goodvery-goodexcellent" class="section level4">
+<h4>Fair/Poor vs Good/Very Good/Excellent</h4>
+<ul>
+<li>OR = 2.004 (95% CI: 1.805–2.224), <em>p</em> &lt; 0.001</li>
+</ul>
+<p>Poor health was a strong predictor of diabetes.</p>
+<hr />
+</div>
+</div>
+<div id="high-cholesterol" class="section level3">
+<h3>High Cholesterol</h3>
+<ul>
+<li>OR = 2.107, <em>p</em> &lt; 0.001</li>
+</ul>
+<p>A strong and significant association.</p>
+<hr />
+</div>
+<div id="hypertension" class="section level3">
+<h3>Hypertension</h3>
+<ul>
+<li>OR = 2.128, <em>p</em> &lt; 0.001</li>
+</ul>
+<p>Hypertension was one of the largest predictors, more than doubling
+the odds of diabetes.</p>
+<hr />
+</div>
+<div id="liver-disease" class="section level3">
+<h3>Liver Disease</h3>
+<ul>
+<li>OR = 1.928, <em>p</em> &lt; 0.001</li>
+</ul>
+<p>Individuals with liver disease had nearly double the odds of
+diabetes.</p>
+<hr />
+</div>
+<div id="stroke" class="section level3">
+<h3>Stroke</h3>
+<ul>
+<li>OR = 1.112, <em>p</em> = 0.199</li>
+</ul>
+<p>Not statistically significant.</p>
+<hr />
+</div>
+<div id="myocardial-infarction" class="section level3">
+<h3>Myocardial Infarction</h3>
+<ul>
+<li>OR = 1.329 (95% CI: 1.118–1.577), <em>p</em> = 0.0012</li>
+</ul>
+<p>History of myocardial infarction was positively associated with
+diabetes.</p>
+<hr />
+</div>
+<div id="angina" class="section level3">
+<h3>Angina</h3>
+<ul>
+<li>OR = 1.008, <em>p</em> = 0.942</li>
+</ul>
+<p>No association.</p>
+<hr />
+</div>
+<div id="coronary-heart-disease-chd" class="section level3">
+<h3>Coronary Heart Disease (CHD)</h3>
+<ul>
+<li>OR = 1.258 (95% CI: 1.089–1.451), <em>p</em> = 0.0018</li>
+</ul>
+<p>CHD was a significant predictor of diabetes.</p>
+<hr />
+</div>
+<div id="depression" class="section level3">
+<h3>Depression</h3>
+<ul>
+<li>OR = 1.175 (95% CI: 1.035–1.333), <em>p</em> = 0.0122</li>
+</ul>
+<p>Depression was significantly associated with increased diabetes
+odds.</p>
+<hr />
+</div>
+<div id="anxiety" class="section level3">
+<h3>Anxiety</h3>
+<ul>
+<li>OR = 0.921 (95% CI: 0.808–1.049), <em>p</em> = 0.216</li>
+</ul>
+<p>Anxiety was not significantly related to diabetes.</p>
+<hr />
+</div>
+<div id="summary-of-findings" class="section level3">
+<h3>Summary of Findings</h3>
+<p>Overall, the multivariable logistic regression analysis identifies
+several strong predictors of diabetes. Obesity, hypertension, high
+cholesterol, liver disease, poor general health, and myocardial
+infarction were among the strongest risk factors, each contributing
+substantially to elevated diabetes odds. Higher education showed a
+consistent protective effect. Mobility limitations were also associated
+with greater risk, illustrating the interconnected nature of physical
+functioning and metabolic health. While depression was significantly
+associated with increased diabetes risk, other psychosocial factors such
+as anxiety and loneliness were not significant in this adjusted model.
+Smoking likewise showed no significant association. Collectively, these
+findings highlight the multifactorial nature of diabetes, involving
+biological, behavioral, and socioeconomic determinants.</p>
+</div>
+</div>
+<div id="test-for-confounders" class="section level1">
+<h1>Test for confounders</h1>
+<p>Build model without confounders.</p>
+<pre class="r"><code>model_formula_noconf = DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
                            DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
 
-glm_model &lt;- glm(
-  model_formula, 
+glm_model_noconf = glm(
+  model_formula_noconf, 
   data = df_model,
   family = binomial(link = &quot;logit&quot;)
 )
 
-summary(glm_model)</code></pre>
+summary(glm_model_noconf)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = model_formula, family = binomial(link = &quot;logit&quot;), 
+## glm(formula = model_formula_noconf, family = binomial(link = &quot;logit&quot;), 
 ##     data = df_model)
 ## 
 ## Coefficients:
@@ -1241,90 +1446,20 @@ summary(glm_model)</code></pre>
 ## AIC: 14909
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
-</div>
-<div id="model-results-compared-with-the-regional-one"
-class="section level3">
-<h3>Model Results compared with the regional one</h3>
-<pre class="r"><code>model_results_tidy &lt;- tidy(glm_model, conf.int = TRUE) |&gt;
+<p>Model without confounders result:</p>
+<pre class="r"><code>model_results_tidy_noconf =
+  glm_model_noconf |&gt;
+  tidy_logit() |&gt;
+  clean_term_labels() 
 
-  mutate(
-    Beta = estimate,
-    OR = exp(estimate),
-    Lower_CI = exp(conf.low),
-    Upper_CI = exp(conf.high),
-    
-    # Clean up term names for presentation
-    term = gsub(&quot;`&quot;, &quot;&quot;, term), 
-    term = case_when(
-        term == &quot;(Intercept)&quot; ~ &quot;Intercept&quot;,
-        
-        # Difficulty Walking (0: No Difficulty)
-        term == &quot;DIFF_A1&quot; ~ &quot;DIFF_A: Some Difficulty (vs No Difficulty)&quot;,
-        term == &quot;DIFF_A2&quot; ~ &quot;DIFF_A: A lot of Difficulty (vs No Difficulty)&quot;,
-        term == &quot;DIFF_A3&quot; ~ &quot;DIFF_A: Cannot do (vs No Difficulty)&quot;,
-        
-        
-        # Life Satisfaction (0: Satisfied/Very Satisfied)
-        term == &quot;LSATIS4_A1&quot; ~ &quot;LSATIS4_A: Dissatisfied (vs Satisfied)&quot;,
-        
-        # Health Status (0: Good/VGood/Excellent Health)
-        term == &quot;PHSTAT_A1&quot; ~ &quot;PHSTAT_A: Fair/Poor Health (vs Good Health)&quot;,
-        
-        # Loneliness (0: Never Lonely)
-        term == &quot;LONELY_A1&quot; ~ &quot;LONELY_A: Rarely Lonely (vs Never Lonely)&quot;,
-        term == &quot;LONELY_A2&quot; ~ &quot;LONELY_A: Sometimes Lonely (vs Never Lonely)&quot;,
-        term == &quot;LONELY_A3&quot; ~ &quot;LONELY_A: Usually Lonely (vs Never Lonely)&quot;,
-        term == &quot;LONELY_A4&quot; ~ &quot;LONELY_A: Always Lonely (vs Never Lonely)&quot;,
-        
-        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
-        term == &quot;CHLEV_A1&quot; ~ &quot;CHLEV_A: High Cholesterol (Yes)&quot;,
-        term == &quot;HYPEV_A1&quot; ~ &quot;HYPEV_A: Hypertension (Yes)&quot;,
-        term == &quot;LIVEREV_A1&quot; ~ &quot;LIVEREV_A: Liver Disease (Yes)&quot;,
-        term == &quot;STREV_A1&quot; ~ &quot;STREV_A: Stroke (Yes)&quot;,
-        term == &quot;MIEV_A1&quot; ~ &quot;MIEV_A: Myocardial Infarction (Yes)&quot;,
-        term == &quot;ANGEV_A1&quot; ~ &quot;ANGEV_A: Angina (Yes)&quot;,
-        term == &quot;CHDEV_A1&quot; ~ &quot;CHDEV_A: CHD (Yes)&quot;,
-        term == &quot;DEPEV_A1&quot; ~ &quot;DEPEV_A: Depression (Yes)&quot;,
-        term == &quot;ANXEV_A1&quot; ~ &quot;ANXEV_A: Anxiety (Yes)&quot;,
-        term == &quot;SMKEV_A1&quot; ~ &quot;SMKEV_A: Smoker (Yes)&quot;,
-        
-        # Continuous Variables
-    
-        term == &quot;WEIGHTLBTC_A&quot; ~ &quot;WEIGHTLBTC_A (Per lb)&quot;,
-        term == &quot;HEIGHTTC_A&quot; ~ &quot;HEIGHTTC_A (Per unit)&quot;,
-        TRUE ~ term
-    ),
-    p.value = format.pval(p.value, digits = 3, eps = 0.001)
-  ) |&gt;
-  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
-
-# Generate kable table
-model_results_tidy |&gt;
-  mutate(
-    OR_CI = paste0(round(OR, 3), &quot; (&quot;, round(Lower_CI, 3), &quot; - &quot;, round(Upper_CI, 3), &quot;)&quot;),
-    Beta = round(Beta, 4)
-  ) |&gt;
-  select(Term, Beta, OR_CI, p.value) |&gt;
-  kable(
-    caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)&quot;,
-    col.names = c(&quot;Predictor Term&quot;, &quot;Coefficient (Beta)&quot;, &quot;Adjusted OR (95% CI)&quot;, &quot;P-value&quot;),
-    align = c(&#39;l&#39;, &#39;r&#39;, &#39;r&#39;, &#39;r&#39;),
-    booktabs = TRUE
-  ) |&gt;
-  kable_styling(
-    full_width = TRUE, 
-    position = &quot;left&quot;,
-    latex_options = &quot;hold_position&quot;
-  ) |&gt;
-  add_header_above(c(&quot; &quot; = 2, &quot;Odds Ratio&quot; = 1, &quot; &quot; = 1)) %&gt;%
-  footnote(
-    general = &quot;Reference Outcome: No Diabetes (DIBEV_A = 0).&quot;,
-    threeparttable = TRUE
+model_results_tidy_noconf |&gt; 
+  format_logit_table(
+    caption = &quot;Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios) Without Confounders&quot;
   )</code></pre>
 <table class="table" style="border-bottom: 0;">
 <caption>
 Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds
-Ratios)
+Ratios) Without Confounders
 </caption>
 <thead>
 <tr>
@@ -1676,227 +1811,510 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </tr>
 </tfoot>
 </table>
-</div>
-<div id="interpretation-of-model-coefficients" class="section level1">
-<h1>Interpretation of Model Coefficients</h1>
-<p>Below is the interpretation of the logistic regression output, with
-each variable summarized under its own subsection.</p>
-<hr />
-<div id="sex" class="section level3">
-<h3>Sex</h3>
-<div id="male-vs-female" class="section level4">
-<h4>Male vs Female</h4>
-<ul>
-<li>Coefficient β = –0.4402<br />
-</li>
-<li>OR = 0.644 (95% CI: 0.602–0.688), <em>p</em> &lt; 0.001</li>
-</ul>
-<p>Males had significantly lower odds of diabetes compared with females
-after adjusting for all covariates.</p>
-<hr />
-</div>
-</div>
-<div id="age" class="section level3">
-<h3>Age</h3>
-<div id="continuous-per-year-increase" class="section level4">
-<h4>Continuous (per year increase)</h4>
-<ul>
-<li>OR = 1.002 (95% CI: 1.000–1.003), <em>p</em> = 0.0156</li>
-</ul>
-<p>Older age was a small but statistically significant risk factor for
-diabetes.</p>
-<hr />
-</div>
-</div>
-<div id="smoking" class="section level3">
-<h3>Smoking</h3>
-<div id="smoker-vs-non-smoker" class="section level4">
-<h4>Smoker vs Non-Smoker</h4>
-<ul>
-<li>OR = 0.916 (95% CI: 0.838–1.001), <em>p</em> = 0.0534</li>
-</ul>
-<p>Smoking showed a borderline non-significant inverse
-association.<br />
-There is no strong evidence of an association between smoking and
-diabetes in this adjusted model.</p>
-<hr />
-</div>
-</div>
-<div id="loneliness" class="section level3">
-<h3>Loneliness</h3>
-<p>Compared with the “Never Lonely” reference group:</p>
-<ul>
-<li>Rarely lonely: OR = 1.042, <em>p</em> = 0.4543<br />
-</li>
-<li>Sometimes lonely: OR = 1.071, <em>p</em> = 0.2363<br />
-</li>
-<li>Usually lonely: OR = 0.835, <em>p</em> = 0.2029<br />
-</li>
-<li>Always lonely: OR = 1.162, <em>p</em> = 0.2244</li>
-</ul>
-<p>None of the loneliness categories were statistically
-significant.<br />
-Loneliness does not appear to be independently associated with diabetes
-risk.</p>
-<hr />
-</div>
-<div id="education" class="section level3">
-<h3>Education</h3>
-<div id="medium-education-vs-low-education" class="section level4">
-<h4>Medium Education vs Low Education</h4>
-<ul>
-<li>OR = 0.896 (95% CI: 0.809–0.993), <em>p</em> = 0.0364</li>
-</ul>
-</div>
-<div id="high-education-vs-low-education" class="section level4">
-<h4>High Education vs Low Education</h4>
-<ul>
-<li>OR = 0.725 (95% CI: 0.651–0.807), <em>p</em> &lt; 0.001</li>
-</ul>
-<p>Higher education was protective.<br />
-Those with high education had markedly lower odds of diabetes.</p>
-<hr />
-</div>
-</div>
-<div id="bmi-category" class="section level3">
-<h3>BMI Category</h3>
-<p>Reference = BMI category 0 (Normal weight)</p>
-<ul>
-<li>Underweight: OR = 1.887, <em>p</em> &lt; 0.001<br />
-</li>
-<li>Overweight: OR = 2.314, <em>p</em> &lt; 0.001<br />
-</li>
-<li>Obesity (Class I–III): OR = 4.491, <em>p</em> &lt; 0.001</li>
-</ul>
-<p>BMI demonstrated a strong dose-response relationship, with obesity
-being the strongest risk factor in the model.</p>
-<hr />
-</div>
-<div id="difficulty-walking-mobility" class="section level3">
-<h3>Difficulty Walking (Mobility)</h3>
-<p>Reference = No difficulty</p>
-<ul>
-<li>Some difficulty: OR = 1.173, <em>p</em> = 0.0037<br />
-</li>
-<li>A lot of difficulty: OR = 1.373, <em>p</em> &lt; 0.001<br />
-</li>
-<li>Cannot do at all: OR = 1.273, <em>p</em> = 0.0831</li>
-</ul>
-<p>Greater mobility limitations were associated with higher odds of
-diabetes.</p>
-<hr />
-</div>
-<div id="life-satisfaction" class="section level3">
-<h3>Life Satisfaction</h3>
-<ul>
-<li>Dissatisfied vs satisfied: OR = 0.884, <em>p</em> = 0.2083 → Not
-significant</li>
-</ul>
-<hr />
-</div>
-<div id="general-health-status" class="section level3">
-<h3>General Health Status</h3>
-<div id="fairpoor-vs-goodvery-goodexcellent" class="section level4">
-<h4>Fair/Poor vs Good/Very Good/Excellent</h4>
-<ul>
-<li>OR = 2.004 (95% CI: 1.805–2.224), <em>p</em> &lt; 0.001</li>
-</ul>
-<p>Poor health was a strong predictor of diabetes.</p>
-<hr />
-</div>
-</div>
-<div id="high-cholesterol" class="section level3">
-<h3>High Cholesterol</h3>
-<ul>
-<li>OR = 2.107, <em>p</em> &lt; 0.001</li>
-</ul>
-<p>A strong and significant association.</p>
-<hr />
-</div>
-<div id="hypertension" class="section level3">
-<h3>Hypertension</h3>
-<ul>
-<li>OR = 2.128, <em>p</em> &lt; 0.001</li>
-</ul>
-<p>Hypertension was one of the largest predictors, more than doubling
-the odds of diabetes.</p>
-<hr />
-</div>
-<div id="liver-disease" class="section level3">
-<h3>Liver Disease</h3>
-<ul>
-<li>OR = 1.928, <em>p</em> &lt; 0.001</li>
-</ul>
-<p>Individuals with liver disease had nearly double the odds of
-diabetes.</p>
-<hr />
-</div>
-<div id="stroke" class="section level3">
-<h3>Stroke</h3>
-<ul>
-<li>OR = 1.112, <em>p</em> = 0.199</li>
-</ul>
-<p>Not statistically significant.</p>
-<hr />
-</div>
-<div id="myocardial-infarction" class="section level3">
-<h3>Myocardial Infarction</h3>
-<ul>
-<li>OR = 1.329 (95% CI: 1.118–1.577), <em>p</em> = 0.0012</li>
-</ul>
-<p>History of myocardial infarction was positively associated with
-diabetes.</p>
-<hr />
-</div>
-<div id="angina" class="section level3">
-<h3>Angina</h3>
-<ul>
-<li>OR = 1.008, <em>p</em> = 0.942</li>
-</ul>
-<p>No association.</p>
-<hr />
-</div>
-<div id="coronary-heart-disease-chd" class="section level3">
-<h3>Coronary Heart Disease (CHD)</h3>
-<ul>
-<li>OR = 1.258 (95% CI: 1.089–1.451), <em>p</em> = 0.0018</li>
-</ul>
-<p>CHD was a significant predictor of diabetes.</p>
-<hr />
-</div>
-<div id="depression" class="section level3">
-<h3>Depression</h3>
-<ul>
-<li>OR = 1.175 (95% CI: 1.035–1.333), <em>p</em> = 0.0122</li>
-</ul>
-<p>Depression was significantly associated with increased diabetes
-odds.</p>
-<hr />
-</div>
-<div id="anxiety" class="section level3">
-<h3>Anxiety</h3>
-<ul>
-<li>OR = 0.921 (95% CI: 0.808–1.049), <em>p</em> = 0.216</li>
-</ul>
-<p>Anxiety was not significantly related to diabetes.</p>
-<hr />
-</div>
-<div id="summary-of-findings" class="section level3">
-<h3>Summary of Findings</h3>
-<p>Overall, the multivariable logistic regression analysis identifies
-several strong predictors of diabetes. Obesity, hypertension, high
-cholesterol, liver disease, poor general health, and myocardial
-infarction were among the strongest risk factors, each contributing
-substantially to elevated diabetes odds. Higher education showed a
-consistent protective effect. Mobility limitations were also associated
-with greater risk, illustrating the interconnected nature of physical
-functioning and metabolic health. While depression was significantly
-associated with increased diabetes risk, other psychosocial factors such
-as anxiety and loneliness were not significant in this adjusted model.
-Smoking likewise showed no significant association. Collectively, these
-findings highlight the multifactorial nature of diabetes, involving
-biological, behavioral, and socioeconomic determinants.</p>
-</div>
+<p>Compare with the original data.</p>
+<pre class="r"><code>compare_table = 
+  model_results_tidy |&gt;
+  select(
+    Term,
+    Beta_full     = Beta,
+    OR_full       = OR,
+    Lower_full    = Lower_CI,
+    Upper_full    = Upper_CI,
+    p_full        = p.value
+  ) |&gt;
+  full_join(
+    model_results_tidy_noconf |&gt;
+      select(
+        Term,
+        Beta_noconf  = Beta,
+        OR_noconf    = OR,
+        Lower_noconf = Lower_CI,
+        Upper_noconf = Upper_CI,
+        p_noconf     = p.value
+      ),
+    by = &quot;Term&quot;
+  ) |&gt;
+  mutate(
+    OR_change_pct   = (OR_full - OR_noconf) / OR_noconf * 100,
+    Beta_change_pct = (Beta_full - Beta_noconf) / Beta_noconf * 100
+  )
+
+compare_table |&gt;
+  mutate(
+    OR_full     = round(OR_full, 3),
+    OR_noconf   = round(OR_noconf, 3),
+    OR_change_pct = round(OR_change_pct, 1)
+  ) |&gt;
+  select(
+    Term,
+    OR_noconf,
+    OR_full,
+    OR_change_pct
+  ) |&gt;
+  knitr::kable(
+    caption   = &quot;Comparison of Odds Ratios With and Without Prespecified Confounders&quot;,
+    col.names = c(
+      &quot;Predictor Term&quot;,
+      &quot;OR (Model without confounders)&quot;,
+      &quot;OR (Full model)&quot;,
+      &quot;% Change in OR&quot;
+    ),
+    align    = c(&quot;l&quot;, &quot;r&quot;, &quot;r&quot;, &quot;r&quot;),
+    booktabs = TRUE
+  ) |&gt;
+  kableExtra::kable_styling(
+    full_width    = FALSE,
+    position      = &quot;left&quot;,
+    latex_options = &quot;hold_position&quot;
+  )</code></pre>
+<table class="table" style="width: auto !important; ">
+<caption>
+Comparison of Odds Ratios With and Without Prespecified Confounders
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictor Term
+</th>
+<th style="text-align:right;">
+OR (Model without confounders)
+</th>
+<th style="text-align:right;">
+OR (Full model)
+</th>
+<th style="text-align:right;">
+% Change in OR
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Intercept
+</td>
+<td style="text-align:right;">
+0.436
+</td>
+<td style="text-align:right;">
+0.034
+</td>
+<td style="text-align:right;">
+-92.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEX_A1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+1.307
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AGEP_A (Per Year)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+1.021
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A: Underweight (vs Healthy)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0.330
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A: Overweight (vs Healthy)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+1.656
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMICATD_A: Obese (vs Healthy)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+2.714
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WEIGHTLBTC_A (Per lb)
+</td>
+<td style="text-align:right;">
+1.002
+</td>
+<td style="text-align:right;">
+1.001
+</td>
+<td style="text-align:right;">
+-0.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HEIGHTTC_A (Per unit)
+</td>
+<td style="text-align:right;">
+0.957
+</td>
+<td style="text-align:right;">
+0.972
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: Some Difficulty (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+1.407
+</td>
+<td style="text-align:right;">
+1.175
+</td>
+<td style="text-align:right;">
+-16.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: A lot of Difficulty (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+1.689
+</td>
+<td style="text-align:right;">
+1.373
+</td>
+<td style="text-align:right;">
+-18.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DIFF_A: Cannot do (vs No Difficulty)
+</td>
+<td style="text-align:right;">
+1.556
+</td>
+<td style="text-align:right;">
+1.273
+</td>
+<td style="text-align:right;">
+-18.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EDUCP_A: Medium Edu (vs Low Edu)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0.896
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EDUCP_A: High Edu (vs Low Edu)
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0.725
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LSATIS4_A: Dissatisfied (vs Satisfied)
+</td>
+<td style="text-align:right;">
+0.830
+</td>
+<td style="text-align:right;">
+0.884
+</td>
+<td style="text-align:right;">
+6.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PHSTAT_A: Fair/Poor Health (vs Good Health)
+</td>
+<td style="text-align:right;">
+2.049
+</td>
+<td style="text-align:right;">
+2.004
+</td>
+<td style="text-align:right;">
+-2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHLEV_A: High Cholesterol (Yes)
+</td>
+<td style="text-align:right;">
+2.279
+</td>
+<td style="text-align:right;">
+2.107
+</td>
+<td style="text-align:right;">
+-7.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HYPEV_A: Hypertension (Yes)
+</td>
+<td style="text-align:right;">
+2.711
+</td>
+<td style="text-align:right;">
+2.128
+</td>
+<td style="text-align:right;">
+-21.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LIVEREV_A: Liver Disease (Yes)
+</td>
+<td style="text-align:right;">
+1.885
+</td>
+<td style="text-align:right;">
+1.928
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STREV_A: Stroke (Yes)
+</td>
+<td style="text-align:right;">
+1.096
+</td>
+<td style="text-align:right;">
+1.112
+</td>
+<td style="text-align:right;">
+1.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MIEV_A: Myocardial Infarction (Yes)
+</td>
+<td style="text-align:right;">
+1.365
+</td>
+<td style="text-align:right;">
+1.329
+</td>
+<td style="text-align:right;">
+-2.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANGEV_A: Angina (Yes)
+</td>
+<td style="text-align:right;">
+1.037
+</td>
+<td style="text-align:right;">
+1.008
+</td>
+<td style="text-align:right;">
+-2.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHDEV_A: CHD (Yes)
+</td>
+<td style="text-align:right;">
+1.380
+</td>
+<td style="text-align:right;">
+1.258
+</td>
+<td style="text-align:right;">
+-8.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DEPEV_A: Depression (Yes)
+</td>
+<td style="text-align:right;">
+1.128
+</td>
+<td style="text-align:right;">
+1.175
+</td>
+<td style="text-align:right;">
+4.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ANXEV_A: Anxiety (Yes)
+</td>
+<td style="text-align:right;">
+0.830
+</td>
+<td style="text-align:right;">
+0.921
+</td>
+<td style="text-align:right;">
+10.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SMKEV_A: Smoker (Yes)
+</td>
+<td style="text-align:right;">
+0.980
+</td>
+<td style="text-align:right;">
+0.916
+</td>
+<td style="text-align:right;">
+-6.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Rarely Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+0.975
+</td>
+<td style="text-align:right;">
+1.042
+</td>
+<td style="text-align:right;">
+6.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Sometimes Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+1.015
+</td>
+<td style="text-align:right;">
+1.071
+</td>
+<td style="text-align:right;">
+5.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Usually Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+0.804
+</td>
+<td style="text-align:right;">
+0.835
+</td>
+<td style="text-align:right;">
+3.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LONELY_A: Always Lonely (vs Never Lonely)
+</td>
+<td style="text-align:right;">
+1.133
+</td>
+<td style="text-align:right;">
+1.162
+</td>
+<td style="text-align:right;">
+2.6
+</td>
+</tr>
+</tbody>
+</table>
+<p>When comparing models with and without adjustment for the
+prespecified confounders (age, sex, BMI, and education), most predictors
+show relatively small changes in their odds ratios (ORs), generally
+within ±10% (e.g., life satisfaction, self-rated health, high
+cholesterol, liver disease, stroke, myocardial infarction, angina, CHD,
+depression, smoking, and loneliness). This suggests that these
+associations are fairly robust to adjustment for demographic and
+anthropometric factors.</p>
+<p>In contrast, the ORs for mobility difficulty (DIFF_A) and
+hypertension (HYPEV_A) are noticeably attenuated after adjustment: the
+ORs for different levels of walking difficulty decrease by about 16–19%,
+and the OR for hypertension decreases by about 22%, indicating
+meaningful confounding by age, sex, BMI, and education. For anxiety
+(ANXEV_A), the OR moves toward the null by around 11%, suggesting that
+the apparent protective association in the unadjusted model is partly
+explained by confounding. Overall, these results support treating
+demographic and BMI-related variables as important confounders,
+particularly for mobility difficulty and hypertension in relation to
+diabetes risk.</p>
 </div>
 
 
