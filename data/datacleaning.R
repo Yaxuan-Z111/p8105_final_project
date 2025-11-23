@@ -1,34 +1,16 @@
----
-title: "cleaning"
-author: "Yirou Hu"
-date: "2025-11-20"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## cleaning dataset
-```{r}
 library(tidyverse)
 library(readxl)
-library(dplyr)
-```
 
-```{r}
-nhis24_df = 
+nhis24_df_fit <- 
   read_excel("data/adults_2024.xlsx") |>
   select(-REGION) |>
-  # ---- Sex ----
+  
+  # Sex
   mutate(
-    SEX_A = case_when(
-      SEX_A == 1 ~ 1,
-      SEX_A == 2 ~ 0,
-    )
+    SEX_A = case_when(SEX_A == 1 ~ 1, SEX_A == 2 ~ 0)
   ) |>
-
-  # ---- Outcome: Diabetes ----
+  
+  # Diabetes
   mutate(
     DIBEV_A = case_when(
       DIBEV_A == 1 ~ 1,
@@ -36,9 +18,9 @@ nhis24_df =
       TRUE ~ NA_real_
     )
   ) |>
-  filter(!is.na(DIBEV_A)) |>   # remove 7/8/9
-
-  # ---- BMI ----
+  filter(!is.na(DIBEV_A)) |>
+  
+  # BMI
   mutate(
     BMICATD_A = case_when(
       BMICATD_A == 1 ~ 1,
@@ -49,8 +31,8 @@ nhis24_df =
     )
   ) |>
   filter(!is.na(BMICATD_A)) |>
-
-  # ---- Difficulty walking ----
+  
+  # Difficulty walking
   mutate(
     DIFF_A = case_when(
       DIFF_A == 1 ~ 0,
@@ -61,39 +43,39 @@ nhis24_df =
     )
   ) |>
   filter(!is.na(DIFF_A)) |>
-
-  # ---- Education ----
+  
+  # Education
   mutate(
     EDUCP_A = case_when(
-      EDUCP_A %in% c(0,1,2,3,4) ~ 0,
-      EDUCP_A %in% c(5,6,7) ~ 1,
-      EDUCP_A %in% c(8,9,10) ~ 2,
+      EDUCP_A %in% 0:4 ~ 0,
+      EDUCP_A %in% 5:7 ~ 1,
+      EDUCP_A %in% 8:10 ~ 2,
       TRUE ~ NA_real_
     )
   ) |>
   filter(!is.na(EDUCP_A)) |>
-
-  # ---- Life satisfaction ----
+  
+  # Life satisfaction
   mutate(
     LSATIS4_A = case_when(
-      LSATIS4_A %in% c(1,2) ~ 0,
-      LSATIS4_A %in% c(3,4) ~ 1,
+      LSATIS4_A %in% c(1, 2) ~ 0,
+      LSATIS4_A %in% c(3, 4) ~ 1,
       TRUE ~ NA_real_
     )
   ) |>
   filter(!is.na(LSATIS4_A)) |>
-
-  # ---- Health status ----
+  
+  # Health status
   mutate(
     PHSTAT_A = case_when(
-      PHSTAT_A %in% c(1,2,3) ~ 0,
-      PHSTAT_A %in% c(4,5) ~ 1,
+      PHSTAT_A %in% c(1, 2, 3) ~ 0,
+      PHSTAT_A %in% c(4, 5) ~ 1,
       TRUE ~ NA_real_
     )
   ) |>
   filter(!is.na(PHSTAT_A)) |>
-
-  # ---- Cholesterol ----
+  
+  # Cholesterol
   mutate(
     CHLEV_A = case_when(
       CHLEV_A == 2 ~ 0,
@@ -102,52 +84,41 @@ nhis24_df =
     )
   ) |>
   filter(!is.na(CHLEV_A)) |>
-
-  # ---- Hypertension ----
+  
+  # Hypertension
   mutate(
-    HYPEV_A = case_when(
-      HYPEV_A == 1 ~ 1,
-      HYPEV_A == 2 ~ 0,
-      TRUE ~ NA_real_
-    )
+    HYPEV_A = case_when(HYPEV_A == 1 ~ 1, HYPEV_A == 2 ~ 0, TRUE ~ NA_real_)
   ) |>
   filter(!is.na(HYPEV_A)) |>
-
-  # ---- Liver ----
+  
+  # Liver
   mutate(
-    LIVEREV_A = case_when(
-      LIVEREV_A == 1 ~ 1,
-      LIVEREV_A == 2 ~ 0,
-      TRUE ~ NA_real_
-    )
+    LIVEREV_A = case_when(LIVEREV_A == 1 ~ 1, LIVEREV_A == 2 ~ 0, TRUE ~ NA_real_)
   ) |>
   filter(!is.na(LIVEREV_A)) |>
-
-  # ---- Stroke ----
+  
+  # Stroke
   mutate(
-    STREV_A = case_when(
-      STREV_A == 1 ~ 1,
-      STREV_A == 2 ~ 0,
-      TRUE ~ NA_real_
-    )
+    STREV_A = case_when(STREV_A == 1 ~ 1, STREV_A == 2 ~ 0, TRUE ~ NA_real_)
   ) |>
   filter(!is.na(STREV_A)) |>
-
-  # ---- Heart conditions ----
+  
+  # Heart diseases
   mutate(
-    MIEV_A = case_when(MIEV_A == 1 ~ 1, MIEV_A == 2 ~ 0, TRUE ~ NA_real_),
+    MIEV_A  = case_when(MIEV_A  == 1 ~ 1, MIEV_A  == 2 ~ 0, TRUE ~ NA_real_),
     ANGEV_A = case_when(ANGEV_A == 1 ~ 1, ANGEV_A == 2 ~ 0, TRUE ~ NA_real_),
     CHDEV_A = case_when(CHDEV_A == 1 ~ 1, CHDEV_A == 2 ~ 0, TRUE ~ NA_real_)
   ) |>
-  filter(!is.na(MIEV_A) & !is.na(ANGEV_A) & !is.na(CHDEV_A)) |>
-
-  # ---- Loneliness, Smoke, Depression, Anxiety ----
+  filter(!is.na(MIEV_A), !is.na(ANGEV_A), !is.na(CHDEV_A)) |>
+  
+  # Recode mental health & smoke AFTER filtering 7/8/9
   filter(
     LONELY_A != 7 & LONELY_A != 8 & LONELY_A != 9,
     SMKEV_A  != 7 & SMKEV_A  != 8 & SMKEV_A  != 9,
     DEPEV_A  != 7 & DEPEV_A  != 8 & DEPEV_A  != 9,
     ANXEV_A  != 7 & ANXEV_A  != 8 & ANXEV_A  != 9
   ) |>
+  
   mutate(
     LONELY_A = case_when(
       LONELY_A == 5 ~ 0,
@@ -159,13 +130,8 @@ nhis24_df =
     SMKEV_A = case_when(SMKEV_A == 1 ~ 1, SMKEV_A == 2 ~ 0),
     DEPEV_A = case_when(DEPEV_A == 1 ~ 1, DEPEV_A == 2 ~ 0),
     ANXEV_A = case_when(ANXEV_A == 1 ~ 1, ANXEV_A == 2 ~ 0)
-  )
-
-```
-
-```{r}
-nhis24_df_fit = 
-  nhis24_df |>
+  ) |>
+  
   select(
     SEX_A, AGEP_A, DIBEV_A, BMICATD_A, WEIGHTLBTC_A, HEIGHTTC_A,
     DIFF_A, EDUCP_A, LSATIS4_A, PHSTAT_A,
@@ -173,6 +139,3 @@ nhis24_df_fit =
     MIEV_A, ANGEV_A, CHDEV_A,
     DEPEV_A, ANXEV_A, SMKEV_A, LONELY_A
   )
-```
-
-

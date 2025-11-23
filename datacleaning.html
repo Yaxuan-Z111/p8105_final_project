@@ -311,7 +311,7 @@ $(document).ready(function () {
 <pre class="r"><code>library(readxl)
 library(dplyr)</code></pre>
 <pre class="r"><code>nhis24_df = 
-  read_excel(&quot;adults_2024.xlsx&quot;) |&gt;
+  read_excel(&quot;data/adults_2024.xlsx&quot;) |&gt;
   select(-REGION) |&gt;
   # ---- Sex ----
   mutate(
