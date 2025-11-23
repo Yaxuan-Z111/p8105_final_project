@@ -26,9 +26,23 @@ This analysis aims to investigate factors associated with the likelihood of bein
 
 ### Methodology
 
+The outcome variable, `DIBEV_A`, is a binary indicator representing whether an individual has been diagnosed with diabetes (0 = No diabetes, 1 = Diabetes diagnosis). Given the binary nature of the outcome, a logistic regression model within the Generalized Linear Model (GLM) framework was employed. Logistic regression is appropriate for modeling the probability of an event occurring while ensuring predicted probabilities remain between 0 and 1, using a logit link to relate the linear combination of predictors to the log-odds of the outcome.
+
+Covariates in the model include demographic factors (e.g., sex and age), anthropometric measures (weight and height), lifestyle indicators, and a range of chronic disease or health status variables. Categorical variables, including BMI category, educational attainment, and various health event indicators, were encoded as factors to allow estimation of separate effects for each non-reference level. Continuous variables such as age, weight, and height were included directly. 
+
+The logistic regression model can be formally expressed as:
+
+$$
+\text{Logit}(P(\text{DIBEV\_A}=1)) = \log\left(\frac{P(\text{DIBEV\_A}=1)}{1-P(\text{DIBEV\_A}=1)}\right) = \beta_0 
++ \sum_{i=1}^{20} \beta_i X_i
+$$
+
+where $X_i$ represents each covariate, including both categorical indicator variables and continuous predictors, and $\beta_i$ denotes the corresponding log-odds coefficient. Exponentiating the coefficients yields odds ratios, which provide a clinically interpretable measure of the relative likelihood of diabetes associated with each predictor, conditional on all other variables in the model.
+
+
 The outcome variable, DIBEV_A, is coded as a binary factor (0 = No diabetes, 1 = Diabetes diagnosis). Several categorical predictors are converted to factor type, and continuous variables such as age, height, and weight are included directly. A logistic regression model with a logit link is fitted.
 
-The original model : 
+The original detailed model : 
 
 $$
 \text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
@@ -87,17 +101,89 @@ summary(glm_model)
 ### Model Results
 
 ```{r}
-tidy_results = 
-  glm_model |>
-  tidy(conf.int = TRUE, exponentiate = TRUE) |>
-   rename(
-     OR = estimate,
-     CI_low = conf.low,
-     CI_high = conf.high
-)
+model_results_tidy <- tidy(glm_model, conf.int = TRUE) %>%
+  mutate(
+    Beta = estimate,
+    OR = exp(estimate),
+    Lower_CI = exp(conf.low),
+    Upper_CI = exp(conf.high),
+    
+    # Clean up term names for presentation
+    term = gsub("`", "", term), 
+    term = case_when(
+        term == "(Intercept)" ~ "Intercept",
+        term == "SEX_A2" ~ "SEX_A: Female (vs Male)",
+        
+        # BMI (0: Healthy Weight)
+        term == "BMICATD_A1" ~ "BMICATD_A: Underweight (vs Healthy)",
+        term == "BMICATD_A2" ~ "BMICATD_A: Overweight (vs Healthy)",
+        term == "BMICATD_A3" ~ "BMICATD_A: Obese (vs Healthy)",
+        
+        # Difficulty Walking (0: No Difficulty)
+        term == "DIFF_A1" ~ "DIFF_A: Some Difficulty (vs No Difficulty)",
+        term == "DIFF_A2" ~ "DIFF_A: A lot of Difficulty (vs No Difficulty)",
+        term == "DIFF_A3" ~ "DIFF_A: Cannot do (vs No Difficulty)",
+        
+        # Education (0: Low Education)
+        term == "EDUCP_A1" ~ "EDUCP_A: Medium Edu (vs Low Edu)",
+        term == "EDUCP_A2" ~ "EDUCP_A: High Edu (vs Low Edu)",
+        
+        # Life Satisfaction (0: Satisfied/Very Satisfied)
+        term == "LSATIS4_A1" ~ "LSATIS4_A: Dissatisfied (vs Satisfied)",
+        
+        # Health Status (0: Good/VGood/Excellent Health)
+        term == "PHSTAT_A1" ~ "PHSTAT_A: Fair/Poor Health (vs Good Health)",
+        
+        # Loneliness (0: Never Lonely)
+        term == "LONELY_A1" ~ "LONELY_A: Rarely Lonely (vs Never Lonely)",
+        term == "LONELY_A2" ~ "LONELY_A: Sometimes Lonely (vs Never Lonely)",
+        term == "LONELY_A3" ~ "LONELY_A: Usually Lonely (vs Never Lonely)",
+        term == "LONELY_A4" ~ "LONELY_A: Always Lonely (vs Never Lonely)",
+        
+        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
+        term == "CHLEV_A1" ~ "CHLEV_A: High Cholesterol (Yes)",
+        term == "HYPEV_A1" ~ "HYPEV_A: Hypertension (Yes)",
+        term == "LIVEREV_A1" ~ "LIVEREV_A: Liver Disease (Yes)",
+        term == "STREV_A1" ~ "STREV_A: Stroke (Yes)",
+        term == "MIEV_A1" ~ "MIEV_A: Myocardial Infarction (Yes)",
+        term == "ANGEV_A1" ~ "ANGEV_A: Angina (Yes)",
+        term == "CHDEV_A1" ~ "CHDEV_A: CHD (Yes)",
+        term == "DEPEV_A1" ~ "DEPEV_A: Depression (Yes)",
+        term == "ANXEV_A1" ~ "ANXEV_A: Anxiety (Yes)",
+        term == "SMKEV_A1" ~ "SMKEV_A: Smoker (Yes)",
+        
+        # Continuous Variables
+        term == "AGEP_A" ~ "AGEP_A (Per Year)",
+        term == "WEIGHTLBTC_A" ~ "WEIGHTLBTC_A (Per lb)",
+        term == "HEIGHTTC_A" ~ "HEIGHTTC_A (Per unit)",
+        TRUE ~ term
+    ),
+    p.value = format.pval(p.value, digits = 3, eps = 0.001)
+  ) %>%
+  select(Term = term, Beta, OR, Lower_CI, Upper_CI, p.value)
 
-kable(tidy_results, digits = 4, caption = "Logistic Regression Model Results") |>
-kable_styling(full_width = FALSE)
-
+# Generate kable table
+model_results_tidy %>%
+  mutate(
+    OR_CI = paste0(round(OR, 3), " (", round(Lower_CI, 3), " - ", round(Upper_CI, 3), ")"),
+    Beta = round(Beta, 4)
+  ) %>%
+  select(Term, Beta, OR_CI, p.value) %>%
+  kable(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)",
+    col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
+    align = c('l', 'r', 'r', 'r'),
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    full_width = TRUE, 
+    position = "left",
+    latex_options = "hold_position"
+  ) %>%
+  add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) %>%
+  footnote(
+    general = "Reference Outcome: No Diabetes (DIBEV_A = 0).",
+    threeparttable = TRUE
+  )
 ```
 
