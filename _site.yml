@@ -25,6 +25,10 @@ navbar:
 output:
   html_document:
     theme: simplex
+    toc: true
+    toc_float: true
+    code_folding: "hide"
+    css: style.css
     
     
     

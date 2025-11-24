@@ -1,39 +1,32 @@
 ---
 title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk"
-
-output: 
-  html_document:
-    code_folding: hide
-    toc: true
-    toc_float: true
-    theme: simplex
 ---
 
-### **Overview**
+# Overview
 
 This project investigates whether anxiety, depression, and smoking are significant predictors of T2D incidence, after accounting for key demographic and clinical covariates. The goal is to quantify their independent and joint associations with T2D risk and to assess whether these factors should be considered in risk stratification and prevention strategies.
 
 The link to the repository of this project can be found [here](https://github.com/Yaxuan-Z111/p8105_final_project).
 
-### **Type II Diabetes**
+# Type II Diabetes
 
 Type 2 diabetes (T2D) is a major global public health problem. In the United States alone, more than 38 million people are living with diabetes, and an estimated 90%–95% of these cases are type 2 diabetes. As a chronic condition, T2D is associated with substantial morbidity and an average reduction in life expectancy of around ten years. At the same time, T2D can often be prevented or delayed through evidence-based lifestyle changes, including weight management, healthy eating, and regular physical activity. (CDC, 2024)
 
 ![](image/type_2_diabetes.png){width=40%}
 
-### **Data Source**
+# Data Source
 
 We use data from the [2024 National Health Interview Survey (NHIS)](https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html), a nationally representative, cross-sectional survey of the civilian noninstitutionalized U.S. population conducted by the National Center for Health Statistics (NCHS). T2D status, anxiety, depression, smoking, and relevant demographic and clinical covariates are derived from the publicly available NHIS sample adult-level files. 
 
 Learn more about the data [here](data.html).
 
-### **Statistical Analysis**
+# Statistical Analysis
 
 Accounting for the complex survey design using appropriate sampling weights and design variables, we fit generalized linear models (GLMs) with T2D status as the binary outcome and include all selected NHIS variables as candidate predictors in the same model. We then extend these models with interaction terms and use nested model comparisons to assess effect modification and potential confounding. 
 
 Further details on the analysis are provided [here](analysis.html).
 
-### **Our Team**
+# Our Team
 
 Yaxuan Zheng (yz5248)
 
@@ -45,7 +38,7 @@ Su Yan (sy3352)
 
 Jinyao Jiao (jj3564)
 
-### **Screencast**
+# Screencast
 
 Click on the video below to explore the capabilities of this site and enjoy a summary of our key highlights.
 

@@ -66,6 +66,7 @@ if (window.hljs) {
 
 
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -381,21 +382,6 @@ div.tocify {
 </div>
 
 
-<pre class="r"><code>knitr::opts_chunk$set(
-  fig.width = 9,
-  fig.asp = .6,
-  out.width = &quot;100%&quot;
-)
-
-theme_set(theme_minimal() + theme(legend.position = &quot;bottom&quot;))
-
-options(
-  ggplot2.continuous.colour = &quot;viridis&quot;,
-  ggplot2.continuous.fill = &quot;viridis&quot;
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -1186,7 +1172,6 @@ fair/poor health, high cholesterol, hypertension) increase risk; and
 factors like stroke history, severe mobility difficulty, and some
 loneliness categories have CIs crossing 1, showing no significant
 association.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
 <p>======= # Interpretation of Model Coefficients</p>
 <p>Below is the interpretation of the logistic regression output, with
 each variable summarized under its own subsection.</p>
