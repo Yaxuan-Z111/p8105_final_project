@@ -565,7 +565,7 @@ compare_table |>
   coord_flip() +
   scale_fill_manual(values = c("< 10%" = "grey80", ">= 10%" = "tomato")) +
   labs(
-    title = "% Change in Odds Ratios After Adjusting for Confounders",
+    title = "% Change in OR After Adjusting for Confounders",
     x = "Predictor Term",
     y = "% Change in OR (Full vs. Reduced Model)",
     fill = "Absolute change"
