@@ -542,8 +542,8 @@ summary(glm_model)</code></pre>
 ## AIC: 14481
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
-<div id="histogram-of-p-value" class="section level2">
-<h2>histogram of P-value</h2>
+<div id="bar-chart-of-p-value" class="section level2">
+<h2>bar chart of P-value</h2>
 <pre class="r"><code>glm_summary = summary(glm_model)
 
 p_values_df = data.frame(
@@ -1390,8 +1390,8 @@ odds.</p>
 <p>Anxiety was not significantly related to diabetes.</p>
 <hr />
 </div>
-<div id="summary-of-findings" class="section level3">
-<h3>Summary of Findings</h3>
+<div id="summary-of-findings" class="section level2">
+<h2>Summary of Findings</h2>
 <p>Overall, the multivariable logistic regression analysis identifies
 several strong predictors of diabetes. Obesity, hypertension, high
 cholesterol, liver disease, poor general health, and myocardial
@@ -2300,7 +2300,8 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </tr>
 </tbody>
 </table>
-<p>Make a plot showing the comparison.</p>
+<div id="bar-chart-of-change-in-or" class="section level2">
+<h2>bar chart of % change in OR</h2>
 <pre class="r"><code>compare_table |&gt;
   filter(!is.na(OR_noconf), !is.na(OR_full)) |&gt;
   mutate(
@@ -2323,25 +2324,28 @@ LONELY_A: Always Lonely (vs Never Lonely)
     legend.position = &quot;bottom&quot;
   )</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-15-1.png" width="100%" /></p>
+</div>
+<div id="summary-of-confounder-findings" class="section level2">
+<h2>Summary of confounder findings</h2>
 <p>When comparing models with and without adjustment for the
 prespecified confounders (age, sex, BMI, and education), most predictors
-show relatively small changes in their odds ratios (ORs), generally
-within ±10% (e.g., life satisfaction, self-rated health, high
-cholesterol, liver disease, stroke, myocardial infarction, angina, CHD,
-depression, smoking, and loneliness). This suggests that these
-associations are fairly robust to adjustment for demographic and
-anthropometric factors.</p>
-<p>In contrast, the ORs for mobility difficulty (DIFF_A) and
-hypertension (HYPEV_A) are noticeably attenuated after adjustment: the
-ORs for different levels of walking difficulty decrease by about 16–19%,
-and the OR for hypertension decreases by about 22%, indicating
-meaningful confounding by age, sex, BMI, and education. For anxiety
-(ANXEV_A), the OR moves toward the null by around 11%, suggesting that
-the apparent protective association in the unadjusted model is partly
-explained by confounding. Overall, these results support treating
-demographic and BMI-related variables as important confounders,
-particularly for mobility difficulty and hypertension in relation to
-diabetes risk.</p>
+showed relatively small changes in odds ratios (generally within about
+±10%; e.g., life satisfaction, self-rated health, high cholesterol,
+liver disease, stroke, myocardial infarction, angina, CHD, depression,
+smoking, and loneliness), suggesting that their associations with
+diabetes are reasonably robust to demographic and anthropometric
+adjustment.</p>
+<p>In contrast, the odds ratios for mobility difficulty (DIFF_A) and
+hypertension (HYPEV_A) were attenuated by approximately 16–22% after
+adjustment, indicating that part of their crude associations with
+diabetes was explained by age, sex, BMI, and education. However, the
+adjusted ORs for higher levels of mobility difficulty and for
+hypertension remained clearly above 1, supporting these factors as
+independent risk markers. For anxiety (ANXEV_A), the OR moved about 11%
+toward the null and was no longer statistically significant, suggesting
+that the apparent protective association in the reduced model was
+largely driven by confounding rather than a true protective effect.</p>
+</div>
 </div>
 
 
