@@ -18,6 +18,24 @@ library(ggplot2)
 ```
 
 ```{r}
+knitr::opts_chunk$set(
+  fig.width = 9,
+  fig.asp = .6,
+  out.width = "100%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r}
 source(here("data", "datacleaning.R"))
 ```
 
@@ -565,7 +583,7 @@ compare_table |>
   coord_flip() +
   scale_fill_manual(values = c("< 10%" = "grey80", ">= 10%" = "tomato")) +
   labs(
-    title = "% Change in OR After Adjusting for Confounders",
+    title = "% Change in Odds Ratio After Adjusting for Confounders",
     x = "Predictor Term",
     y = "% Change in OR (Full vs. Reduced Model)",
     fill = "Absolute change"

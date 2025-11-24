@@ -381,6 +381,21 @@ div.tocify {
 </div>
 
 
+<pre class="r"><code>knitr::opts_chunk$set(
+  fig.width = 9,
+  fig.asp = .6,
+  out.width = &quot;100%&quot;
+)
+
+theme_set(theme_minimal() + theme(legend.position = &quot;bottom&quot;))
+
+options(
+  ggplot2.continuous.colour = &quot;viridis&quot;,
+  ggplot2.continuous.fill = &quot;viridis&quot;
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <pre class="r"><code>source(here(&quot;data&quot;, &quot;datacleaning.R&quot;))</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -557,7 +572,7 @@ P_value_hisg =
   theme_minimal()
 
 P_value_hisg</code></pre>
-<p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" /></p>
 </div>
 </div>
 <div id="model-results" class="section level1">
@@ -1156,7 +1171,7 @@ ggplot(forest_data, aes(x = OR, y = Term)) +
   )
 
 print(forest_plots)</code></pre>
-<p><img src="analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-11-1.png" width="100%" /></p>
 <p>This forest plot displays adjusted odds ratios (ORs) for diabetes
 diagnosis, where the y-axis lists predictors (with reference groups in
 parentheses), and the x-axis (log scale) shows ORs (dashed red line at
@@ -2297,7 +2312,7 @@ LONELY_A: Always Lonely (vs Never Lonely)
   coord_flip() +
   scale_fill_manual(values = c(&quot;&lt; 10%&quot; = &quot;grey80&quot;, &quot;&gt;= 10%&quot; = &quot;tomato&quot;)) +
   labs(
-    title = &quot;% Change in OR After Adjusting for Confounders&quot;,
+    title = &quot;% Change in Odds Ratio After Adjusting for Confounders&quot;,
     x = &quot;Predictor Term&quot;,
     y = &quot;% Change in OR (Full vs. Reduced Model)&quot;,
     fill = &quot;Absolute change&quot;
@@ -2307,7 +2322,7 @@ LONELY_A: Always Lonely (vs Never Lonely)
     plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
     legend.position = &quot;bottom&quot;
   )</code></pre>
-<p><img src="analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-15-1.png" width="100%" /></p>
 <p>When comparing models with and without adjustment for the
 prespecified confounders (age, sex, BMI, and education), most predictors
 show relatively small changes in their odds ratios (ORs), generally
