@@ -1,7 +1,7 @@
 name: "Diabetes Analysis"
 output_dir: "."
 navbar:
-  title: "Home"
+  title: "T2D"
   right:
     - text: "Home"
       href: index.html
