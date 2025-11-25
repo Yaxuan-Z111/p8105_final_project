@@ -277,26 +277,5 @@ Converted to an ordered scale:
 
 
 
-<<<<<<< HEAD
-# Confounder Analysis
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 33d1fa37086654d8e6ed30628456089f80fd3e50
-
 
 

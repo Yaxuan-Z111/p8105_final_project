@@ -303,10 +303,6 @@ print(forest_plots)
 
 This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., underweight BMI, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., overweight/obese BMI, liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
 
-
-
-
-=======
 # Interpretation of Model Coefficients
 
 Below is the interpretation of the logistic regression output, with each variable summarized under its own subsection.
