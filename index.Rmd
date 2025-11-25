@@ -1,5 +1,5 @@
 ---
-title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk"
+title: "Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles"
 ---
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -32,7 +32,7 @@ Further details on the analysis are provided [here](analysis.html).
 
 # T2D Prevalence Visualization
 
-## The New York State T2D Map
+## *The New York State T2D Map*
 ```{r, message = FALSE}
 df_raw = read_csv(
   "DiabetesAtlas_CountyData.csv",
