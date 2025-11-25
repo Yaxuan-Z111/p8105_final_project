@@ -1,7 +1,7 @@
 name: "Diabetes Analysis"
 output_dir: "."
 navbar:
-  title: "Home"
+  title: "T2D"
   right:
     - text: "Home"
       href: index.html
@@ -11,19 +11,20 @@ navbar:
       href: introduction.html
     - text: "Data Description"
       href: data.html
-    - text: "Plot Results"
-      href: eda.html
     - text: "Analysis"
       href: analysis.html
-    - text: "Report"
-      href: report.html
-    - text: "Discussion"
-      href: discussion.html
+    - text: "Report and Discussion"
+      href: report and discussion.html
     - icon: fa-github fa-lg
       href: https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git
     
 output:
   html_document:
-    theme: cosmo
+    theme: simplex
+    toc: true
+    toc_float: true
+    code_folding: "hide"
+    css: style.css
+    
     
     

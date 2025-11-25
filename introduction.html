@@ -11,12 +11,12 @@
 
 
 
-<title>introduction</title>
+<title>Introduction</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -63,6 +64,7 @@ if (window.hljs) {
 
 
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -221,6 +223,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -316,7 +321,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">T2D</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -336,16 +341,10 @@ div.tocify {
   <a href="data.html">Data Description</a>
 </li>
 <li>
-  <a href="eda.html">Plot Results</a>
-</li>
-<li>
   <a href="analysis.html">Analysis</a>
 </li>
 <li>
-  <a href="report.html">Report</a>
-</li>
-<li>
-  <a href="discussion.html">Discussion</a>
+  <a href="report and discussion.html">Report and Discussion</a>
 </li>
 <li>
   <a href="https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git">
@@ -360,15 +359,23 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">introduction</h1>
+
+<h1 class="title toc-ignore">Introduction</h1>
 
 </div>
 
 
 <div id="background" class="section level1">
-<h1><strong>Background</strong></h1>
+<h1>Background</h1>
 <p>World Health Organization (WHO), in the 1970s, firstly introduced the
 term Non-Insulin Dependent Diabetes Mellitus (NIDDM) to distinguish
 forms of diabetes based on treatment needs and underlying mechanisms.
@@ -403,7 +410,7 @@ development of more precise and effective prevention and intervention
 strategies.</p>
 </div>
 <div id="risky-factors" class="section level1">
-<h1><strong>Risky Factors</strong></h1>
+<h1>Risky Factors</h1>
 <p>A growing body of research highlights the role of unhealthy lifestyle
 factors-smoking, low educational attainment, poor mental health and
 physical inactivity-in the development and progression of T2D[11]. These
@@ -486,7 +493,7 @@ allows for a nuanced evaluation of how complex risk pathways intersect
 to influence diabetes susceptibility.</p>
 </div>
 <div id="current-gaps" class="section level1">
-<h1><strong>Current Gaps</strong></h1>
+<h1>Current Gaps</h1>
 <p>Despite significant advances in the field, critical knowledge gaps
 persist regarding the complex interplay among mood disorders,
 educational attainment, and lifestyle factors in the development of T2D.
@@ -520,7 +527,7 @@ bridge this gap and enhance the effectiveness of global T2D prevention
 efforts.</p>
 </div>
 <div id="research-object" class="section level1">
-<h1><strong>Research Object</strong></h1>
+<h1>Research Object</h1>
 <p>This study seeks to address these gaps by systematically
 investigating the interactions between lifestyle behaviors, educational
 attainment, mood disorders, and travel history in relation to the risk
@@ -570,6 +577,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

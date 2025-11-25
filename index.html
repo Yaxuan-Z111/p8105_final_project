@@ -11,7 +11,7 @@
 
 
 
-<title>Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk</title>
+<title>Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,8 +33,17 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -63,6 +72,7 @@ if (window.hljs) {
 
 
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -221,6 +231,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -316,7 +329,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">T2D</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -336,16 +349,10 @@ div.tocify {
   <a href="data.html">Data Description</a>
 </li>
 <li>
-  <a href="eda.html">Plot Results</a>
-</li>
-<li>
   <a href="analysis.html">Analysis</a>
 </li>
 <li>
-  <a href="report.html">Report</a>
-</li>
-<li>
-  <a href="discussion.html">Discussion</a>
+  <a href="report and discussion.html">Report and Discussion</a>
 </li>
 <li>
   <a href="https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git">
@@ -360,16 +367,24 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Cohort Analysis of Mental Health, Smoking
-and Type 2 Diabetes Risk</h1>
+
+<h1 class="title toc-ignore">Multivariable Logistic Analysis of Type II
+Diabetes Risk Considering Demographic, Mental Health and Lifestyles</h1>
 
 </div>
 
 
-<div id="overview" class="section level3">
-<h3><strong>Overview</strong></h3>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
 <p>This project investigates whether anxiety, depression, and smoking
 are significant predictors of T2D incidence, after accounting for key
 demographic and clinical covariates. The goal is to quantify their
@@ -379,8 +394,8 @@ strategies.</p>
 <p>The link to the repository of this project can be found <a
 href="https://github.com/Yaxuan-Z111/p8105_final_project">here</a>.</p>
 </div>
-<div id="type-ii-diabetes" class="section level3">
-<h3><strong>Type II Diabetes</strong></h3>
+<div id="type-ii-diabetes" class="section level1">
+<h1>Type II Diabetes</h1>
 <p>Type 2 diabetes (T2D) is a major global public health problem. In the
 United States alone, more than 38 million people are living with
 diabetes, and an estimated 90%–95% of these cases are type 2 diabetes.
@@ -391,8 +406,8 @@ lifestyle changes, including weight management, healthy eating, and
 regular physical activity. (CDC, 2024)</p>
 <p><img src="image/type_2_diabetes.png" style="width:40.0%" /></p>
 </div>
-<div id="data-source" class="section level3">
-<h3><strong>Data Source</strong></h3>
+<div id="data-source" class="section level1">
+<h1>Data Source</h1>
 <p>We use data from the <a
 href="https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html">2024
 National Health Interview Survey (NHIS)</a>, a nationally
@@ -400,28 +415,76 @@ representative, cross-sectional survey of the civilian
 noninstitutionalized U.S. population conducted by the National Center
 for Health Statistics (NCHS). T2D status, anxiety, depression, smoking,
 and relevant demographic and clinical covariates are derived from the
-publicly available NHIS person- and sample adult-level files.</p>
+publicly available NHIS sample adult-level files.</p>
 <p>Learn more about the data <a href="data.html">here</a>.</p>
 </div>
-<div id="statistical-analysis" class="section level3">
-<h3><strong>Statistical Analysis</strong></h3>
-<p>Accounting for the complex survey design through appropriate sampling
-weights and design variables, we fit generalized linear models (GLMs) to
-evaluate whether anxiety, depression, and smoking are significant
-predictors of T2D incidence after adjustment for key confounders and to
-explore their potential interaction effects. Further details on the
-analysis are provided <a href="analysis.html">here</a>.</p>
+<div id="statistical-analysis" class="section level1">
+<h1>Statistical Analysis</h1>
+<p>Accounting for the complex survey design using appropriate sampling
+weights and design variables, we fit generalized linear models (GLMs)
+with T2D status as the binary outcome and include all selected NHIS
+variables as candidate predictors in the same model. We then extend
+these models with interaction terms and use nested model comparisons to
+assess effect modification and potential confounding.</p>
+<p>Further details on the analysis are provided <a
+href="analysis.html">here</a>.</p>
 </div>
-<div id="our-team" class="section level3">
-<h3><strong>Our Team</strong></h3>
+<div id="t2d-prevalence-visualization" class="section level1">
+<h1>T2D Prevalence Visualization</h1>
+<div id="the-new-york-state-t2d-map" class="section level2">
+<h2><em>The New York State T2D Map</em></h2>
+<pre class="r"><code>df_raw = read_csv(
+  &quot;DiabetesAtlas_CountyData.csv&quot;,
+  skip = 2
+)
+
+ny_df = df_raw %&gt;%
+  filter(State == &quot;New York&quot;) %&gt;%
+  mutate(
+    CountyFIPS = sprintf(&quot;%05d&quot;, as.numeric(CountyFIPS)),
+    Percentage = as.numeric(Percentage),
+    hover = paste0(
+      &quot;County: &quot;, County, 
+      &quot;&lt;br&gt;Percentage: &quot;, Percentage, &quot;%&quot;
+    )
+  )
+
+geo_url = &quot;https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json&quot;
+
+fig = plot_ly(
+  data = ny_df,
+  type = &quot;choropleth&quot;,
+  geojson = geo_url,
+  locations = ~CountyFIPS,
+  z = ~Percentage,
+  colorscale = &quot;Blues&quot;,
+  text = ~hover,
+  hoverinfo = &quot;text&quot;,
+  marker = list(line = list(width = 0))
+) %&gt;%
+  layout(
+    title = &quot;Prevalence of T2D by County (New York State)&quot;,
+    geo = list(
+      fitbounds = &quot;locations&quot;,
+      visible = FALSE
+    )
+  )
+
+fig</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-7ae0a5de36f9e6eaec81" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-7ae0a5de36f9e6eaec81">{"x":{"visdat":{"d060333fdbb6":["function () ","plotlyVisDat"]},"cur_data":"d060333fdbb6","attrs":{"d060333fdbb6":{"geojson":"https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json","locations":{},"z":{},"colorscale":"Blues","text":{},"hoverinfo":"text","marker":{"line":{"width":0}},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"choropleth"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Prevalence of T2D by County (New York State)","geo":{"fitbounds":"locations","visible":false},"scene":{"zaxis":{"title":"Percentage"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"Percentage","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":"Blues","showscale":true,"geojson":"https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json","locations":["36001","36003","36005","36007","36009","36011","36013","36015","36017","36019","36021","36023","36025","36027","36029","36031","36033","36035","36037","36039","36041","36043","36045","36047","36049","36051","36053","36055","36057","36059","36061","36063","36065","36067","36069","36071","36073","36075","36077","36079","36081","36083","36085","36087","36089","36091","36093","36095","36097","36099","36101","36103","36105","36107","36109","36111","36113","36115","36117","36119","36121","36123"],"z":[8.0999999999999996,10.800000000000001,12.1,9.1999999999999993,9.1999999999999993,9.0999999999999996,11.6,9.4000000000000004,10,10.800000000000001,8.5,8.8000000000000007,8.5999999999999996,7.0999999999999996,9,7.7999999999999998,11.300000000000001,9.8000000000000007,8.8000000000000007,8.8000000000000007,7.7999999999999998,8,10.9,9.6999999999999993,10.699999999999999,8.9000000000000004,8.0999999999999996,10.300000000000001,8.5,7.9000000000000004,6.5,10.199999999999999,9.1999999999999993,9.6999999999999993,8.5,9.3000000000000007,10.699999999999999,9.3000000000000007,9,7.0999999999999996,10.800000000000001,9.5999999999999996,10.300000000000001,8.4000000000000004,11.300000000000001,7.5,8.4000000000000004,8.9000000000000004,10.199999999999999,9.0999999999999996,9.6999999999999993,7.5999999999999996,10.1,9.4000000000000004,7.0999999999999996,8.0999999999999996,8.9000000000000004,8.5,9.0999999999999996,7,9.4000000000000004,8.3000000000000007],"text":["County: Albany County<br>Percentage: 8.1%","County: Allegany County<br>Percentage: 10.8%","County: Bronx County<br>Percentage: 12.1%","County: Broome County<br>Percentage: 9.2%","County: Cattaraugus County<br>Percentage: 9.2%","County: Cayuga County<br>Percentage: 9.1%","County: Chautauqua County<br>Percentage: 11.6%","County: Chemung County<br>Percentage: 9.4%","County: Chenango County<br>Percentage: 10%","County: Clinton County<br>Percentage: 10.8%","County: Columbia County<br>Percentage: 8.5%","County: Cortland County<br>Percentage: 8.8%","County: Delaware County<br>Percentage: 8.6%","County: Dutchess County<br>Percentage: 7.1%","County: Erie County<br>Percentage: 9%","County: Essex County<br>Percentage: 7.8%","County: Franklin County<br>Percentage: 11.3%","County: Fulton County<br>Percentage: 9.8%","County: Genesee County<br>Percentage: 8.8%","County: Greene County<br>Percentage: 8.8%","County: Hamilton County<br>Percentage: 7.8%","County: Herkimer County<br>Percentage: 8%","County: Jefferson County<br>Percentage: 10.9%","County: Kings County<br>Percentage: 9.7%","County: Lewis County<br>Percentage: 10.7%","County: Livingston County<br>Percentage: 8.9%","County: Madison County<br>Percentage: 8.1%","County: Monroe County<br>Percentage: 10.3%","County: Montgomery County<br>Percentage: 8.5%","County: Nassau County<br>Percentage: 7.9%","County: New York County<br>Percentage: 6.5%","County: Niagara County<br>Percentage: 10.2%","County: Oneida County<br>Percentage: 9.2%","County: Onondaga County<br>Percentage: 9.7%","County: Ontario County<br>Percentage: 8.5%","County: Orange County<br>Percentage: 9.3%","County: Orleans County<br>Percentage: 10.7%","County: Oswego County<br>Percentage: 9.3%","County: Otsego County<br>Percentage: 9%","County: Putnam County<br>Percentage: 7.1%","County: Queens County<br>Percentage: 10.8%","County: Rensselaer County<br>Percentage: 9.6%","County: Richmond County<br>Percentage: 10.3%","County: Rockland County<br>Percentage: 8.4%","County: St. Lawrence County<br>Percentage: 11.3%","County: Saratoga County<br>Percentage: 7.5%","County: Schenectady County<br>Percentage: 8.4%","County: Schoharie County<br>Percentage: 8.9%","County: Schuyler County<br>Percentage: 10.2%","County: Seneca County<br>Percentage: 9.1%","County: Steuben County<br>Percentage: 9.7%","County: Suffolk County<br>Percentage: 7.6%","County: Sullivan County<br>Percentage: 10.1%","County: Tioga County<br>Percentage: 9.4%","County: Tompkins County<br>Percentage: 7.1%","County: Ulster County<br>Percentage: 8.1%","County: Warren County<br>Percentage: 8.9%","County: Washington County<br>Percentage: 8.5%","County: Wayne County<br>Percentage: 9.1%","County: Westchester County<br>Percentage: 7%","County: Wyoming County<br>Percentage: 9.4%","County: Yates County<br>Percentage: 8.3%"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"marker":{"line":{"color":"rgba(31,119,180,1)","width":0}},"type":"choropleth","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="our-team" class="section level1">
+<h1>Our Team</h1>
 <p>Yaxuan Zheng (yz5248)</p>
 <p>Yirou Hu (yh3964)</p>
 <p>Ruihan Ding (rd3227)</p>
 <p>Su Yan (sy3352)</p>
 <p>Jinyao Jiao (jj3564)</p>
 </div>
-<div id="screencast" class="section level3">
-<h3><strong>Screencast</strong></h3>
+<div id="screencast" class="section level1">
+<h1>Screencast</h1>
 <p>Click on the video below to explore the capabilities of this site and
 enjoy a summary of our key highlights.</p>
 </div>
@@ -461,6 +524,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

@@ -1,8 +1,10 @@
 ---
 title: "cleaning"
-author: "Yirou Hu"
-date: "2025-11-20"
-output: github_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    css: style.css
 ---
 
 ```{r setup, include=FALSE}
@@ -20,128 +22,159 @@ library(dplyr)
 nhis24_df = 
   read_excel("data/adults_2024.xlsx") |>
   select(-REGION) |>
-  # Dealing with outcome variable
+  # ---- Sex ----
   mutate(
-    # DIBEV_A
-    Diabetes = case_when(
-      DIBEV_A == 1 ~ 1,  
-      DIBEV_A == 2 ~ 0,  
-      TRUE ~ DIBEV_A 
+    SEX_A = case_when(
+      SEX_A == 1 ~ 1,
+      SEX_A == 2 ~ 0,
     )
   ) |>
-  filter(!Diabetes %in% c(7, 8, 9)) |>
-  # Dealing with covariates
+
+  # ---- Outcome: Diabetes ----
   mutate(
-    # BMI
-    BMI_Recoded = case_when(
-      BMICATD_A == 1 ~ 1,  # Underweight -> 1
-      BMICATD_A == 2 ~ 0,  # Healthy weight -> 0
-      BMICATD_A == 3 ~ 2,  # Overweight -> 2
-      BMICATD_A %in% c(4, 5, 6) ~ 3,  # Class 1, 2, 3 Obesity -> 3
-      TRUE ~ BMICATD_A 
-    )
-  ) |>
-  filter(BMI_Recoded != 9) |>
-  mutate(
-    # Difficulty in walking
-    DIFF_Recoded = case_when(
-      DIFF_A == 1 ~ 0,  # No difficulty -> 0
-      DIFF_A == 2 ~ 1,  # Some difficulty -> 1
-      DIFF_A == 3 ~ 2,  # A lot of difficulty -> 2
-      DIFF_A == 4 ~ 3,  # Cannot do at all -> 3
-      TRUE ~ DIFF_A 
-    )
-  ) |>
-  filter(!DIFF_Recoded %in% c(7, 8, 9)) |>
-  mutate(
-    # Education
-    EDUC_Recoded = case_when(
-      EDUCP_A %in% c(00, 01, 02, 03, 04) ~ 0,
-      EDUCP_A %in% c(05, 06, 07) ~ 1,
-      EDUCP_A %in% c(08, 09, 10) ~ 2,
-      TRUE ~ EDUCP_A 
-    )
-  ) |>
-  filter(!EDUC_Recoded %in% c(97, 98, 99)) |> 
-  mutate(
-    # Life satisfaction
-    LSATIS4_Recoded = case_when(
-      LSATIS4_A %in% c(1, 2) ~ 0,  # Very satisfied, Satisfied -> 0
-      LSATIS4_A %in% c(3, 4) ~ 1,  # Dissatisfied, Very dissatisfied -> 1
-      TRUE ~ LSATIS4_A 
-    )
-  ) |>
-  filter(!LSATIS4_Recoded %in% c(7, 8, 9)) |>
-  mutate(
-    # Health status
-    PHSTAT_Recoded = case_when(
-      PHSTAT_A %in% c(1, 2, 3) ~ 0,  # Excellent, Very good, Good -> 0
-      PHSTAT_A %in% c(4, 5) ~ 1,  # Fair, Poor -> 1
-      TRUE ~ PHSTAT_A 
-    )
-  ) |>
-  filter(!PHSTAT_Recoded %in% c(7, 8, 9)) |> 
-  mutate(
-    # Cholesterol 
-    CHLEV_Recoded = case_when(
-      CHLEV_A == 2 ~ 0,  # never had high cholesterol -> 0
-      CHLEV_A == 1 ~ 1,  # had high cholesterol -> 1
-      TRUE ~ CHLEV_A 
-    )
-  ) |>
-  filter(!CHLEV_Recoded %in% c(7, 8, 9)) |> 
-  mutate(
-    # Hypertension
-    HYP_Recoded = case_when(
-      HYPEV_A == 1 ~ 1,   # Yes hypertension -> 1
-      HYPEV_A == 2 ~ 0,   # No hypertension -> 0
-      TRUE ~ HYPEV_A)) |>
-  filter(!HYP_Recoded %in% c(7, 8, 9)) |>
-  mutate(
-    # Cirrhosis or liver condition
-    LIVER_Recoded = case_when(
-      LIVEREV_A == 1 ~ 1,   # Yes -> 1
-      LIVEREV_A == 2 ~ 0,   # No -> 0
-      TRUE ~ LIVEREV_A)) |>
-  filter(!LIVER_Recoded %in% c(7, 8, 9)) |> 
-  mutate(
-    # Stroke
-    STROKE_Recoded = case_when(
-      STREV_A == 1 ~ 1,   # Yes stroke -> 1
-      STREV_A == 2 ~ 0,   # No stroke -> 0
-      TRUE ~ STREV_A)) |>
-  filter(!STROKE_Recoded %in% c(7, 8, 9))|>
-  mutate(
-    # Recode MIEV_A
-    MIEV_A_recoded = case_when(
-      MIEV_A == 1 ~ 1,
-      MIEV_A == 2 ~ 0,
-      TRUE ~ NA_real_
-    ),
-    
-    # Recode ANGEV_A
-    ANGEV_A_recoded = case_when(
-      ANGEV_A == 1 ~ 1,
-      ANGEV_A == 2 ~ 0,
-      TRUE ~ NA_real_
-    ),
-    
-    # Recode CHDEV_A
-    CHDEV_A_recoded = case_when(
-      CHDEV_A == 1 ~ 1,
-      CHDEV_A == 2 ~ 0,
+    DIBEV_A = case_when(
+      DIBEV_A == 1 ~ 1,
+      DIBEV_A == 2 ~ 0,
       TRUE ~ NA_real_
     )
   ) |>
-  
-  # Delete rows where any recoded variable became NA (invalid values like 7/8/9/etc)
+  filter(!is.na(DIBEV_A)) |>   # remove 7/8/9
+
+  # ---- BMI ----
+  mutate(
+    BMICATD_A = case_when(
+      BMICATD_A == 1 ~ 1,
+      BMICATD_A == 2 ~ 0,
+      BMICATD_A == 3 ~ 2,
+      BMICATD_A %in% c(4, 5, 6) ~ 3,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(BMICATD_A)) |>
+
+  # ---- Difficulty walking ----
+  mutate(
+    DIFF_A = case_when(
+      DIFF_A == 1 ~ 0,
+      DIFF_A == 2 ~ 1,
+      DIFF_A == 3 ~ 2,
+      DIFF_A == 4 ~ 3,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(DIFF_A)) |>
+
+  # ---- Education ----
+  mutate(
+    EDUCP_A = case_when(
+      EDUCP_A %in% c(0,1,2,3,4) ~ 0,
+      EDUCP_A %in% c(5,6,7) ~ 1,
+      EDUCP_A %in% c(8,9,10) ~ 2,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(EDUCP_A)) |>
+
+  # ---- Life satisfaction ----
+  mutate(
+    LSATIS4_A = case_when(
+      LSATIS4_A %in% c(1,2) ~ 0,
+      LSATIS4_A %in% c(3,4) ~ 1,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(LSATIS4_A)) |>
+
+  # ---- Health status ----
+  mutate(
+    PHSTAT_A = case_when(
+      PHSTAT_A %in% c(1,2,3) ~ 0,
+      PHSTAT_A %in% c(4,5) ~ 1,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(PHSTAT_A)) |>
+
+  # ---- Cholesterol ----
+  mutate(
+    CHLEV_A = case_when(
+      CHLEV_A == 2 ~ 0,
+      CHLEV_A == 1 ~ 1,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(CHLEV_A)) |>
+
+  # ---- Hypertension ----
+  mutate(
+    HYPEV_A = case_when(
+      HYPEV_A == 1 ~ 1,
+      HYPEV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(HYPEV_A)) |>
+
+  # ---- Liver ----
+  mutate(
+    LIVEREV_A = case_when(
+      LIVEREV_A == 1 ~ 1,
+      LIVEREV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(LIVEREV_A)) |>
+
+  # ---- Stroke ----
+  mutate(
+    STREV_A = case_when(
+      STREV_A == 1 ~ 1,
+      STREV_A == 2 ~ 0,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  filter(!is.na(STREV_A)) |>
+
+  # ---- Heart conditions ----
+  mutate(
+    MIEV_A = case_when(MIEV_A == 1 ~ 1, MIEV_A == 2 ~ 0, TRUE ~ NA_real_),
+    ANGEV_A = case_when(ANGEV_A == 1 ~ 1, ANGEV_A == 2 ~ 0, TRUE ~ NA_real_),
+    CHDEV_A = case_when(CHDEV_A == 1 ~ 1, CHDEV_A == 2 ~ 0, TRUE ~ NA_real_)
+  ) |>
+  filter(!is.na(MIEV_A) & !is.na(ANGEV_A) & !is.na(CHDEV_A)) |>
+
+  # ---- Loneliness, Smoke, Depression, Anxiety ----
   filter(
-    !is.na(MIEV_A_recoded),
-    !is.na(ANGEV_A_recoded),
-    !is.na(CHDEV_A_recoded)
+    LONELY_A != 7 & LONELY_A != 8 & LONELY_A != 9,
+    SMKEV_A  != 7 & SMKEV_A  != 8 & SMKEV_A  != 9,
+    DEPEV_A  != 7 & DEPEV_A  != 8 & DEPEV_A  != 9,
+    ANXEV_A  != 7 & ANXEV_A  != 8 & ANXEV_A  != 9
+  ) |>
+  mutate(
+    LONELY_A = case_when(
+      LONELY_A == 5 ~ 0,
+      LONELY_A == 4 ~ 1,
+      LONELY_A == 3 ~ 2,
+      LONELY_A == 2 ~ 3,
+      LONELY_A == 1 ~ 4
+    ),
+    SMKEV_A = case_when(SMKEV_A == 1 ~ 1, SMKEV_A == 2 ~ 0),
+    DEPEV_A = case_when(DEPEV_A == 1 ~ 1, DEPEV_A == 2 ~ 0),
+    ANXEV_A = case_when(ANXEV_A == 1 ~ 1, ANXEV_A == 2 ~ 0)
   )
-  
-  
+
+```
+
+```{r}
+nhis24_df_fit = 
+  nhis24_df |>
+  select(
+    SEX_A, AGEP_A, DIBEV_A, BMICATD_A, WEIGHTLBTC_A, HEIGHTTC_A,
+    DIFF_A, EDUCP_A, LSATIS4_A, PHSTAT_A,
+    CHLEV_A, HYPEV_A, LIVEREV_A, STREV_A,
+    MIEV_A, ANGEV_A, CHDEV_A,
+    DEPEV_A, ANXEV_A, SMKEV_A, LONELY_A
+  )
 ```
 
 

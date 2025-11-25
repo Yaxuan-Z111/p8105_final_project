@@ -24,7 +24,7 @@ Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic
 
 # Motivation for This Project
 
-Type 2 diabetes (T2D) remains a critical public health challenge worldwide. Recent research indicates that psychological factors such as anxiety and depression, and behavioral factors like smoking, are meaningful predictors of T2D incidence. 
+Type 2 diabetes (T2D) remains a critical public health challenge worldwide. Recent research indicates that psychological factors such as anxiety and depression, and demographic factors like smoking, are meaningful predictors of T2D incidence. 
 
 # Intended Final Products
 
