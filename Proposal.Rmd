@@ -20,7 +20,7 @@ Jinyao Jiao (jj3564)
 
 # Tentative Project Title
 
-Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk: A Cox Survival Study
+Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles
 
 # Motivation for This Project
 
