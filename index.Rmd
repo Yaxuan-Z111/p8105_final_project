@@ -30,10 +30,10 @@ Accounting for the complex survey design using appropriate sampling weights and 
 
 Further details on the analysis are provided [here](analysis.html).
 
-# T2D Prevelance Visulization
+# T2D Prevalence Visualization
 
 ## The New York State T2D Map
-```{r}
+```{r, message = FALSE}
 df_raw = read_csv(
   "DiabetesAtlas_CountyData.csv",
   skip = 2
