@@ -1,6 +1,10 @@
 ---
 title: "Cohort Analysis of Mental Health, Smoking and Type 2 Diabetes Risk"
 ---
+```{r setup, include=FALSE}
+library(tidyverse)
+library(plotly)
+```
 
 # Overview
 
@@ -25,6 +29,52 @@ Learn more about the data [here](data.html).
 Accounting for the complex survey design using appropriate sampling weights and design variables, we fit generalized linear models (GLMs) with T2D status as the binary outcome and include all selected NHIS variables as candidate predictors in the same model. We then extend these models with interaction terms and use nested model comparisons to assess effect modification and potential confounding. 
 
 Further details on the analysis are provided [here](analysis.html).
+
+# T2D Prevelance Visulization
+
+## The New York State T2D Map
+```{r}
+df_raw = read_csv(
+  "DiabetesAtlas_CountyData.csv",
+  skip = 2
+)
+
+ny_df = df_raw %>%
+  filter(State == "New York") %>%
+  mutate(
+    CountyFIPS = sprintf("%05d", as.numeric(CountyFIPS)),
+    Percentage = as.numeric(Percentage),
+    hover = paste0(
+      "County: ", County, 
+      "<br>Percentage: ", Percentage, "%"
+    )
+  )
+
+geo_url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+
+fig = plot_ly(
+  data = ny_df,
+  type = "choropleth",
+  geojson = geo_url,
+  locations = ~CountyFIPS,
+  z = ~Percentage,
+  colorscale = "Blues",
+  text = ~hover,
+  hoverinfo = "text",
+  marker = list(line = list(width = 0))
+) %>%
+  layout(
+    title = "Prevalence of T2D by County (New York State)",
+    geo = list(
+      fitbounds = "locations",
+      visible = FALSE
+    )
+  )
+
+fig
+
+```
+
 
 # Our Team
 
