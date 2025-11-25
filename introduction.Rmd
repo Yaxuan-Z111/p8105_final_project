@@ -1,15 +1,15 @@
 ---
-title: "introduction"
+title: "Introduction"
 ---
 
-# **Background**
+# Background
 World Health Organization (WHO), in the 1970s, firstly introduced the term Non-Insulin Dependent Diabetes Mellitus (NIDDM) to distinguish forms of diabetes based on treatment needs and underlying mechanisms. This classification separated insulin-dependent diabetes (now Type 1) from cases typically managed without insulin. As research advanced, it became clear that NIDDM was characterized by insulin resistance and β-cell dysfunction, prompting a shift in the 1990s to the term Type 2 Diabetes (T2D), which better reflects its pathophysiology rather than treatment approach [24].
 
 T2D is a complex, multifactorial disease and a major global health challenge, accounting for over 90% of diabetes cases globally. Its prevalence is projected to rise from 460 million in 2017to 693 million by 2045 [3]. To be specific, T2D significantly contributes to global morbidity and mortality, with low- and middle-income countries bearing a disproportionate burden [24]. Saeedi et al.[20] analyzed data from 138 countries, estimating a global diabetes prevalence of 9.3% in 2019, projected to rise to 10.9% by 2045, highlighting stark disparities between urban and rural populations. Despite advances in understanding its mechanisms, the disease remains difficult to control due to its complex etiology. While genetic predisposition to T2D is well-established [9], the interplay between postnatal modifiable factors—particularly their synergistic effects—remains controversial. For instance, recent Mendelian randomization studies suggest education may directly reduce T2D risk independent of BMI [31], yet mechanistic pathways are unclear.
 
 The etiology of T2D is multifaceted, encompassing genetic, lifestyle, and environmental elements. Nevertheless, there are significant gaps in the comprehensive quantification of the interplay between lifestyle, mental health, and socioeconomic factors. This study aims to delve into these under - explored areas, offering critical insights for the development of more precise and effective prevention and intervention strategies.
 
-# **Risky Factors**
+# Risky Factors
 A growing body of research highlights the role of unhealthy lifestyle factors-smoking, low educational attainment, poor mental health and physical inactivity-in the development and progression of T2D[11]. These interconnected factors contribute to the complex etiology of T2D, making it essential to understand both their individual and cumulative impacts on disease risk.
 
 The global rise in T2D is closely tied to the spread of unhealthy lifestyle behaviors. However, evidence shows that lifestyle interventions can effectively prevent T2D, especially in genetically predisposed individuals. For instance, weight loss and regular physical activity significantly reduce T2D risk among those with a family history of the disease [13].
@@ -30,12 +30,12 @@ Furthermore, psychosocial variables such as loneliness and life satisfaction off
 
 By incorporating this broader constellation of behavioral, psychosocial, socioeconomic, and chronic disease variables, our study aims to provide a more comprehensive understanding of T2D risk in the U.S. adult population. The integration of these diverse NHIS measures allows for a nuanced evaluation of how complex risk pathways intersect to influence diabetes susceptibility.
 
-# **Current Gaps**
+# Current Gaps
 Despite significant advances in the field, critical knowledge gaps persist regarding the complex interplay among mood disorders, educational attainment, and lifestyle factors in the development of T2D. While Yu et al. [28] highlighted that a diet high in sugar and saturated fats, compounded by urban air pollution exposure, elevates T2D risk, the underlying biological pathways, particularly the role of epigenetic modifications, remain insufficiently characterized [17]. Although strong epidemiological evidence links lower educational levels to higher T2D incidence, as shown in the EPIC-InterAct study where individuals with lower education had a 67% increased risk even after adjusting for lifestyle and metabolic factors [23], the mechanisms mediating this association beyond behavioral risk factors are poorly elucidated.
 
 Moreover, current literature predominantly emphasizes prenatal and genetic predispositions to T2D [8][5], often overlooking the significance of postnatal environmental exposures and behavioral adaptations. Disparities in T2D burden across socioeconomic and geographic contexts further underscore the inadequacy of generalized prevention strategies and highlight the need for context-sensitive interventions [14]. Importantly, while associations between smoking, lifestyle, mental health, and T2D have been well-documented, the causal pathways, interaction effects, and variations across diverse demographic groups are still not comprehensively understood.
 
 Furthermore, the research on the impacts of travel history remain controversial. Thus, a major gap exists in integrative research that systematically dissects how environmental, behavioral, psychosocial, and socioeconomic factors jointly and differentially contribute to T2D onset. Clarifying these interactions is essential for developing precise and equitable preventive strategies tailored to population-specific risks. More longitudinal, multi-level studies are urgently needed to bridge this gap and enhance the effectiveness of global T2D prevention efforts.
 
-# **Research Object**
+# Research Object
 This study seeks to address these gaps by systematically investigating the interactions between lifestyle behaviors, educational attainment, mood disorders, and travel history in relation to the risk of developing T2D. While prior research has extensively explored genetic predisposition and metabolic risk factors, limited attention has been paid to the potential role of mobility behaviors, such as travel history, as modifiers of diabetes risk. By focusing on psychosocial, behavioral, and socioeconomic determinants, this study aims to provide a more integrated and nuanced understanding of how modifiable factors jointly contribute to T2D onset. In doing so, it seeks to identify novel pathways for prevention and inform more targeted, context-sensitive public health strategies to reduce the global burden of T2D.
