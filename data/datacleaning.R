@@ -20,17 +20,15 @@ nhis24_df_fit <-
   ) |>
   filter(!is.na(DIBEV_A)) |>
   
-  # BMI
+<<<<<<< HEAD
+  # ---- BMI ----
   mutate(
-    BMICATD_A = case_when(
-      BMICATD_A == 1 ~ 1,
-      BMICATD_A == 2 ~ 0,
-      BMICATD_A == 3 ~ 2,
-      BMICATD_A %in% c(4, 5, 6) ~ 3,
-      TRUE ~ NA_real_
-    )
-  ) |>
-  filter(!is.na(BMICATD_A)) |>
+    BMI = 703 * WEIGHTLBTC_A / (HEIGHTTC_A^2)
+  ) |> 
+  filter(!is.na(WEIGHTLBTC_A), !is.na(HEIGHTTC_A)) |> 
+=======
+
+>>>>>>> 0d9ab0827cdeb5614017de744857d6359e7eab82
   
   # Difficulty walking
   mutate(
@@ -133,7 +131,11 @@ nhis24_df_fit <-
   ) |>
   
   select(
-    SEX_A, AGEP_A, DIBEV_A, BMICATD_A, WEIGHTLBTC_A, HEIGHTTC_A,
+<<<<<<< HEAD
+    SEX_A, AGEP_A, DIBEV_A, BMI,
+=======
+    SEX_A, AGEP_A, DIBEV_A, WEIGHTLBTC_A, HEIGHTTC_A,
+>>>>>>> 0d9ab0827cdeb5614017de744857d6359e7eab82
     DIFF_A, EDUCP_A, LSATIS4_A, PHSTAT_A,
     CHLEV_A, HYPEV_A, LIVEREV_A, STREV_A,
     MIEV_A, ANGEV_A, CHDEV_A,
