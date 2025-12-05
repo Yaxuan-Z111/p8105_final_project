@@ -75,6 +75,8 @@ fig
 
 ```
 
+Across New York State, the age-adjusted prevalence of diagnosed diabetes in 2023 shows substantial variation across counties, ranging from approximately 7% to over 12%. Many rural counties—including Allegany, Cattaraugus, Essex, Franklin, Montgomery, Niagara, Steuben, and Schuyler—report some of the highest diabetes percentages, often exceeding 10%, with upper confidence limits reaching 13–14%. In contrast, several counties such as Dutchess, Tompkins, and Putnam show comparatively lower estimates, generally around 7–8%. Urban counties also demonstrate variability: Bronx County continues to exhibit one of the highest burdens at 12.1%, while New York County (Manhattan) reports a lower estimate of 6.5%, the lowest in the state. The distribution suggests a complex interplay of demographic, socioeconomic, and healthcare access factors contributing to geographic disparities in diabetes prevalence across New York. These data highlight the need for targeted public health strategies that account for regional differences in risk and resource availability.
+
 # Our Team
 
 Yaxuan Zheng (yz5248)
