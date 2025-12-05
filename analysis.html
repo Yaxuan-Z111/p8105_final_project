@@ -2577,6 +2577,32 @@ toward the null and was no longer statistically significant, suggesting
 that the apparent protective association in the reduced model was
 largely driven by confounding rather than a true protective effect.</p>
 </div>
+<div
+id="confounder-adjusted-performance-evaluation-of-the-latest-predictive-model"
+class="section level2">
+<h2>Confounder-Adjusted Performance Evaluation of the Latest Predictive
+Model</h2>
+<pre class="r"><code># Full model (includes all original predictors)
+model_full &lt;- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+              DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + CHDEV_A + DEPEV_A +
+              ANXEV_A + SMKEV_A + LONELY_A,
+  data = df_model,
+  family = binomial(link = &quot;logit&quot;),
+  na.action = na.omit 
+)
+
+# Reduced model (only includes statistically significant predictors, p &lt; 0.05)
+model_significant &lt;- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+              DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
+  data = df_model,
+  family = binomial(link = &quot;logit&quot;),
+  na.action = na.omit 
+)</code></pre>
+</div>
 </div>
 
 
