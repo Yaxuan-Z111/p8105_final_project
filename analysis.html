@@ -786,13 +786,9 @@ P_value_hisg =
   theme_minimal()
 
 P_value_hisg</code></pre>
-<<<<<<< Updated upstream
-<p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
-=======
 <pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
 ## (`geom_bar()`).</code></pre>
-<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" /></p>
->>>>>>> Stashed changes
+<p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
 </div>
 </div>
 <div id="model-results" class="section level1">
@@ -1573,16 +1569,32 @@ findings highlight the multifactorial nature of diabetes, involving
 biological, behavioral, and socioeconomic determinants.</p>
 </div>
 </div>
-<div id="test-for-confounders" class="section level1">
-<h1>Test for confounders</h1>
+<div id="adjust-for-confounders" class="section level1">
+<h1>Adjust for confounders</h1>
+<p>We prespecified age, sex, BMI, and education as core confounders
+because they are fundamental upstream characteristics that are strongly
+related to diabetes risk and also associated with many health conditions
+and functional status measures. As broad background factors, they can
+influence both the exposures of interest (e.g., hypertension and
+functional limitation) and the likelihood of diabetes diagnosis, making
+them essential covariates to control to reduce confounding and improve
+interpretability of estimated associations.</p>
 <p>Build model without confounders.</p>
-<pre class="r"><code>model_formula_noconf = DIBEV_A ~ BMI_A + 
-                           DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
-                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
-                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+<pre class="r"><code>model_formula_conf = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+              DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A
+
+model_formula_noconf = DIBEV_A ~ DIFF_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A
 
 glm_model_noconf = glm(
   model_formula_noconf, 
+  data = df_model,
+  family = binomial(link = &quot;logit&quot;)
+)
+
+glm_model_conf = glm(
+  model_formula_conf, 
   data = df_model,
   family = binomial(link = &quot;logit&quot;)
 )
@@ -1594,36 +1606,26 @@ summary(glm_model_noconf)</code></pre>
 ##     data = df_model)
 ## 
 ## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -3.5427775  0.0609937 -58.084  &lt; 2e-16 ***
-## BMI_A        0.0045238  0.0009097   4.973 6.60e-07 ***
-## DIFF_A1      0.3704607  0.0525365   7.051 1.77e-12 ***
-## DIFF_A2      0.5655243  0.0727491   7.774 7.63e-15 ***
-## DIFF_A3      0.4626678  0.1324988   3.492 0.000480 ***
-## LSATIS4_A1  -0.2153881  0.0955241  -2.255 0.024146 *  
-## PHSTAT_A1    0.7313760  0.0518013  14.119  &lt; 2e-16 ***
-## CHLEV_A1     0.8365472  0.0457264  18.295  &lt; 2e-16 ***
-## HYPEV_A1     0.9940706  0.0490901  20.250  &lt; 2e-16 ***
-## LIVEREV_A1   0.6551598  0.1321641   4.957 7.15e-07 ***
-## STREV_A1     0.0954260  0.0812440   1.175 0.240170    
-## MIEV_A1      0.2864116  0.0859808   3.331 0.000865 ***
-## ANGEV_A1     0.0214956  0.1106096   0.194 0.845911    
-## CHDEV_A1     0.3149750  0.0712286   4.422 9.78e-06 ***
-## DEPEV_A1     0.1448220  0.0626850   2.310 0.020871 *  
-## ANXEV_A1    -0.1797469  0.0645031  -2.787 0.005326 ** 
-## SMKEV_A1    -0.0581652  0.0435699  -1.335 0.181881    
-## LONELY_A1   -0.0119111  0.0532171  -0.224 0.822896    
-## LONELY_A2    0.0354261  0.0562925   0.629 0.529138    
-## LONELY_A3   -0.1720655  0.1370491  -1.256 0.209296    
-## LONELY_A4    0.1464263  0.1212910   1.207 0.227343    
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -3.42139    0.04617 -74.097  &lt; 2e-16 ***
+## DIFF_A1      0.38422    0.05209   7.376 1.63e-13 ***
+## DIFF_A2      0.57433    0.07189   7.989 1.36e-15 ***
+## DIFF_A3      0.50174    0.13107   3.828 0.000129 ***
+## PHSTAT_A1    0.70896    0.05068  13.988  &lt; 2e-16 ***
+## CHLEV_A1     0.82945    0.04554  18.214  &lt; 2e-16 ***
+## HYPEV_A1     1.00054    0.04896  20.436  &lt; 2e-16 ***
+## LIVEREV_A1   0.64248    0.13167   4.880 1.06e-06 ***
+## MIEV_A1      0.28495    0.08464   3.367 0.000761 ***
+## CHDEV_A1     0.31726    0.06936   4.574 4.78e-06 ***
+## DEPEV_A1     0.03665    0.05148   0.712 0.476527    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 17654  on 24038  degrees of freedom
-## Residual deviance: 15150  on 24018  degrees of freedom
-## AIC: 15192
+## Residual deviance: 15194  on 24028  degrees of freedom
+## AIC: 15216
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>Model without confounders result:</p>
@@ -1674,27 +1676,13 @@ P-value
 Intercept
 </td>
 <td style="text-align:right;">
--3.5428
+-3.4214
 </td>
 <td style="text-align:right;">
-0.029 (0.026 - 0.033)
+0.033 (0.03 - 0.036)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMI_A
-</td>
-<td style="text-align:right;">
-0.0045
-</td>
-<td style="text-align:right;">
-1.005 (1.003 - 1.006)
-</td>
-<td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1702,13 +1690,13 @@ BMI_A
 DIFF_A: Some Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.3705
+0.3842
 </td>
 <td style="text-align:right;">
-1.448 (1.306 - 1.605)
+1.468 (1.325 - 1.626)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1716,13 +1704,13 @@ DIFF_A: Some Difficulty (vs No Difficulty)
 DIFF_A: A lot of Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.5655
+0.5743
 </td>
 <td style="text-align:right;">
-1.76 (1.525 - 2.029)
+1.776 (1.542 - 2.043)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1730,27 +1718,13 @@ DIFF_A: A lot of Difficulty (vs No Difficulty)
 DIFF_A: Cannot do (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.4627
+0.5017
 </td>
 <td style="text-align:right;">
-1.588 (1.221 - 2.053)
+1.652 (1.273 - 2.128)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LSATIS4_A: Dissatisfied (vs Satisfied)
-</td>
-<td style="text-align:right;">
--0.2154
-</td>
-<td style="text-align:right;">
-0.806 (0.667 - 0.97)
-</td>
-<td style="text-align:right;">
-0.02415
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1758,13 +1732,13 @@ LSATIS4_A: Dissatisfied (vs Satisfied)
 PHSTAT_A: Fair/Poor Health (vs Good Health)
 </td>
 <td style="text-align:right;">
-0.7314
+0.7090
 </td>
 <td style="text-align:right;">
-2.078 (1.877 - 2.3)
+2.032 (1.839 - 2.244)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1772,13 +1746,13 @@ PHSTAT_A: Fair/Poor Health (vs Good Health)
 CHLEV_A: High Cholesterol (Yes)
 </td>
 <td style="text-align:right;">
-0.8365
+0.8294
 </td>
 <td style="text-align:right;">
-2.308 (2.111 - 2.525)
+2.292 (2.097 - 2.507)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1786,13 +1760,13 @@ CHLEV_A: High Cholesterol (Yes)
 HYPEV_A: Hypertension (Yes)
 </td>
 <td style="text-align:right;">
-0.9941
+1.0005
 </td>
 <td style="text-align:right;">
-2.702 (2.455 - 2.976)
+2.72 (2.472 - 2.995)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1800,27 +1774,13 @@ HYPEV_A: Hypertension (Yes)
 LIVEREV_A: Liver Disease (Yes)
 </td>
 <td style="text-align:right;">
-0.6552
+0.6425
 </td>
 <td style="text-align:right;">
-1.925 (1.482 - 2.489)
+1.901 (1.465 - 2.455)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-STREV_A: Stroke (Yes)
-</td>
-<td style="text-align:right;">
-0.0954
-</td>
-<td style="text-align:right;">
-1.1 (0.937 - 1.288)
-</td>
-<td style="text-align:right;">
-0.24017
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1828,27 +1788,13 @@ STREV_A: Stroke (Yes)
 MIEV_A: Myocardial Infarction (Yes)
 </td>
 <td style="text-align:right;">
-0.2864
+0.2849
 </td>
 <td style="text-align:right;">
-1.332 (1.124 - 1.575)
+1.33 (1.126 - 1.568)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ANGEV_A: Angina (Yes)
-</td>
-<td style="text-align:right;">
-0.0215
-</td>
-<td style="text-align:right;">
-1.022 (0.821 - 1.267)
-</td>
-<td style="text-align:right;">
-0.84591
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1856,13 +1802,13 @@ ANGEV_A: Angina (Yes)
 CHDEV_A: CHD (Yes)
 </td>
 <td style="text-align:right;">
-0.3150
+0.3173
 </td>
 <td style="text-align:right;">
-1.37 (1.191 - 1.574)
+1.373 (1.198 - 1.572)
 </td>
 <td style="text-align:right;">
-&lt; 0.001
+&lt;0.001
 </td>
 </tr>
 <tr>
@@ -1870,97 +1816,13 @@ CHDEV_A: CHD (Yes)
 DEPEV_A: Depression (Yes)
 </td>
 <td style="text-align:right;">
-0.1448
+0.0366
 </td>
 <td style="text-align:right;">
-1.156 (1.022 - 1.306)
+1.037 (0.937 - 1.147)
 </td>
 <td style="text-align:right;">
-0.02087
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ANXEV_A: Anxiety (Yes)
-</td>
-<td style="text-align:right;">
--0.1797
-</td>
-<td style="text-align:right;">
-0.835 (0.736 - 0.948)
-</td>
-<td style="text-align:right;">
-0.00533
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-SMKEV_A: Smoker (Yes)
-</td>
-<td style="text-align:right;">
--0.0582
-</td>
-<td style="text-align:right;">
-0.943 (0.866 - 1.027)
-</td>
-<td style="text-align:right;">
-0.18188
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Rarely Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
--0.0119
-</td>
-<td style="text-align:right;">
-0.988 (0.89 - 1.096)
-</td>
-<td style="text-align:right;">
-0.82290
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Sometimes Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-0.0354
-</td>
-<td style="text-align:right;">
-1.036 (0.927 - 1.157)
-</td>
-<td style="text-align:right;">
-0.52914
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Usually Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
--0.1721
-</td>
-<td style="text-align:right;">
-0.842 (0.64 - 1.096)
-</td>
-<td style="text-align:right;">
-0.20930
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Always Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-0.1464
-</td>
-<td style="text-align:right;">
-1.158 (0.91 - 1.464)
-</td>
-<td style="text-align:right;">
-0.22734
+0.477
 </td>
 </tr>
 </tbody>
@@ -1979,7 +1841,9 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </table>
 <p>Compare with the original data.</p>
 <pre class="r"><code>compare_table = 
-  model_results_tidy |&gt;
+  glm_model_conf |&gt; 
+  tidy_logit() |&gt;
+  clean_term_labels() |&gt; 
   select(
     Term,
     Beta_full     = Beta,
@@ -2065,7 +1929,7 @@ SEX_A1
 NA
 </td>
 <td style="text-align:right;">
-1.211
+1.189
 </td>
 <td style="text-align:right;">
 NA
@@ -2090,13 +1954,13 @@ NA
 BMI_A
 </td>
 <td style="text-align:right;">
-1.005
+NA
 </td>
 <td style="text-align:right;">
 1.005
 </td>
 <td style="text-align:right;">
-0.1
+NA
 </td>
 </tr>
 <tr>
@@ -2104,13 +1968,13 @@ BMI_A
 DIFF_A: Some Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.448
+1.468
 </td>
 <td style="text-align:right;">
-1.325
+1.319
 </td>
 <td style="text-align:right;">
--8.5
+-10.2
 </td>
 </tr>
 <tr>
@@ -2118,13 +1982,13 @@ DIFF_A: Some Difficulty (vs No Difficulty)
 DIFF_A: A lot of Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.760
+1.776
 </td>
 <td style="text-align:right;">
-1.585
+1.554
 </td>
 <td style="text-align:right;">
--10.0
+-12.5
 </td>
 </tr>
 <tr>
@@ -2132,13 +1996,13 @@ DIFF_A: A lot of Difficulty (vs No Difficulty)
 DIFF_A: Cannot do (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.588
+1.652
 </td>
 <td style="text-align:right;">
-1.377
+1.352
 </td>
 <td style="text-align:right;">
--13.3
+-18.2
 </td>
 </tr>
 <tr>
@@ -2149,7 +2013,7 @@ EDUCP_A: Medium Edu (vs Low Edu)
 NA
 </td>
 <td style="text-align:right;">
-0.921
+0.920
 </td>
 <td style="text-align:right;">
 NA
@@ -2163,7 +2027,7 @@ EDUCP_A: High Edu (vs Low Edu)
 NA
 </td>
 <td style="text-align:right;">
-0.696
+0.712
 </td>
 <td style="text-align:right;">
 NA
@@ -2171,30 +2035,16 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-LSATIS4_A: Dissatisfied (vs Satisfied)
-</td>
-<td style="text-align:right;">
-0.806
-</td>
-<td style="text-align:right;">
-0.803
-</td>
-<td style="text-align:right;">
--0.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 PHSTAT_A: Fair/Poor Health (vs Good Health)
 </td>
 <td style="text-align:right;">
-2.078
+2.032
 </td>
 <td style="text-align:right;">
-2.022
+1.969
 </td>
 <td style="text-align:right;">
--2.7
+-3.1
 </td>
 </tr>
 <tr>
@@ -2202,13 +2052,13 @@ PHSTAT_A: Fair/Poor Health (vs Good Health)
 CHLEV_A: High Cholesterol (Yes)
 </td>
 <td style="text-align:right;">
-2.308
+2.292
 </td>
 <td style="text-align:right;">
-2.213
+2.200
 </td>
 <td style="text-align:right;">
--4.1
+-4.0
 </td>
 </tr>
 <tr>
@@ -2216,13 +2066,13 @@ CHLEV_A: High Cholesterol (Yes)
 HYPEV_A: Hypertension (Yes)
 </td>
 <td style="text-align:right;">
-2.702
+2.720
 </td>
 <td style="text-align:right;">
-2.439
+2.434
 </td>
 <td style="text-align:right;">
--9.7
+-10.5
 </td>
 </tr>
 <tr>
@@ -2230,10 +2080,10 @@ HYPEV_A: Hypertension (Yes)
 LIVEREV_A: Liver Disease (Yes)
 </td>
 <td style="text-align:right;">
-1.925
+1.901
 </td>
 <td style="text-align:right;">
-1.960
+1.935
 </td>
 <td style="text-align:right;">
 1.8
@@ -2241,44 +2091,16 @@ LIVEREV_A: Liver Disease (Yes)
 </tr>
 <tr>
 <td style="text-align:left;">
-STREV_A: Stroke (Yes)
-</td>
-<td style="text-align:right;">
-1.100
-</td>
-<td style="text-align:right;">
-1.068
-</td>
-<td style="text-align:right;">
--2.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 MIEV_A: Myocardial Infarction (Yes)
 </td>
 <td style="text-align:right;">
-1.332
+1.330
 </td>
 <td style="text-align:right;">
-1.272
+1.264
 </td>
 <td style="text-align:right;">
--4.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ANGEV_A: Angina (Yes)
-</td>
-<td style="text-align:right;">
-1.022
-</td>
-<td style="text-align:right;">
-1.014
-</td>
-<td style="text-align:right;">
--0.8
+-5.0
 </td>
 </tr>
 <tr>
@@ -2286,10 +2108,10 @@ ANGEV_A: Angina (Yes)
 CHDEV_A: CHD (Yes)
 </td>
 <td style="text-align:right;">
-1.370
+1.373
 </td>
 <td style="text-align:right;">
-1.282
+1.284
 </td>
 <td style="text-align:right;">
 -6.5
@@ -2300,97 +2122,13 @@ CHDEV_A: CHD (Yes)
 DEPEV_A: Depression (Yes)
 </td>
 <td style="text-align:right;">
-1.156
+1.037
 </td>
 <td style="text-align:right;">
-1.231
+1.134
 </td>
 <td style="text-align:right;">
-6.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ANXEV_A: Anxiety (Yes)
-</td>
-<td style="text-align:right;">
-0.835
-</td>
-<td style="text-align:right;">
-0.894
-</td>
-<td style="text-align:right;">
-7.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-SMKEV_A: Smoker (Yes)
-</td>
-<td style="text-align:right;">
-0.943
-</td>
-<td style="text-align:right;">
-0.878
-</td>
-<td style="text-align:right;">
--7.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Rarely Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-0.988
-</td>
-<td style="text-align:right;">
-1.030
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Sometimes Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-1.036
-</td>
-<td style="text-align:right;">
-1.051
-</td>
-<td style="text-align:right;">
-1.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Usually Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-0.842
-</td>
-<td style="text-align:right;">
-0.855
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LONELY_A: Always Lonely (vs Never Lonely)
-</td>
-<td style="text-align:right;">
-1.158
-</td>
-<td style="text-align:right;">
-1.142
-</td>
-<td style="text-align:right;">
--1.3
+9.3
 </td>
 </tr>
 </tbody>
@@ -2422,24 +2160,21 @@ LONELY_A: Always Lonely (vs Never Lonely)
 </div>
 <div id="summary-of-confounder-findings" class="section level2">
 <h2>Summary of confounder findings</h2>
-<p>When comparing models with and without adjustment for the
-prespecified confounders (age, sex, BMI, and education), most predictors
-showed relatively small changes in odds ratios (generally within about
-±10%; e.g., life satisfaction, self-rated health, high cholesterol,
-liver disease, stroke, myocardial infarction, angina, CHD, depression,
-smoking, and loneliness), suggesting that their associations with
-diabetes are reasonably robust to demographic and anthropometric
-adjustment.</p>
-<p>In contrast, the odds ratios for mobility difficulty (DIFF_A) and
-hypertension (HYPEV_A) were attenuated by approximately 16–22% after
-adjustment, indicating that part of their crude associations with
-diabetes was explained by age, sex, BMI, and education. However, the
-adjusted ORs for higher levels of mobility difficulty and for
-hypertension remained clearly above 1, supporting these factors as
-independent risk markers. For anxiety (ANXEV_A), the OR moved about 11%
-toward the null and was no longer statistically significant, suggesting
-that the apparent protective association in the reduced model was
-largely driven by confounding rather than a true protective effect.</p>
+<p>In our confounding assessment, adding the prespecified core
+covariates (age, sex, BMI, and education) attenuated the associations
+for several predictors. The ORs for functional limitation (DIFF_A)
+decreased by 10.2% for “Some Difficulty,” 12.5% for “A lot of
+Difficulty,” and 18.2% for “Cannot do,” while the OR for hypertension
+decreased by 10.5% after adjustment. This pattern indicates meaningful
+confounding by these upstream background factors, with the model without
+confounders likely overestimating the strength of association for DIFF_A
+and HYPEV_A (biased away from the null). A plausible explanation is that
+older age and higher BMI are associated with both greater functional
+limitation/hypertension and a higher probability of diabetes diagnosis;
+without adjustment, part of this shared risk may be incorrectly
+attributed to DIFF_A or HYPEV_A. After adjustment, these associations
+remained statistically significant but were more conservative,
+supporting the fully adjusted model as the primary set of estimates.</p>
 </div>
 <div
 id="confounder-adjusted-performance-evaluation-of-the-latest-predictive-model"
@@ -2507,11 +2242,6 @@ model_compare &lt;- bind_rows(model_full_stats, model_significant_stats) %&gt;%
 cat(&quot;=== Model Comparison: Full vs Reduced (Significant Variables) ===\n&quot;)</code></pre>
 <pre><code>## === Model Comparison: Full vs Reduced (Significant Variables) ===</code></pre>
 <pre class="r"><code>print(model_compare, digits = 4) </code></pre>
-<pre><code>## Warning: `...` must be empty in `format.tbl()`
-## Caused by error in `format_tbl()`:
-## ! `...` must be empty.
-## ✖ Problematic argument:
-## • digits = 4</code></pre>
 <pre><code>## # A tibble: 2 × 5
 ##   model                             n_obs n_predictors Fit_Metric_1 Fit_Metric_2
 ##   &lt;chr&gt;                             &lt;int&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;

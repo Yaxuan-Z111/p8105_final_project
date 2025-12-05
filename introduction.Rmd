@@ -9,7 +9,7 @@ T2D is now recognized as a complex, multifactorial chronic disease, accounting f
 
 Given this complex interplay of biological, behavioral, psychological, and environmental factors, there remain major gaps in quantifying how these determinants collectively contribute to T2D risk. This study aims to investigate these under-explored domains and provide insights that can guide precision prevention strategies.
 
-# Risky Factors
+# Risk Factors
 A substantial body of literature demonstrates that unhealthy lifestyle factors—smoking, low educational attainment, poor mental health, and physical inactivity—significantly contribute to the development and progression of T2D [6]. Understanding both single-factor and cumulative effects is crucial, as these dimensions frequently co-occur and reinforce one another.
 
 ### Lifestyle and Behavioral Factors
