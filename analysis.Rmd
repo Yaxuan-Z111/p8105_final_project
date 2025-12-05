@@ -475,7 +475,10 @@ This means that for two variables correlated at $r = 0.3$, 9% of the variation i
 
 ```{r}
 # Select numeric variables
-numeric_vars <- nhis24_df_fit[, sapply(nhis24_df_fit, is.numeric)]
+nhis24_df_fit_corr = nhis24_df_fit |> 
+  select(-BMI_A)
+
+numeric_vars <- nhis24_df_fit_corr[, sapply(nhis24_df_fit_corr, is.numeric)]
 
 # Compute correlation matrix
 cor_matrix <- cor(numeric_vars, use = "pairwise.complete.obs")

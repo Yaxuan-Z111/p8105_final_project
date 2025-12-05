@@ -6,18 +6,6 @@ output:
     toc_float: true
 ---
 
-Group Members:
-
-Yaxuan Zheng (yz5248)
-
-Yirou Hu (yh3964)
-
-Ruihan Ding (rd3227)
-
-Su Yan (sy3352)
-
-Jinyao Jiao (jj3564)
-
 # Tentative Project Title
 
 Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles
@@ -28,11 +16,12 @@ Type 2 diabetes (T2D) remains a critical public health challenge worldwide. Rece
 
 # Intended Final Products
 
-- Writting report capturing data cleaning, exploratory analysis (e.g. Rank the covariates according to how strongly they relate to T2D), modeling, visualization(distribution plots, KM curves, etc.) and discussion, structured in R Markdown and published in the team’s GitHub repository to detailedly explain our propose and results.
+- Authored a comprehensive R Markdown report, hosted in the team’s GitHub repository, that documents data cleaning, exploratory analyses (individual-predictor testing, correlation and confounding checks), modeling with `glm`, and extensive visualizations (forest plots, bar charts, spatial maps, model-comparison graphics); concludes by selecting the significant-term, lowest-BIC model as the most parsimonious solution.
 
-- Creating website summarizing motivation, methods, results, and key visual-insights directed to a broad audience.
+- Built an accompanying website that introduces the project’s motivation, workflow, methods, modeling steps, results, and key visual insights for a general audience.
 
-- A short (~2-minute) screencast embedded in the website walking through the major analyses and findings.
+- Produced a ~2-minute screencast, embedded in the site, that walks viewers through the major analyses and findings.
+
 
 # Anticipated Data Sources
 
@@ -40,21 +29,40 @@ This study utilizes data from the United States National Health Interview Survey
 
 # Planned Analyses / Visualizations / Coding Challenges
 
-## Planned Analyses:
+This section summarizes the planned analytical steps, key visualizations generated, and the specific coding challenges encountered during the Spatial Exploratory Data Analysis (EDA Spatial).
 
-- Kaplan–Meier survival curves stratified by levels of mental‐health and smoking risk factors.
 
-- Single and Multivariable Cox proportional hazards models estimating hazard ratios for T2D onset associated with anxiety, depression and smoking, controlling for age, sex, BMI, socioeconomic status.
+## Planned Analyses and data cleaning process:
 
-- Assess potential interactive relationships between key factors (including mental health indicators, smoking, and covariates like age, BMI, or socioeconomic status) to identify which pairs exhibit stronger synergistic or antagonistic effects on T2D risk.
+- Data cleaning: The data cleaning process summarized the essential steps taken to transform the raw NHIS 2024 (National Health Interview Survey) adult data into a structured format suitable for Logistic Regression analysis. This involved importing the Excel file, removing the extraneous REGION variable, and then systematically recoding numerous variables using mutate and case_when functions: the binary outcome DIBEV_A (diabetes diagnosis) and several dichotomous predictors (e.g., HYPEV_A, LIVEREV_A, STREV_A) were standardized to a consistent 1/0 structure; multi-categorical or ordinal predictors (e.g., DIFF_A, EDUCP_A, PHSTAT_A) were collapsed or reordered into fewer, interpretable levels (e.g., Poor/Fair health vs. Good/Excellent health); critically, non-response or missing codes (typically 7, 8, or 9 in the raw data) were converted to NA and subsequently removed via aggressive filter steps, ensuring the final dataset (nhis24_df_fit) was complete for the intended Complete Case Analysis, retaining only the 21 necessary variables for the subsequent modeling.
+
+- Full Model Fit: A comprehensive logistic regression model was fitted, including demographic, anthropometric, lifestyle, and chronic disease indicators.
+
+- Interpretation: Coefficients were transformed into Adjusted Odds Ratios (ORs) with 95% Confidence Intervals (CIs) for clinical interpretability.
+
+- Model Comparison: The final version of the model was optimized by replacing highly correlated predictors (WEIGHTLBTC_A and HEIGHTTC_A) with a single, constructed continuous BMI variable (BMI_A) to mitigate multicollinearity and confounding.
+
+- Model Fit: Model performance was assessed by comparing the Bayesian Information Criterion (BIC) values between the full model and the reduced (significant variables) model, where a lower BIC indicates a better, more parsimonious fit.
 
 - Exploratory Spatial Data Analysis
 
 ## Visualizations: 
-Variable correlation hot map; KM curves; Forest plots of hazard ratios; Sex-strafitication; Age-Stratification; Variable interaction effect table; Survival curve; Scatter plot of EDA
+- P-value Bar Chart: This horizontal bar chart presents the p-value for every predictor in the full logistic regression model. It includes a dashed line at $p=0.05$ and uses distinct coloring to immediately highlight which variables are statistically significant.
+
+- Forest Plot of Adjusted Odds Ratios: A critical point-range plot that displays the Adjusted Odds Ratios (ORs) and their 95% Confidence Intervals (CIs) on a log scale. It includes a vertical reference line at $\text{OR}=1$, allowing for a clear visual assessment of the direction (risk or protective) and statistical significance of each association.
+
+- Correlation Heatmap of Numeric Variables: A heatmap that visually represents the pairwise Pearson correlations between all numeric variables in the dataset. The color gradient (blue to red, centered at white/zero) allows for quick identification of highly correlated variables, which is crucial for diagnosing potential multicollinearity.
+
+- Percentage Change in Odds Ratio Bar Chart: This visualization specifically addresses confounding by showing the percentage change in the OR for non-confounding predictors after adjusting for demographic and anthropometric factors. It uses color coding to flag associations that change substantially (e.g., $\ge 10\%$) upon adjustment, highlighting non-robust findings.
+
+- Model Fit Comparison (BIC): A vertical bar chart that compares the Bayesian Information Criterion (BIC) values between the full model and the reduced (significant variables) model. Since BIC penalizes complexity, this visualization quickly indicates which model offers the best balance of fit and parsimony (lower is better).
+
+- Spatial Choropleth Map of Diabetes Prevalence: Generated using plotly and GeoJSON data, this map displays the geographical distribution of diabetes prevalence across counties in New York State. Color intensity is used to identify high- and low-prevalence areas, providing insight into potential spatial patterns of the outcome.
+
+- Concise table summarizing key findings
 
 ## Coding challenges: 
-We may face challenges such as harmonizing variable definitions between earlier and updated datasets, dealing with missing data (through imputation or sensitivity analyses), automating reproducible workflows using git and R Markdown, and applying various models to explore the relationship between covariates and T2D.
+We may face challenges such as harmonizing variable definitions between earlier and updated datasets, dealing with missing data (through imputation or sensitivity analyses), automating reproducible workflows using git and R Markdown, and applying various models to explore the relationship between covariates and T2D. Furthermore, a significant coding challenge arose during the visualization of diabetes prevalence in New York State using a plotly Choropleth Map, due to a FIPS code mismatch. The goal was to map diabetes Percentage to each county using its unique FIPS code as the identifier, but the external GeoJSON standard strictly requires these codes to be five-digit character strings (e.g., '36001'). The raw data initially read the FIPS column as numeric, causing leading zeros to be inadvertently dropped. To resolve this critical issue and ensure the county identifiers in the data successfully matched the geometric identifiers in the geojson-counties-fips.json file, the explicit R function `sprintf("%05d", ...)` was employed. This function guarantees the FIPS code is converted to a fixed-width, zero-padded string, enabling plotly to correctly render the visualization by mapping `locations = ~CountyFIPS` to the GeoJSON boundaries.
 
 # Timeline
 ```{r, echo=FALSE}
