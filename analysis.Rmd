@@ -671,7 +671,7 @@ compare_table |>
 
 In our confounding assessment, adding the prespecified core covariates (age, sex, BMI, and education) attenuated the associations for several predictors. The ORs for functional limitation (DIFF_A) decreased by 10.2% for “Some Difficulty,” 12.5% for “A lot of Difficulty,” and 18.2% for “Cannot do,” while the OR for hypertension decreased by 10.5% after adjustment. This pattern indicates meaningful confounding by these upstream background factors, with the model without confounders likely overestimating the strength of association for DIFF_A and HYPEV_A (biased away from the null). A plausible explanation is that older age and higher BMI are associated with both greater functional limitation/hypertension and a higher probability of diabetes diagnosis; without adjustment, part of this shared risk may be incorrectly attributed to DIFF_A or HYPEV_A. After adjustment, these associations remained statistically significant but were more conservative, supporting the fully adjusted model as the primary set of estimates.
 
-## Confounder-Adjusted Performance Evaluation of the Latest Predictive Model
+# Confounder-Adjusted Performance Evaluation of the Latest Predictive Model
 
 To address the high degree of correlation between height and weight (a potential source of multicollinearity and confounding), we removed these two variables from the model and replaced them with a newly constructed continuous BMI variable. Calculated using the standard formula $\frac{\text{weight [kg]}}{\left(\text{height [m]}\right)^2}$ from the dataset’s raw height and weight data, this continuous BMI metric integrates key information from both predictors. By doing so, we not only eliminate the issues arising from their high correlation but also effectively account for potential confounding by encapsulating the combined effects of height and weight in a single, interpretable variable.
 ```{r}
@@ -764,7 +764,7 @@ print(plot_fit_comparison)
 ```
 
 
-## Final Model Selection and Discussion
+# Final Model Selection and Discussion
 
 Final Model Selection and DiscussionAfter conducting exploratory analysis, confounding adjustment, and rigorous model comparison, we ultimately selected the reduced logistic regression model—retaining only statistically significant predictors with $p < 0.05$ —as the optimal framework for predicting diabetes diagnosis (DIBEV_A). This decision is grounded in comprehensive evaluation of model performance metrics and adherence to core statistical principles, ensuring the final model balances predictive accuracy, parsimony, and interpretability, which are critical for both scientific validity and practical application.
 
