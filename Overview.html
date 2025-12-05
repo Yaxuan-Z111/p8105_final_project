@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="introduction.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data Description</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="report and discussion.html">Report and Discussion</a>
+</li>
+<li>
+  <a href="https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Multivariable Logistic Analysis of Type II
+Diabetes Risk Considering Demographic, Mental Health and Lifestyles</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This project investigates whether anxiety, depression, and smoking
+are significant predictors of T2D incidence, after accounting for key
+demographic and clinical covariates. The goal is to quantify their
+independent and joint associations with T2D risk and to assess whether
+these factors should be considered in risk stratification and prevention
+strategies.</p>
+<p>The link to the repository of this project can be found <a
+href="https://github.com/Yaxuan-Z111/p8105_final_project">here</a>.</p>
+</div>
+<div id="type-ii-diabetes" class="section level1">
+<h1>Type II Diabetes</h1>
+<p>Type 2 diabetes (T2D) is a major global public health problem. In the
+United States alone, more than 38 million people are living with
+diabetes, and an estimated 90%–95% of these cases are type 2 diabetes.
+As a chronic condition, T2D is associated with substantial morbidity and
+an average reduction in life expectancy of around ten years. At the same
+time, T2D can often be prevented or delayed through evidence-based
+lifestyle changes, including weight management, healthy eating, and
+regular physical activity. (CDC, 2024)</p>
+<p><img src="image/type_2_diabetes.png" style="width:40.0%" /></p>
+</div>
+<div id="data-source" class="section level1">
+<h1>Data Source</h1>
+<p>We use data from the <a
+href="https://www.cdc.gov/nchs/nhis/documentation/2024-nhis.html">2024
+National Health Interview Survey (NHIS)</a>, a nationally
+representative, cross-sectional survey of the civilian
+noninstitutionalized U.S. population conducted by the National Center
+for Health Statistics (NCHS). T2D status, anxiety, depression, smoking,
+and relevant demographic and clinical covariates are derived from the
+publicly available NHIS sample adult-level files.</p>
+<p>Learn more about the data <a href="data.html">here</a>.</p>
+</div>
+<div id="statistical-analysis" class="section level1">
+<h1>Statistical Analysis</h1>
+<p>Accounting for the complex survey design using appropriate sampling
+weights and design variables, we fit generalized linear models (GLMs)
+with T2D status as the binary outcome and include all selected NHIS
+variables as candidate predictors in the same model. We then use nested
+model comparisons to assess effect modification and potential
+confounding.</p>
+<p>Further details on the analysis are provided <a
+href="analysis.html">here</a>.</p>
+</div>
+<div id="t2d-prevalence-visualization" class="section level1">
+<h1>T2D Prevalence Visualization</h1>
+<div id="the-new-york-state-t2d-map" class="section level2">
+<h2><em>The New York State T2D Map</em></h2>
+<pre class="r"><code>df_raw = read_csv(
+  &quot;DiabetesAtlas_CountyData.csv&quot;,
+  skip = 2
+)
+
+ny_df = df_raw %&gt;%
+  filter(State == &quot;New York&quot;) %&gt;%
+  mutate(
+    CountyFIPS = sprintf(&quot;%05d&quot;, as.numeric(CountyFIPS)),
+    Percentage = as.numeric(Percentage),
+    hover = paste0(
+      &quot;County: &quot;, County, 
+      &quot;&lt;br&gt;Percentage: &quot;, Percentage, &quot;%&quot;
+    )
+  )
+
+geo_url = &quot;https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json&quot;
+
+fig = plot_ly(
+  data = ny_df,
+  type = &quot;choropleth&quot;,
+  geojson = geo_url,
+  locations = ~CountyFIPS,
+  z = ~Percentage,
+  colorscale = &quot;Blues&quot;,
+  text = ~hover,
+  hoverinfo = &quot;text&quot;,
+  marker = list(line = list(width = 0))
+) %&gt;%
+  layout(
+    title = &quot;Prevalence of T2D by County (New York State)&quot;,
+    geo = list(
+      fitbounds = &quot;locations&quot;,
+      visible = FALSE
+    )
+  )
+
+fig</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-f3ec85205882fbc3c592" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-f3ec85205882fbc3c592">{"x":{"visdat":{"4e407a9448ff":["function () ","plotlyVisDat"]},"cur_data":"4e407a9448ff","attrs":{"4e407a9448ff":{"geojson":"https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json","locations":{},"z":{},"colorscale":"Blues","text":{},"hoverinfo":"text","marker":{"line":{"width":0}},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"choropleth"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Prevalence of T2D by County (New York State)","geo":{"fitbounds":"locations","visible":false},"scene":{"zaxis":{"title":"Percentage"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"Percentage","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":"Blues","showscale":true,"geojson":"https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json","locations":["36001","36003","36005","36007","36009","36011","36013","36015","36017","36019","36021","36023","36025","36027","36029","36031","36033","36035","36037","36039","36041","36043","36045","36047","36049","36051","36053","36055","36057","36059","36061","36063","36065","36067","36069","36071","36073","36075","36077","36079","36081","36083","36085","36087","36089","36091","36093","36095","36097","36099","36101","36103","36105","36107","36109","36111","36113","36115","36117","36119","36121","36123"],"z":[8.0999999999999996,10.800000000000001,12.1,9.1999999999999993,9.1999999999999993,9.0999999999999996,11.6,9.4000000000000004,10,10.800000000000001,8.5,8.8000000000000007,8.5999999999999996,7.0999999999999996,9,7.7999999999999998,11.300000000000001,9.8000000000000007,8.8000000000000007,8.8000000000000007,7.7999999999999998,8,10.9,9.6999999999999993,10.699999999999999,8.9000000000000004,8.0999999999999996,10.300000000000001,8.5,7.9000000000000004,6.5,10.199999999999999,9.1999999999999993,9.6999999999999993,8.5,9.3000000000000007,10.699999999999999,9.3000000000000007,9,7.0999999999999996,10.800000000000001,9.5999999999999996,10.300000000000001,8.4000000000000004,11.300000000000001,7.5,8.4000000000000004,8.9000000000000004,10.199999999999999,9.0999999999999996,9.6999999999999993,7.5999999999999996,10.1,9.4000000000000004,7.0999999999999996,8.0999999999999996,8.9000000000000004,8.5,9.0999999999999996,7,9.4000000000000004,8.3000000000000007],"text":["County: Albany County<br>Percentage: 8.1%","County: Allegany County<br>Percentage: 10.8%","County: Bronx County<br>Percentage: 12.1%","County: Broome County<br>Percentage: 9.2%","County: Cattaraugus County<br>Percentage: 9.2%","County: Cayuga County<br>Percentage: 9.1%","County: Chautauqua County<br>Percentage: 11.6%","County: Chemung County<br>Percentage: 9.4%","County: Chenango County<br>Percentage: 10%","County: Clinton County<br>Percentage: 10.8%","County: Columbia County<br>Percentage: 8.5%","County: Cortland County<br>Percentage: 8.8%","County: Delaware County<br>Percentage: 8.6%","County: Dutchess County<br>Percentage: 7.1%","County: Erie County<br>Percentage: 9%","County: Essex County<br>Percentage: 7.8%","County: Franklin County<br>Percentage: 11.3%","County: Fulton County<br>Percentage: 9.8%","County: Genesee County<br>Percentage: 8.8%","County: Greene County<br>Percentage: 8.8%","County: Hamilton County<br>Percentage: 7.8%","County: Herkimer County<br>Percentage: 8%","County: Jefferson County<br>Percentage: 10.9%","County: Kings County<br>Percentage: 9.7%","County: Lewis County<br>Percentage: 10.7%","County: Livingston County<br>Percentage: 8.9%","County: Madison County<br>Percentage: 8.1%","County: Monroe County<br>Percentage: 10.3%","County: Montgomery County<br>Percentage: 8.5%","County: Nassau County<br>Percentage: 7.9%","County: New York County<br>Percentage: 6.5%","County: Niagara County<br>Percentage: 10.2%","County: Oneida County<br>Percentage: 9.2%","County: Onondaga County<br>Percentage: 9.7%","County: Ontario County<br>Percentage: 8.5%","County: Orange County<br>Percentage: 9.3%","County: Orleans County<br>Percentage: 10.7%","County: Oswego County<br>Percentage: 9.3%","County: Otsego County<br>Percentage: 9%","County: Putnam County<br>Percentage: 7.1%","County: Queens County<br>Percentage: 10.8%","County: Rensselaer County<br>Percentage: 9.6%","County: Richmond County<br>Percentage: 10.3%","County: Rockland County<br>Percentage: 8.4%","County: St. Lawrence County<br>Percentage: 11.3%","County: Saratoga County<br>Percentage: 7.5%","County: Schenectady County<br>Percentage: 8.4%","County: Schoharie County<br>Percentage: 8.9%","County: Schuyler County<br>Percentage: 10.2%","County: Seneca County<br>Percentage: 9.1%","County: Steuben County<br>Percentage: 9.7%","County: Suffolk County<br>Percentage: 7.6%","County: Sullivan County<br>Percentage: 10.1%","County: Tioga County<br>Percentage: 9.4%","County: Tompkins County<br>Percentage: 7.1%","County: Ulster County<br>Percentage: 8.1%","County: Warren County<br>Percentage: 8.9%","County: Washington County<br>Percentage: 8.5%","County: Wayne County<br>Percentage: 9.1%","County: Westchester County<br>Percentage: 7%","County: Wyoming County<br>Percentage: 9.4%","County: Yates County<br>Percentage: 8.3%"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"marker":{"line":{"color":"rgba(31,119,180,1)","width":0}},"type":"choropleth","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="our-team" class="section level1">
+<h1>Our Team</h1>
+<p>Yaxuan Zheng (yz5248)</p>
+<p>Yirou Hu (yh3964)</p>
+<p>Ruihan Ding (rd3227)</p>
+<p>Su Yan (sy3352)</p>
+<p>Jinyao Jiao (jj3564)</p>
+</div>
+<div id="screencast" class="section level1">
+<h1>Screencast</h1>
+<p>Click on the video below to explore the capabilities of this site and
+enjoy a summary of our key highlights.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
