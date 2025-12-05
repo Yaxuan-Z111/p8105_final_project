@@ -57,16 +57,88 @@ where $X_i$ represents each covariate, including both categorical indicator vari
 
 The outcome variable, DIBEV_A, is coded as a binary factor (0 = No diabetes, 1 = Diabetes diagnosis). Several categorical predictors are converted to factor type, and continuous variables such as age, height, and weight are included directly. A logistic regression model with a logit link is fitted.
 
-The original detailed model : 
+# Correlation Analysis
+
+To better understand the relationships between the variables in our dataset, we find the need to conduct a correlation analysis. The original dataset was obtained from the 2024 NHIS (National Health Interview Survey), which contains information on demographic characteristics, health conditions, and behavioral factors for a nationally representative sample of adults. The cleaned dataset included variables such as age, sex, weight, height, and various health indicators.  
+
+***Correlation analysis*** serves as a preliminary step to identify variables that are linearly associated. Understanding these relationships helps us:
+-	Detect potential multicollinearity before performing regression analyses or more complex modeling.
+-	Provide evidence-based justification for including or excluding certain variables in our following statistical models.
+
+We computed ***pairwise Pearson correlations*** for all numeric variables. Correlations with an absolute value greater than 0.3 are considered moderate or strong associations. Additionally, diagonal elements (self-correlations) were excluded from interpretation, and symmetric duplicates were removed to ensure clarity.  
+
+To understand ***Coefficient of determination*** ($R^2$), $R^2$ represents the proportion of the variance in one variable that is predictable from the other variable.
+For our selected threshold of $r = 0.3$:
+$$R^2 = (0.3)^2 = 0.09$$
+This means that for two variables correlated at $r = 0.3$, 9% of the variation in one variable is explained by the other variable. 
+
+```{r}
+# Select numeric variables
+nhis24_df_fit_corr = nhis24_df_fit |> 
+  select(-BMI_A)
+
+numeric_vars <- nhis24_df_fit_corr[, sapply(nhis24_df_fit_corr, is.numeric)]
+
+# Compute correlation matrix
+cor_matrix <- cor(numeric_vars, use = "pairwise.complete.obs")
+
+# Show matrix
+print(cor_matrix)
+
+cor_pt = as.data.frame(as.table(cor_matrix)) |> 
+  ggplot(aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red",
+    midpoint = 0, 
+    name = "Correlation"  
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+cor_pt
+```
+
+Key Findings:
+From our analysis, the following moderate-to-strong correlations were observed:
+```{r}
+# > 0.03 in cor_matrix
+# Convert correlation matrix to a data frame
+cor_df <- as.data.frame(as.table(cor_matrix))
+
+# Rename columns
+colnames(cor_df) <- c("Var1", "Var2", "Correlation")
+# Filter |correlation| > 0.3 but exclude self-correlations
+high_cor <- cor_df |> 
+  filter(abs(Correlation) > 0.3 & Var1 != Var2)
+
+# remove duplicate
+high_cor_unique <- high_cor %>%
+  rowwise() %>%
+  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) %>%
+  distinct(pair, .keep_all = TRUE) %>%
+  select(-pair) |> 
+  arrange(desc(Correlation))
+
+knitr::kable(high_cor_unique, caption = "Variables with Correlation > 0.3")
+```
+
+By choosing $r > 0.3$, we are strategically focusing our analysis on variables that exhibit a relationship deemed moderate or stronger, filtering out very weak or negligible associations that may not be meaningful for our research or modeling goals.
+
+As highlighted in the correlation analysis above, height and weight exhibited a strong linear association, an observation that raised concerns about potential multicollinearity in subsequent regression modeling. Multicollinearity can distort coefficient estimates and reduce model reliability, so we opted to exclude these two highly correlated variables from the model. In their place, we introduced a continuous BMI variable using the raw height and weight data. This replacement strategy offers dual advantages: it eliminates the multicollinearity risk posed by height and weight while integrating their combined biological information into a single, interpretable metric, thereby adequately addressing confounding from these two factors.
+
+Below is the specification of the initial full logistic regression model (prior to further variable selection):
 
 $$
 \text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
-+ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{WEIGHTLBTC_A} + \beta_4 \cdot \text{HEIGHTTC_A} \\
-+ \beta_5 \cdot \text{DIFF_A} + \beta_6 \cdot \text{EDUCP_A} + \beta_7 \cdot \text{LSATIS4_A} + \beta_8 \cdot \text{PHSTAT_A} + \beta_9 \cdot \text{CHLEV_A} \\
-+ \beta_{10} \cdot \text{HYPEV_A} + \beta_{11} \cdot \text{LIVEREV_A} + \beta_{12} \cdot \text{STREV_A} + \beta_{13} \cdot \text{MIEV_A} + \beta_{14} \cdot \text{ANGEV_A} \\
-+ \beta_{15} \cdot \text{CHDEV_A} + \beta_{16} \cdot \text{DEPEV_A} + \beta_{17} \cdot \text{ANXEV_A} + \beta_{18} \cdot \text{SMKEV_A} + \beta_{19} \cdot \text{LONELY_A}
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMI_A} + \beta_4 \cdot \text{DIFF_A} + \beta_5 \cdot \text{EDUCP_A} \\
++ \beta_6 \cdot \text{LSATIS4_A} + \beta_7 \cdot \text{PHSTAT_A} + \beta_8 \cdot \text{CHLEV_A} + \beta_9 \cdot \text{HYPEV_A} + \beta_{10} \cdot \text{LIVEREV_A} \\
++ \beta_{11} \cdot \text{STREV_A} + \beta_{12} \cdot \text{MIEV_A} + \beta_{13} \cdot \text{ANGEV_A} + \beta_{14} \cdot \text{CHDEV_A} + \beta_{15} \cdot \text{DEPEV_A} \\
++ \beta_{16} \cdot \text{ANXEV_A} + \beta_{17} \cdot \text{SMKEV_A} + \beta_{18} \cdot \text{LONELY_A}
 $$
-  
+
 # Build Model
 
 ```{r}
@@ -97,7 +169,7 @@ df_model =
 ```
 
 ```{r}
-model_formula <- DIBEV_A ~ SEX_A + AGEP_A + WEIGHTLBTC_A + HEIGHTTC_A +
+model_formula <- DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
                            DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
@@ -111,7 +183,7 @@ glm_model <- glm(
 summary(glm_model)
 ```
 
-## bar chart of P-value
+## Bar chart of P-value
 ```{r}
 glm_summary = summary(glm_model)
 
@@ -458,76 +530,6 @@ Anxiety was not significantly related to diabetes.
 ## Summary of Findings
 Overall, the multivariable logistic regression analysis identifies several strong predictors of diabetes. Obesity, hypertension, high cholesterol, liver disease, poor general health, and myocardial infarction were among the strongest risk factors, each contributing substantially to elevated diabetes odds. Higher education showed a consistent protective effect. Mobility limitations were also associated with greater risk, illustrating the interconnected nature of physical functioning and metabolic health. While depression was significantly associated with increased diabetes risk, other psychosocial factors such as anxiety and loneliness were not significant in this adjusted model. Smoking likewise showed no significant association. Collectively, these findings highlight the multifactorial nature of diabetes, involving biological, behavioral, and socioeconomic determinants.
 
-# Correlation Analysis
-
-To better understand the relationships between the variables in our dataset, we find the need to conduct a correlation analysis. The original dataset was obtained from the 2024 NHIS (National Health Interview Survey), which contains information on demographic characteristics, health conditions, and behavioral factors for a nationally representative sample of adults. The cleaned dataset included variables such as age, sex, weight, height, and various health indicators.  
-
-***Correlation analysis*** serves as a preliminary step to identify variables that are linearly associated. Understanding these relationships helps us:
--	Detect potential multicollinearity before performing regression analyses or more complex modeling.
--	Provide evidence-based justification for including or excluding certain variables in our following statistical models.
-
-We computed ***pairwise Pearson correlations*** for all numeric variables. Correlations with an absolute value greater than 0.3 are considered moderate or strong associations. Additionally, diagonal elements (self-correlations) were excluded from interpretation, and symmetric duplicates were removed to ensure clarity.  
-
-To understand ***Coefficient of determination*** ($R^2$), $R^2$ represents the proportion of the variance in one variable that is predictable from the other variable.
-For our selected threshold of $r = 0.3$:
-$$R^2 = (0.3)^2 = 0.09$$
-This means that for two variables correlated at $r = 0.3$, 9% of the variation in one variable is explained by the other variable. 
-
-```{r}
-# Select numeric variables
-nhis24_df_fit_corr = nhis24_df_fit |> 
-  select(-BMI_A)
-
-numeric_vars <- nhis24_df_fit_corr[, sapply(nhis24_df_fit_corr, is.numeric)]
-
-# Compute correlation matrix
-cor_matrix <- cor(numeric_vars, use = "pairwise.complete.obs")
-
-# Show matrix
-print(cor_matrix)
-
-cor_pt = as.data.frame(as.table(cor_matrix)) |> 
-  ggplot(aes(Var1, Var2, fill = Freq)) +
-  geom_tile() +
-  scale_fill_gradient2(
-    low = "blue", mid = "white", high = "red",
-    midpoint = 0, 
-    name = "Correlation"  
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
-cor_pt
-```
-
-Key Findings:
-From our analysis, the following moderate-to-strong correlations were observed:
-```{r}
-# > 0.03 in cor_matrix
-# Convert correlation matrix to a data frame
-cor_df <- as.data.frame(as.table(cor_matrix))
-
-# Rename columns
-colnames(cor_df) <- c("Var1", "Var2", "Correlation")
-# Filter |correlation| > 0.3 but exclude self-correlations
-high_cor <- cor_df |> 
-  filter(abs(Correlation) > 0.3 & Var1 != Var2)
-
-# remove duplicate
-high_cor_unique <- high_cor %>%
-  rowwise() %>%
-  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) %>%
-  distinct(pair, .keep_all = TRUE) %>%
-  select(-pair) |> 
-  arrange(desc(Correlation))
-
-knitr::kable(high_cor_unique, caption = "Variables with Correlation > 0.3")
-```
-
-By choosing $r > 0.3$, we are strategically focusing our analysis on variables that exhibit a relationship deemed moderate or stronger, filtering out very weak or negligible associations that may not be meaningful for our research or modeling goals.
-
 
 # Test for confounders
 
@@ -625,7 +627,7 @@ compare_table |>
   )
 ```
 
-## bar chart of % change in OR
+## Bar chart of % change in OR
 
 ```{r}
 compare_table |>
@@ -751,4 +753,26 @@ print(plot_fit_comparison)
 ```
 
 
+## Final Model Selection and Discussion
 
+Final Model Selection and DiscussionAfter conducting exploratory analysis, confounding adjustment, and rigorous model comparison, we ultimately selected the reduced logistic regression model—retaining only statistically significant predictors with $p < 0.05$ —as the optimal framework for predicting diabetes diagnosis (DIBEV_A). This decision is grounded in comprehensive evaluation of model performance metrics and adherence to core statistical principles, ensuring the final model balances predictive accuracy, parsimony, and interpretability, which are critical for both scientific validity and practical application.
+
+We compared two candidate models to identify the most robust predictive framework: the full model, which included all 18 initial predictors spanning demographic, anthropometric, lifestyle, and chronic disease domains, and the reduced model, which excluded six non-significant variables (LSATIS4_A, STREV_A, ANGEV_A, ANXEV_A, SMKEV_A , and LONELY_A) while retaining 12 statistically significant predictors. Both models were fitted on the same sample of 23,626 observations, ensuring a fair comparison of their performance. Key fit metrics revealed distinct differences: the full model included 24 predictors (accounting for factor levels) with an Akaike Information Criterion (AIC) of 15,090 and a Bayesian Information Criterion (BIC) of 15,293, whereas the reduced model included 15 predictors with an AIC of 15,095 and a BIC of 15,224.
+
+The primary rationale for prioritizing the reduced model lies in its superior performance as measured by BIC, a metric that penalizes model complexity more heavily than AIC, making it particularly well-suited for avoiding overfitting in large datasets like the 2024 NHIS sample. The reduced model achieved a BIC of 15,224, which is 69 points lower than the full model’s BIC of 15,293. A BIC difference greater than 10 constitutes strong evidence in favor of the model with the lower value, and the substantial 69-point difference here confirms the reduced model offers a far better trade-off between fit and complexity. It retains the predictive power of the full model while eliminating redundant variables that do not contribute meaningfully to explaining diabetes risk, reducing the likelihood of overfitting and enhancing the model’s generalizability to external populations. 
+
+While the full model exhibited a slightly lower AIC (15,090 vs. 15,095 for the reduced model), the 5-point difference is trivial in practical terms—AIC differences of less than 10 are typically considered negligible in model selection. This minor trade-off in AIC is more than justified by the reduced model’s advantages in parsimony and interpretability. Excluding the six non-significant variables simplifies the model structure without sacrificing predictive performance: life satisfaction, stroke, and angina showed no independent association with diabetes after adjusting for other covariates; the apparent protective effect of anxiety in unadjusted analyses was attributed to confounding (as demonstrated in our confounder analysis) and became non-significant in the full model; and smoking and loneliness showed no robust evidence of association with diabetes in this nationally representative sample, consistent with some prior research highlighting context-dependent relationships for these factors (e.g., smoking may interact with unmeasured metabolic variables not included in the model). 
+
+Additionally, the reduced model maintains the critical adjustments made to address multicollinearity and confounding. As identified in our correlation analysis, height and weight exhibited strong linear association, which posed a risk of multicollinearity in regression modeling. We resolved this issue by replacing these two variables with a newly derived continuous BMI variable, which integrates anthropometric information from both predictors while mitigating collinearity. Our confounder analysis further confirmed that the significant predictors retained in the reduced model—including BMI, hypertension, high cholesterol, education, and depression—have robust associations with diabetes that are not substantially altered by adjustment for demographic factors, ensuring the model’s stability and reliability.
+
+The optimal reduced logistic regression model is formally defined as
+$$
+\text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMI_A} \\
++ \beta_4 \cdot \text{DIFF_A} + \beta_5 \cdot \text{EDUCP_A} + \beta_6 \cdot \text{PHSTAT_A} \\
++ \beta_7 \cdot \text{CHLEV_A} + \beta_8 \cdot \text{HYPEV_A} + \beta_9 \cdot \text{LIVEREV_A} \\
++ \beta_{10} \cdot \text{MIEV_A} + \beta_{11} \cdot \text{CHDEV_A} + \beta_{12} \cdot \text{DEPEV_A}
+$$
+The retained predictors cover key domains relevant to diabetes risk: demographics (sex, age), anthropometrics (continuous BMI), mobility (difficulty walking), socioeconomic status (education), general health status, chronic conditions, and mental health (depression). This comprehensive yet parsimonious set of predictors ensures the model captures the multifactorial nature of diabetes while remaining easy to interpret and communicate to stakeholders such as clinicians and public health officials.
+
+In summary, the reduced model represents the optimal choice for this analysis. It offers superior parsimony, a substantially lower BIC indicating better fit adjusted for complexity, and retains only clinically and statistically meaningful predictors of diabetes diagnosis. By prioritizing this model, we ensure that our findings are both statistically rigorous and practically useful, providing actionable insights into the key factors associated with diabetes risk in a nationally representative adult population.
