@@ -115,10 +115,10 @@ high_cor <- cor_df |>
   filter(abs(Correlation) > 0.3 & Var1 != Var2)
 
 # remove duplicate
-high_cor_unique <- high_cor %>%
-  rowwise() %>%
-  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) %>%
-  distinct(pair, .keep_all = TRUE) %>%
+high_cor_unique <- high_cor |>
+  rowwise() |>
+  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) |>
+  distinct(pair, .keep_all = TRUE) |>
   select(-pair) |> 
   arrange(desc(Correlation))
 
@@ -696,16 +696,16 @@ model_significant <- glm(
   na.action = na.omit 
 )
 
-model_full_stats <- glance(model_full) %>%
-  select(AIC, BIC) %>%
+model_full_stats <- glance(model_full)  |> 
+  select(AIC, BIC) |>
   mutate(
     model = "Full Model",
     n_predictors = length(coef(model_full)) - 1,
     n_obs = nobs(model_full)
   )
 
-model_significant_stats <- glance(model_significant) %>%
-  select(AIC, BIC) %>%
+model_significant_stats <- glance(model_significant) |>
+  select(AIC, BIC) |>
   mutate(
     model = "Reduced (Significant Variables) Model",
     n_predictors = length(coef(model_significant)) - 1,
@@ -713,13 +713,13 @@ model_significant_stats <- glance(model_significant) %>%
   )
 
 # Combine and clean results
-model_compare <- bind_rows(model_full_stats, model_significant_stats) %>%
+model_compare <- bind_rows(model_full_stats, model_significant_stats) |>
   # NOTE: Rename for graphing purpose, but remember these are AIC/BIC values!
   # AIC and BIC are measures of fit (lower is better), unlike R^2 (higher is better).
   rename(
     Fit_Metric_1 = AIC,
     Fit_Metric_2 = BIC
-  ) %>%
+  ) |>
   select(model, n_obs, n_predictors, Fit_Metric_1, Fit_Metric_2)
 
 cat("=== Model Comparison: Full vs Reduced (Significant Variables) ===\n")
