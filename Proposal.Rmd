@@ -46,7 +46,7 @@ This section summarizes the planned analytical steps, key visualizations generat
 
 - Exploratory Spatial Data Analysis
 
-## Visualizations: 
+## Visualizations
 - P-value Bar Chart: This horizontal bar chart presents the p-value for every predictor in the full logistic regression model. It includes a dashed line at $p=0.05$ and uses distinct coloring to immediately highlight which variables are statistically significant.
 
 - Forest Plot of Adjusted Odds Ratios: A critical point-range plot that displays the Adjusted Odds Ratios (ORs) and their 95% Confidence Intervals (CIs) on a log scale. It includes a vertical reference line at $\text{OR}=1$, allowing for a clear visual assessment of the direction (risk or protective) and statistical significance of each association.
@@ -61,7 +61,7 @@ This section summarizes the planned analytical steps, key visualizations generat
 
 - Concise table summarizing key findings
 
-## Coding challenges: 
+## Coding challenges
 We may face challenges such as harmonizing variable definitions between earlier and updated datasets, dealing with missing data (through imputation or sensitivity analyses), automating reproducible workflows using git and R Markdown, and applying various models to explore the relationship between covariates and T2D. Furthermore, a significant coding challenge arose during the visualization of diabetes prevalence in New York State using a plotly Choropleth Map, due to a FIPS code mismatch. The goal was to map diabetes Percentage to each county using its unique FIPS code as the identifier, but the external GeoJSON standard strictly requires these codes to be five-digit character strings (e.g., '36001'). The raw data initially read the FIPS column as numeric, causing leading zeros to be inadvertently dropped. To resolve this critical issue and ensure the county identifiers in the data successfully matched the geometric identifiers in the geojson-counties-fips.json file, the explicit R function `sprintf("%05d", ...)` was employed. This function guarantees the FIPS code is converted to a fixed-width, zero-padded string, enabling plotly to correctly render the visualization by mapping `locations = ~CountyFIPS` to the GeoJSON boundaries.
 
 # Timeline
