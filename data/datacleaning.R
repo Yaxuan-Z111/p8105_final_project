@@ -127,7 +127,7 @@ nhis24_df_fit <-
   ) |>
   
   select(
-    SEX_A, AGEP_A, DIBEV_A, BMI_A, WEIGHTLBTC_A, HEIGHTTC_A,
+    SEX_A, AGEP_A, DIBEV_A, BMI_A,
     DIFF_A, EDUCP_A, LSATIS4_A, PHSTAT_A,
     CHLEV_A, HYPEV_A, LIVEREV_A, STREV_A,
     MIEV_A, ANGEV_A, CHDEV_A,
