@@ -572,10 +572,10 @@ high_cor &lt;- cor_df |&gt;
   filter(abs(Correlation) &gt; 0.3 &amp; Var1 != Var2)
 
 # remove duplicate
-high_cor_unique &lt;- high_cor %&gt;%
-  rowwise() %&gt;%
-  mutate(pair = paste(sort(c(Var1, Var2)), collapse = &quot;_&quot;)) %&gt;%
-  distinct(pair, .keep_all = TRUE) %&gt;%
+high_cor_unique &lt;- high_cor |&gt;
+  rowwise() |&gt;
+  mutate(pair = paste(sort(c(Var1, Var2)), collapse = &quot;_&quot;)) |&gt;
+  distinct(pair, .keep_all = TRUE) |&gt;
   select(-pair) |&gt; 
   arrange(desc(Correlation))
 
@@ -789,8 +789,8 @@ P_value_hisg =
   theme_minimal()
 
 P_value_hisg</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values or values outside
-## the scale range (`geom_bar()`).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_bar()`).</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
 </div>
 </div>
@@ -2217,16 +2217,16 @@ model_significant &lt;- glm(
   na.action = na.omit 
 )
 
-model_full_stats &lt;- glance(model_full) %&gt;%
-  select(AIC, BIC) %&gt;%
+model_full_stats &lt;- glance(model_full)  |&gt; 
+  select(AIC, BIC) |&gt;
   mutate(
     model = &quot;Full Model&quot;,
     n_predictors = length(coef(model_full)) - 1,
     n_obs = nobs(model_full)
   )
 
-model_significant_stats &lt;- glance(model_significant) %&gt;%
-  select(AIC, BIC) %&gt;%
+model_significant_stats &lt;- glance(model_significant) |&gt;
+  select(AIC, BIC) |&gt;
   mutate(
     model = &quot;Reduced (Significant Variables) Model&quot;,
     n_predictors = length(coef(model_significant)) - 1,
@@ -2234,13 +2234,13 @@ model_significant_stats &lt;- glance(model_significant) %&gt;%
   )
 
 # Combine and clean results
-model_compare &lt;- bind_rows(model_full_stats, model_significant_stats) %&gt;%
+model_compare &lt;- bind_rows(model_full_stats, model_significant_stats) |&gt;
   # NOTE: Rename for graphing purpose, but remember these are AIC/BIC values!
   # AIC and BIC are measures of fit (lower is better), unlike R^2 (higher is better).
   rename(
     Fit_Metric_1 = AIC,
     Fit_Metric_2 = BIC
-  ) %&gt;%
+  ) |&gt;
   select(model, n_obs, n_predictors, Fit_Metric_1, Fit_Metric_2)
 
 cat(&quot;=== Model Comparison: Full vs Reduced (Significant Variables) ===\n&quot;)</code></pre>
