@@ -657,3 +657,31 @@ compare_table |>
 When comparing models with and without adjustment for the prespecified confounders (age, sex, BMI, and education), most predictors showed relatively small changes in odds ratios (generally within about ±10%; e.g., life satisfaction, self-rated health, high cholesterol, liver disease, stroke, myocardial infarction, angina, CHD, depression, smoking, and loneliness), suggesting that their associations with diabetes are reasonably robust to demographic and anthropometric adjustment.
 
 In contrast, the odds ratios for mobility difficulty (DIFF_A) and hypertension (HYPEV_A) were attenuated by approximately 16–22% after adjustment, indicating that part of their crude associations with diabetes was explained by age, sex, BMI, and education. However, the adjusted ORs for higher levels of mobility difficulty and for hypertension remained clearly above 1, supporting these factors as independent risk markers. For anxiety (ANXEV_A), the OR moved about 11% toward the null and was no longer statistically significant, suggesting that the apparent protective association in the reduced model was largely driven by confounding rather than a true protective effect.
+
+## Confounder-Adjusted Performance Evaluation of the Latest Predictive Model
+
+```{r}
+# Full model (includes all original predictors)
+model_full <- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+              DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + CHDEV_A + DEPEV_A +
+              ANXEV_A + SMKEV_A + LONELY_A,
+  data = df_model,
+  family = binomial(link = "logit"),
+  na.action = na.omit 
+)
+
+# Reduced model (only includes statistically significant predictors, p < 0.05)
+model_significant <- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+              DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
+  data = df_model,
+  family = binomial(link = "logit"),
+  na.action = na.omit 
+)
+```
+
+
+
