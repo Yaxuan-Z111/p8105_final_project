@@ -39,8 +39,8 @@ df_raw = read_csv(
   skip = 2
 )
 
-ny_df = df_raw %>%
-  filter(State == "New York") %>%
+ny_df = df_raw |> 
+  filter(State == "New York") |> 
   mutate(
     CountyFIPS = sprintf("%05d", as.numeric(CountyFIPS)),
     Percentage = as.numeric(Percentage),
