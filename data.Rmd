@@ -76,8 +76,9 @@ The variable was converted to:
 
 ---
 
-### BMICATD_A
+### BMICATD_A & BMI_A
 #### Original Meaning
+The original dataset:
 BMI category assigned based on measured height and weight:  
 1 = Underweight  
 2 = Healthy weight  
@@ -91,6 +92,11 @@ BMI was regrouped into four meaningful analytic categories:
 - 1 = Underweight  
 - 2 = Overweight  
 - 3 = Obesity (classes I–III combined)
+
+#### BMI_A
+We constructed a new continuous BMI variable using the standard BMI formula (weight in kilograms divided by height in meters squared). 
+
+New variable `BMI_A` is a continuous variable that integrates information on both height and weight, thereby helping to account for potential confounding by these two variables.
 
 ---
 
