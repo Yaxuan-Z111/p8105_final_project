@@ -789,8 +789,8 @@ P_value_hisg =
   theme_minimal()
 
 P_value_hisg</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values or values outside
-## the scale range (`geom_bar()`).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_bar()`).</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
 </div>
 </div>
@@ -2246,6 +2246,11 @@ model_compare &lt;- bind_rows(model_full_stats, model_significant_stats) |&gt;
 cat(&quot;=== Model Comparison: Full vs Reduced (Significant Variables) ===\n&quot;)</code></pre>
 <pre><code>## === Model Comparison: Full vs Reduced (Significant Variables) ===</code></pre>
 <pre class="r"><code>print(model_compare, digits = 4) </code></pre>
+<pre><code>## Warning: `...` must be empty in `format.tbl()`
+## Caused by error in `format_tbl()`:
+## ! `...` must be empty.
+## ✖ Problematic argument:
+## • digits = 4</code></pre>
 <pre><code>## # A tibble: 2 × 5
 ##   model                             n_obs n_predictors Fit_Metric_1 Fit_Metric_2
 ##   &lt;chr&gt;                             &lt;int&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
