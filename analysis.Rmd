@@ -205,6 +205,7 @@ P_value_hisg =
   ) +
   geom_hline(yintercept = 0.05, linetype = "dashed", color = "black") +
   coord_flip() +
+  scale_y_continuous(limits = c(0, 0.5)) +
   labs(
     title = "P-values from Logistic Regression",
     x = "Variables",

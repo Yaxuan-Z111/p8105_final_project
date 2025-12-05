@@ -777,6 +777,7 @@ P_value_hisg =
   ) +
   geom_hline(yintercept = 0.05, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
   coord_flip() +
+  scale_y_continuous(limits = c(0, 0.5)) +
   labs(
     title = &quot;P-values from Logistic Regression&quot;,
     x = &quot;Variables&quot;,
@@ -785,7 +786,13 @@ P_value_hisg =
   theme_minimal()
 
 P_value_hisg</code></pre>
+<<<<<<< Updated upstream
 <p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
+=======
+<pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_bar()`).</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" /></p>
+>>>>>>> Stashed changes
 </div>
 </div>
 <div id="model-results" class="section level1">
