@@ -62,7 +62,7 @@ fig = plot_ly(
   text = ~hover,
   hoverinfo = "text",
   marker = list(line = list(width = 0))
-) %>%
+) |> 
   layout(
     title = "Prevalence of T2D by County (New York State)",
     geo = list(
