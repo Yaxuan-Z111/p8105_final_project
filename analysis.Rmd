@@ -379,7 +379,7 @@ Below is the interpretation of the logistic regression output, with each variabl
 ### Sex
 #### Male vs Female
 - Coefficient β = –0.4402  
-- OR = 0.644 (95% CI: 0.602–0.688), *p* < 0.001  
+- OR = 1.211 (95% CI:1.11 - 1.322), *p* < 0.001  
 
 Males had significantly lower odds of diabetes compared with females after adjusting for all covariates.
 
@@ -387,7 +387,7 @@ Males had significantly lower odds of diabetes compared with females after adjus
 
 ### Age
 #### Continuous (per year increase)
-- OR = 1.002 (95% CI: 1.000–1.003), *p* = 0.0156  
+- OR =1.013(95% CI:1.009 - 1.016), *p*= 0.00335
 
 Older age was a small but statistically significant risk factor for diabetes.
 
@@ -395,7 +395,7 @@ Older age was a small but statistically significant risk factor for diabetes.
 
 ### Smoking
 #### Smoker vs Non-Smoker
-- OR = 0.916 (95% CI: 0.838–1.001), *p* = 0.0534  
+- OR = 0.878 (95% CI: 0.805 - 0.958), *p* = 0.0534  
 
 Smoking showed a borderline non-significant inverse association.  
 There is no strong evidence of an association between smoking and diabetes in this adjusted model.
@@ -429,16 +429,9 @@ Those with high education had markedly lower odds of diabetes.
 
 ### BMI 
 
-The original dataset included a categorical BMI variable, with normal weight (BMI category 0) as the reference group:
-
-Reference = BMI category 0 (Normal weight)
-
-- Underweight: OR = 1.887, *p* < 0.001  
-- Overweight: OR = 2.314, *p* < 0.001  
-- Obesity (Class I–III): OR = 4.491, *p* < 0.001  
-
+- OR=1.005 (95% CI:1.003 - 1.007),	*p* < 0.001 
 BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model. Furthermore, we derived a new continuous BMI variable using the standard BMI formula (weight in kilograms divided by height in meters squared) from the dataset’s height and weight measurements. This continuous transformation integrates information on both height and weight, thereby helping to account for potential confounding by these two variables.
-
+And this is virified as very significant.
 ---
 
 ### Difficulty Walking (Mobility)
