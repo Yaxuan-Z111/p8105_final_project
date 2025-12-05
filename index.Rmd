@@ -26,7 +26,7 @@ Learn more about the data [here](data.html).
 
 # Statistical Analysis
 
-Accounting for the complex survey design using appropriate sampling weights and design variables, we fit generalized linear models (GLMs) with T2D status as the binary outcome and include all selected NHIS variables as candidate predictors in the same model. We then extend these models with interaction terms and use nested model comparisons to assess effect modification and potential confounding. 
+Accounting for the complex survey design using appropriate sampling weights and design variables, we fit generalized linear models (GLMs) with T2D status as the binary outcome and include all selected NHIS variables as candidate predictors in the same model. We then use nested model comparisons to assess effect modification and potential confounding. 
 
 Further details on the analysis are provided [here](analysis.html).
 
