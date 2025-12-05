@@ -422,17 +422,16 @@ logit link is fitted.</p>
 \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) =
 \beta_0 \\
 + \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3
-\cdot \text{BMICATD_A} + \beta_4 \cdot \text{WEIGHTLBTC_A} + \beta_5
-\cdot \text{HEIGHTTC_A} \\
-+ \beta_6 \cdot \text{DIFF_A} + \beta_7 \cdot \text{EDUCP_A} + \beta_8
-\cdot \text{LSATIS4_A} + \beta_9 \cdot \text{PHSTAT_A} + \beta_{10}
-\cdot \text{CHLEV_A} \\
-+ \beta_{11} \cdot \text{HYPEV_A} + \beta_{12} \cdot \text{LIVEREV_A} +
-\beta_{13} \cdot \text{STREV_A} + \beta_{14} \cdot \text{MIEV_A} +
-\beta_{15} \cdot \text{ANGEV_A} \\
-+ \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} +
-\beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} +
-\beta_{20} \cdot \text{LONELY_A}
+\cdot \text{WEIGHTLBTC_A} + \beta_4 \cdot \text{HEIGHTTC_A} \\
++ \beta_5 \cdot \text{DIFF_A} + \beta_6 \cdot \text{EDUCP_A} + \beta_7
+\cdot \text{LSATIS4_A} + \beta_8 \cdot \text{PHSTAT_A} + \beta_9 \cdot
+\text{CHLEV_A} \\
++ \beta_{10} \cdot \text{HYPEV_A} + \beta_{11} \cdot \text{LIVEREV_A} +
+\beta_{12} \cdot \text{STREV_A} + \beta_{13} \cdot \text{MIEV_A} +
+\beta_{14} \cdot \text{ANGEV_A} \\
++ \beta_{15} \cdot \text{CHDEV_A} + \beta_{16} \cdot \text{DEPEV_A} +
+\beta_{17} \cdot \text{ANXEV_A} + \beta_{18} \cdot \text{SMKEV_A} +
+\beta_{19} \cdot \text{LONELY_A}
 \]</span></p>
 </div>
 <div id="build-model" class="section level1">
@@ -445,7 +444,6 @@ logit link is fitted.</p>
     
     # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
     SEX_A = factor(SEX_A), # Assume 1/2 coding is acceptable
-    BMICATD_A = factor(BMICATD_A), # Codes 0, 1, 2, 3
     DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
     EDUCP_A = factor(EDUCP_A), # Codes 0, 1, 2
     LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
@@ -462,7 +460,7 @@ logit link is fitted.</p>
     SMKEV_A = factor(SMKEV_A), # Codes 0, 1
     LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
   ) </code></pre>
-<pre class="r"><code>model_formula &lt;- DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A + 
+<pre class="r"><code>model_formula &lt;- DIBEV_A ~ SEX_A + AGEP_A + WEIGHTLBTC_A + HEIGHTTC_A +
                            DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
@@ -481,45 +479,43 @@ summary(glm_model)</code></pre>
 ## 
 ## Coefficients:
 ##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  -3.3804123  0.5948181  -5.683 1.32e-08 ***
-## SEX_A1        0.2679901  0.0622719   4.304 1.68e-05 ***
-## AGEP_A        0.0212543  0.0019510  10.894  &lt; 2e-16 ***
-## BMICATD_A1   -1.1100671  0.3522212  -3.152  0.00162 ** 
-## BMICATD_A2    0.5043795  0.0659413   7.649 2.03e-14 ***
-## BMICATD_A3    0.9985941  0.0693331  14.403  &lt; 2e-16 ***
-## WEIGHTLBTC_A  0.0012410  0.0003787   3.277  0.00105 ** 
-## HEIGHTTC_A   -0.0288851  0.0096941  -2.980  0.00289 ** 
-## DIFF_A1       0.1613321  0.0555216   2.906  0.00366 ** 
-## DIFF_A2       0.3171973  0.0766891   4.136 3.53e-05 ***
-## DIFF_A3       0.2415579  0.1393943   1.733  0.08311 .  
-## EDUCP_A1     -0.1094541  0.0523165  -2.092  0.03642 *  
-## EDUCP_A2     -0.3220990  0.0548189  -5.876 4.21e-09 ***
-## LSATIS4_A1   -0.1229233  0.0976854  -1.258  0.20826    
-## PHSTAT_A1     0.6949544  0.0532801  13.043  &lt; 2e-16 ***
-## CHLEV_A1      0.7451109  0.0469785  15.861  &lt; 2e-16 ***
-## HYPEV_A1      0.7553104  0.0513709  14.703  &lt; 2e-16 ***
-## LIVEREV_A1    0.6563458  0.1354417   4.846 1.26e-06 ***
-## STREV_A1      0.1061399  0.0827067   1.283  0.19938    
-## MIEV_A1       0.2843106  0.0876442   3.244  0.00118 ** 
-## ANGEV_A1      0.0081820  0.1125910   0.073  0.94207    
-## CHDEV_A1      0.2292477  0.0733358   3.126  0.00177 ** 
-## DEPEV_A1      0.1614773  0.0644540   2.505  0.01223 *  
-## ANXEV_A1     -0.0823857  0.0666432  -1.236  0.21638    
-## SMKEV_A1     -0.0874370  0.0452642  -1.932  0.05340 .  
-## LONELY_A1     0.0409552  0.0547341   0.748  0.45431    
-## LONELY_A2     0.0683829  0.0577379   1.184  0.23627    
-## LONELY_A3    -0.1803688  0.1416713  -1.273  0.20297    
-## LONELY_A4     0.1505242  0.1238934   1.215  0.22439    
+## (Intercept)  -2.7267527  0.2980681  -9.148  &lt; 2e-16 ***
+## SEX_A1        0.2862709  0.0505910   5.659 1.53e-08 ***
+## AGEP_A        0.0124270  0.0018275   6.800 1.05e-11 ***
+## WEIGHTLBTC_A  0.0010069  0.0001564   6.438 1.21e-10 ***
+## HEIGHTTC_A   -0.0228491  0.0045609  -5.010 5.45e-07 ***
+## DIFF_A1       0.2858171  0.0542219   5.271 1.35e-07 ***
+## DIFF_A2       0.4667300  0.0747197   6.246 4.20e-10 ***
+## DIFF_A3       0.3399129  0.1345590   2.526 0.011533 *  
+## EDUCP_A1     -0.0780269  0.0512598  -1.522 0.127963    
+## EDUCP_A2     -0.3555672  0.0538897  -6.598 4.17e-11 ***
+## LSATIS4_A1   -0.2174969  0.0958377  -2.269 0.023242 *  
+## PHSTAT_A1     0.7039887  0.0524590  13.420  &lt; 2e-16 ***
+## CHLEV_A1      0.7904943  0.0461989  17.111  &lt; 2e-16 ***
+## HYPEV_A1      0.8909999  0.0501839  17.755  &lt; 2e-16 ***
+## LIVEREV_A1    0.6678149  0.1322618   5.049 4.44e-07 ***
+## STREV_A1      0.0613937  0.0811969   0.756 0.449584    
+## MIEV_A1       0.2405962  0.0857587   2.806 0.005024 ** 
+## ANGEV_A1      0.0095383  0.1105820   0.086 0.931263    
+## CHDEV_A1      0.2508067  0.0716892   3.499 0.000468 ***
+## DEPEV_A1      0.2081887  0.0632520   3.291 0.000997 ***
+## ANXEV_A1     -0.1089665  0.0654382  -1.665 0.095876 .  
+## SMKEV_A1     -0.1260164  0.0444401  -2.836 0.004573 ** 
+## LONELY_A1     0.0305683  0.0537037   0.569 0.569218    
+## LONELY_A2     0.0482583  0.0565496   0.853 0.393449    
+## LONELY_A3    -0.1575505  0.1373534  -1.147 0.251363    
+## LONELY_A4     0.1338970  0.1214139   1.103 0.270108    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 17357  on 23625  degrees of freedom
-## Residual deviance: 14423  on 23597  degrees of freedom
-## AIC: 14481
+##     Null deviance: 17654  on 24037  degrees of freedom
+## Residual deviance: 15031  on 24012  degrees of freedom
+##   (1 observation deleted due to missingness)
+## AIC: 15083
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <div id="bar-chart-of-p-value" class="section level2">
 <h2>bar chart of P-value</h2>
 <pre class="r"><code>glm_summary = summary(glm_model)
@@ -575,11 +571,6 @@ P_value_hisg</code></pre>
       Term = case_when(
         term == &quot;(Intercept)&quot; ~ &quot;Intercept&quot;,
         term == &quot;SEX_A2&quot; ~ &quot;SEX_A: Female (vs Male)&quot;,
-        
-        # BMI (0: Healthy Weight)
-        term == &quot;BMICATD_A1&quot; ~ &quot;BMICATD_A: Underweight (vs Healthy)&quot;,
-        term == &quot;BMICATD_A2&quot; ~ &quot;BMICATD_A: Overweight (vs Healthy)&quot;,
-        term == &quot;BMICATD_A3&quot; ~ &quot;BMICATD_A: Obese (vs Healthy)&quot;,
         
         # Difficulty Walking (0: No Difficulty)
         term == &quot;DIFF_A1&quot; ~ &quot;DIFF_A: Some Difficulty (vs No Difficulty)&quot;,
@@ -702,10 +693,10 @@ P-value
 Intercept
 </td>
 <td style="text-align:right;">
--3.3804
+-2.7268
 </td>
 <td style="text-align:right;">
-0.034 (0.011 - 0.109)
+0.065 (0.036 - 0.117)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -716,10 +707,10 @@ Intercept
 SEX_A1
 </td>
 <td style="text-align:right;">
-0.2680
+0.2863
 </td>
 <td style="text-align:right;">
-1.307 (1.157 - 1.477)
+1.331 (1.206 - 1.47)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -730,52 +721,10 @@ SEX_A1
 AGEP_A (Per Year)
 </td>
 <td style="text-align:right;">
-0.0213
+0.0124
 </td>
 <td style="text-align:right;">
-1.021 (1.018 - 1.025)
-</td>
-<td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Underweight (vs Healthy)
-</td>
-<td style="text-align:right;">
--1.1101
-</td>
-<td style="text-align:right;">
-0.33 (0.154 - 0.621)
-</td>
-<td style="text-align:right;">
-0.00162
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Overweight (vs Healthy)
-</td>
-<td style="text-align:right;">
-0.5044
-</td>
-<td style="text-align:right;">
-1.656 (1.456 - 1.886)
-</td>
-<td style="text-align:right;">
-&lt; 0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Obese (vs Healthy)
-</td>
-<td style="text-align:right;">
-0.9986
-</td>
-<td style="text-align:right;">
-2.714 (2.371 - 3.112)
+1.013 (1.009 - 1.016)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -786,13 +735,13 @@ BMICATD_A: Obese (vs Healthy)
 WEIGHTLBTC_A (Per lb)
 </td>
 <td style="text-align:right;">
-0.0012
+0.0010
 </td>
 <td style="text-align:right;">
-1.001 (1 - 1.002)
+1.001 (1.001 - 1.001)
 </td>
 <td style="text-align:right;">
-0.00105
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -800,13 +749,13 @@ WEIGHTLBTC_A (Per lb)
 HEIGHTTC_A (Per unit)
 </td>
 <td style="text-align:right;">
--0.0289
+-0.0228
 </td>
 <td style="text-align:right;">
-0.972 (0.953 - 0.99)
+0.977 (0.969 - 0.986)
 </td>
 <td style="text-align:right;">
-0.00289
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -814,13 +763,13 @@ HEIGHTTC_A (Per unit)
 DIFF_A: Some Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.1613
+0.2858
 </td>
 <td style="text-align:right;">
-1.175 (1.054 - 1.31)
+1.331 (1.196 - 1.48)
 </td>
 <td style="text-align:right;">
-0.00366
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -828,10 +777,10 @@ DIFF_A: Some Difficulty (vs No Difficulty)
 DIFF_A: A lot of Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.3172
+0.4667
 </td>
 <td style="text-align:right;">
-1.373 (1.181 - 1.595)
+1.595 (1.377 - 1.845)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -842,13 +791,13 @@ DIFF_A: A lot of Difficulty (vs No Difficulty)
 DIFF_A: Cannot do (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.2416
+0.3399
 </td>
 <td style="text-align:right;">
-1.273 (0.965 - 1.668)
+1.405 (1.075 - 1.823)
 </td>
 <td style="text-align:right;">
-0.08311
+0.01153
 </td>
 </tr>
 <tr>
@@ -856,13 +805,13 @@ DIFF_A: Cannot do (vs No Difficulty)
 EDUCP_A: Medium Edu (vs Low Edu)
 </td>
 <td style="text-align:right;">
--0.1095
+-0.0780
 </td>
 <td style="text-align:right;">
-0.896 (0.809 - 0.993)
+0.925 (0.836 - 1.023)
 </td>
 <td style="text-align:right;">
-0.03642
+0.12796
 </td>
 </tr>
 <tr>
@@ -870,10 +819,10 @@ EDUCP_A: Medium Edu (vs Low Edu)
 EDUCP_A: High Edu (vs Low Edu)
 </td>
 <td style="text-align:right;">
--0.3221
+-0.3556
 </td>
 <td style="text-align:right;">
-0.725 (0.651 - 0.807)
+0.701 (0.63 - 0.779)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -884,13 +833,13 @@ EDUCP_A: High Edu (vs Low Edu)
 LSATIS4_A: Dissatisfied (vs Satisfied)
 </td>
 <td style="text-align:right;">
--0.1229
+-0.2175
 </td>
 <td style="text-align:right;">
-0.884 (0.729 - 1.069)
+0.805 (0.665 - 0.969)
 </td>
 <td style="text-align:right;">
-0.20826
+0.02324
 </td>
 </tr>
 <tr>
@@ -898,10 +847,10 @@ LSATIS4_A: Dissatisfied (vs Satisfied)
 PHSTAT_A: Fair/Poor Health (vs Good Health)
 </td>
 <td style="text-align:right;">
-0.6950
+0.7040
 </td>
 <td style="text-align:right;">
-2.004 (1.805 - 2.224)
+2.022 (1.824 - 2.24)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -912,10 +861,10 @@ PHSTAT_A: Fair/Poor Health (vs Good Health)
 CHLEV_A: High Cholesterol (Yes)
 </td>
 <td style="text-align:right;">
-0.7451
+0.7905
 </td>
 <td style="text-align:right;">
-2.107 (1.922 - 2.31)
+2.204 (2.014 - 2.414)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -926,10 +875,10 @@ CHLEV_A: High Cholesterol (Yes)
 HYPEV_A: Hypertension (Yes)
 </td>
 <td style="text-align:right;">
-0.7553
+0.8910
 </td>
 <td style="text-align:right;">
-2.128 (1.925 - 2.355)
+2.438 (2.21 - 2.691)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -940,10 +889,10 @@ HYPEV_A: Hypertension (Yes)
 LIVEREV_A: Liver Disease (Yes)
 </td>
 <td style="text-align:right;">
-0.6563
+0.6678
 </td>
 <td style="text-align:right;">
-1.928 (1.474 - 2.508)
+1.95 (1.5 - 2.521)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -954,13 +903,13 @@ LIVEREV_A: Liver Disease (Yes)
 STREV_A: Stroke (Yes)
 </td>
 <td style="text-align:right;">
-0.1061
+0.0614
 </td>
 <td style="text-align:right;">
-1.112 (0.944 - 1.306)
+1.063 (0.906 - 1.245)
 </td>
 <td style="text-align:right;">
-0.19938
+0.44958
 </td>
 </tr>
 <tr>
@@ -968,13 +917,13 @@ STREV_A: Stroke (Yes)
 MIEV_A: Myocardial Infarction (Yes)
 </td>
 <td style="text-align:right;">
-0.2843
+0.2406
 </td>
 <td style="text-align:right;">
-1.329 (1.118 - 1.577)
+1.272 (1.074 - 1.504)
 </td>
 <td style="text-align:right;">
-0.00118
+0.00502
 </td>
 </tr>
 <tr>
@@ -982,13 +931,13 @@ MIEV_A: Myocardial Infarction (Yes)
 ANGEV_A: Angina (Yes)
 </td>
 <td style="text-align:right;">
-0.0082
+0.0095
 </td>
 <td style="text-align:right;">
-1.008 (0.807 - 1.255)
+1.01 (0.811 - 1.252)
 </td>
 <td style="text-align:right;">
-0.94207
+0.93126
 </td>
 </tr>
 <tr>
@@ -996,13 +945,13 @@ ANGEV_A: Angina (Yes)
 CHDEV_A: CHD (Yes)
 </td>
 <td style="text-align:right;">
-0.2292
+0.2508
 </td>
 <td style="text-align:right;">
-1.258 (1.089 - 1.451)
+1.285 (1.116 - 1.478)
 </td>
 <td style="text-align:right;">
-0.00177
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -1010,13 +959,13 @@ CHDEV_A: CHD (Yes)
 DEPEV_A: Depression (Yes)
 </td>
 <td style="text-align:right;">
-0.1615
+0.2082
 </td>
 <td style="text-align:right;">
-1.175 (1.035 - 1.333)
+1.231 (1.087 - 1.393)
 </td>
 <td style="text-align:right;">
-0.01223
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -1024,13 +973,13 @@ DEPEV_A: Depression (Yes)
 ANXEV_A: Anxiety (Yes)
 </td>
 <td style="text-align:right;">
--0.0824
+-0.1090
 </td>
 <td style="text-align:right;">
-0.921 (0.808 - 1.049)
+0.897 (0.788 - 1.019)
 </td>
 <td style="text-align:right;">
-0.21638
+0.09588
 </td>
 </tr>
 <tr>
@@ -1038,13 +987,13 @@ ANXEV_A: Anxiety (Yes)
 SMKEV_A: Smoker (Yes)
 </td>
 <td style="text-align:right;">
--0.0874
+-0.1260
 </td>
 <td style="text-align:right;">
-0.916 (0.838 - 1.001)
+0.882 (0.808 - 0.962)
 </td>
 <td style="text-align:right;">
-0.05340
+0.00457
 </td>
 </tr>
 <tr>
@@ -1052,13 +1001,13 @@ SMKEV_A: Smoker (Yes)
 LONELY_A: Rarely Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.0410
+0.0306
 </td>
 <td style="text-align:right;">
-1.042 (0.936 - 1.159)
+1.031 (0.928 - 1.145)
 </td>
 <td style="text-align:right;">
-0.45431
+0.56922
 </td>
 </tr>
 <tr>
@@ -1066,13 +1015,13 @@ LONELY_A: Rarely Lonely (vs Never Lonely)
 LONELY_A: Sometimes Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.0684
+0.0483
 </td>
 <td style="text-align:right;">
-1.071 (0.956 - 1.199)
+1.049 (0.939 - 1.172)
 </td>
 <td style="text-align:right;">
-0.23627
+0.39345
 </td>
 </tr>
 <tr>
@@ -1080,13 +1029,13 @@ LONELY_A: Sometimes Lonely (vs Never Lonely)
 LONELY_A: Usually Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
--0.1804
+-0.1576
 </td>
 <td style="text-align:right;">
-0.835 (0.629 - 1.096)
+0.854 (0.649 - 1.112)
 </td>
 <td style="text-align:right;">
-0.20297
+0.25136
 </td>
 </tr>
 <tr>
@@ -1094,13 +1043,13 @@ LONELY_A: Usually Lonely (vs Never Lonely)
 LONELY_A: Always Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.1505
+0.1339
 </td>
 <td style="text-align:right;">
-1.162 (0.909 - 1.477)
+1.143 (0.898 - 1.446)
 </td>
 <td style="text-align:right;">
-0.22439
+0.27011
 </td>
 </tr>
 </tbody>
@@ -1157,13 +1106,12 @@ OR=1, no association). Based on the plots, we used the 95% confidence
 interval (CI) exclusion of 1 as the measure of statistical significance,
 several variables demonstrated a significant independent association
 with a diabetes diagnosis. Predictors with OR &lt; 1 and 95% CIs not
-crossing 1 (e.g., underweight BMI, higher education, lower loneliness,
-smoking, anxiety) are linked to lower diabetes risk; those with OR &gt;
-1 and significant CIs (e.g., overweight/obese BMI, liver disease,
-fair/poor health, high cholesterol, hypertension) increase risk; and
-factors like stroke history, severe mobility difficulty, and some
-loneliness categories have CIs crossing 1, showing no significant
-association.</p>
+crossing 1 (e.g., height, higher education, lower loneliness, smoking,
+anxiety) are linked to lower diabetes risk; those with OR &gt; 1 and
+significant CIs (e.g., liver disease, fair/poor health, high
+cholesterol, hypertension) increase risk; and factors like stroke
+history, severe mobility difficulty, and some loneliness categories have
+CIs crossing 1, showing no significant association.</p>
 </div>
 <div id="interpretation-of-model-coefficients" class="section level1">
 <h1>Interpretation of Model Coefficients</h1>
@@ -1246,8 +1194,10 @@ Those with high education had markedly lower odds of diabetes.</p>
 <hr />
 </div>
 </div>
-<div id="bmi-category" class="section level3">
-<h3>BMI Category</h3>
+<div id="bmi" class="section level3">
+<h3>BMI</h3>
+<p>The original dataset included a categorical BMI variable, with normal
+weight (BMI category 0) as the reference group:</p>
 <p>Reference = BMI category 0 (Normal weight)</p>
 <ul>
 <li>Underweight: OR = 1.887, <em>p</em> &lt; 0.001<br />
@@ -1257,7 +1207,12 @@ Those with high education had markedly lower odds of diabetes.</p>
 <li>Obesity (Class I–III): OR = 4.491, <em>p</em> &lt; 0.001</li>
 </ul>
 <p>BMI demonstrated a strong dose-response relationship, with obesity
-being the strongest risk factor in the model.</p>
+being the strongest risk factor in the model. Furthermore, we derived a
+new continuous BMI variable using the standard BMI formula (weight in
+kilograms divided by height in meters squared) from the dataset’s height
+and weight measurements. This continuous transformation integrates
+information on both height and weight, thereby helping to account for
+potential confounding by these two variables.</p>
 <hr />
 </div>
 <div id="difficulty-walking-mobility" class="section level3">
@@ -1424,116 +1379,116 @@ cor_matrix &lt;- cor(numeric_vars, use = &quot;pairwise.complete.obs&quot;)
 
 # Show matrix
 print(cor_matrix)</code></pre>
-<pre><code>##                     SEX_A       AGEP_A     DIBEV_A     BMICATD_A WEIGHTLBTC_A
-## SEX_A         1.000000000 -0.040388892  0.02694137  0.0866516637  0.064662220
-## AGEP_A       -0.040388892  1.000000000  0.16007585 -0.0916407153 -0.048470410
-## DIBEV_A       0.026941368  0.160075851  1.00000000  0.1510215255  0.053078023
-## BMICATD_A     0.086651664 -0.091640715  0.15102153  1.0000000000  0.207905475
-## WEIGHTLBTC_A  0.064662220 -0.048470410  0.05307802  0.2079054750  1.000000000
-## HEIGHTTC_A    0.321615243 -0.064024811  0.01968152  0.0820925670  0.912324945
-## DIFF_A       -0.084069411  0.314408276  0.18934183  0.1125295963  0.114328544
-## EDUCP_A      -0.019527953 -0.108992298 -0.10339544 -0.1069023873 -0.054686139
-## LSATIS4_A     0.003748706  0.013652700  0.04385030  0.0094012261  0.036991823
-## PHSTAT_A      0.003598372  0.133536241  0.21372802  0.0930045248  0.092840293
-## CHLEV_A       0.021127680  0.284328985  0.20848776  0.0821478451  0.003976267
-## HYPEV_A       0.054234065  0.342098842  0.23178220  0.1734137503  0.064743733
-## LIVEREV_A     0.009693572  0.016115589  0.07241803  0.0304716404  0.028112502
-## STREV_A       0.011639088  0.139175239  0.08610259  0.0028393597 -0.003818800
-## MIEV_A        0.084331419  0.153810906  0.12502861  0.0201326268  0.014757232
-## ANGEV_A       0.042484785  0.093738355  0.07984732  0.0224014482  0.016085858
-## CHDEV_A       0.080220991  0.238456093  0.15260434  0.0239347816  0.021656113
-## DEPEV_A      -0.119848227 -0.056868260  0.06517238  0.0640698994  0.038366728
-## ANXEV_A      -0.119698561 -0.101522674  0.03934966  0.0485051669  0.028826694
-## SMKEV_A       0.114058275  0.089318299  0.03991683  0.0018603139  0.003876908
-## LONELY_A     -0.077105185  0.006445732  0.04639909  0.0006269059  0.031176893
+<pre><code>##                     SEX_A       AGEP_A     DIBEV_A         BMI_A WEIGHTLBTC_A
+## SEX_A         1.000000000 -0.042868452  0.02608891 -0.0650727624  0.023775186
+## AGEP_A       -0.042868452  1.000000000  0.15877588 -0.0272003899 -0.039137255
+## DIBEV_A       0.026088910  0.158775881  1.00000000  0.0545989532  0.045913915
+## BMI_A        -0.065072762 -0.027200390  0.05459895  1.0000000000  0.859544477
+## WEIGHTLBTC_A  0.023775186 -0.039137255  0.04591391  0.8595444771  1.000000000
+## HEIGHTTC_A    0.316690735 -0.063600389  0.01826195  0.4337936457  0.799050011
+## DIFF_A       -0.083609340  0.314770024  0.18926808  0.1061498687  0.111853142
+## EDUCP_A      -0.018633349 -0.110167585 -0.10219806 -0.0590023651 -0.053751746
+## LSATIS4_A     0.004632828  0.014765722  0.04304834  0.0205394334  0.032437704
+## PHSTAT_A      0.004457287  0.132158188  0.21397035  0.0660719575  0.080806904
+## CHLEV_A       0.021368849  0.282071105  0.20928841  0.0062743947 -0.003624974
+## HYPEV_A       0.052776072  0.340902944  0.23069476  0.0617338291  0.054635473
+## LIVEREV_A     0.010586810  0.015679225  0.07282944  0.0214833347  0.024908047
+## STREV_A       0.013346295  0.138577050  0.08623710 -0.0114561332 -0.009061361
+## MIEV_A        0.084168840  0.152957613  0.12550468  0.0004131829  0.008573370
+## ANGEV_A       0.042301310  0.093236622  0.07918214  0.0052707714  0.010858902
+## CHDEV_A       0.080453996  0.236341084  0.15359455  0.0036214698  0.014244862
+## DEPEV_A      -0.117213295 -0.056379711  0.06588226  0.0298515815  0.028601496
+## ANXEV_A      -0.118336875 -0.101487120  0.03924959  0.0268792180  0.022858494
+## SMKEV_A       0.114485589  0.088677637  0.03930695 -0.0195357886 -0.006836127
+## LONELY_A     -0.075645427  0.006805329  0.04730837  0.0207701391  0.026246070
 ##                HEIGHTTC_A      DIFF_A     EDUCP_A    LSATIS4_A     PHSTAT_A
-## SEX_A         0.321615243 -0.08406941 -0.01952795  0.003748706  0.003598372
-## AGEP_A       -0.064024811  0.31440828 -0.10899230  0.013652700  0.133536241
-## DIBEV_A       0.019681524  0.18934183 -0.10339544  0.043850299  0.213728016
-## BMICATD_A     0.082092567  0.11252960 -0.10690239  0.009401226  0.093004525
-## WEIGHTLBTC_A  0.912324945  0.11432854 -0.05468614  0.036991823  0.092840293
-## HEIGHTTC_A    1.000000000  0.05380468 -0.01232917  0.030618733  0.055876581
-## DIFF_A        0.053804683  1.00000000 -0.15318529  0.186759798  0.420492034
-## EDUCP_A      -0.012329168 -0.15318529  1.00000000 -0.060228481 -0.198951675
-## LSATIS4_A     0.030618733  0.18675980 -0.06022848  1.000000000  0.246004246
-## PHSTAT_A      0.055876581  0.42049203 -0.19895168  0.246004246  1.000000000
-## CHLEV_A      -0.018003272  0.15253432 -0.05609251  0.031446812  0.151099376
-## HYPEV_A       0.033203700  0.22975433 -0.13083352  0.060326814  0.212466225
-## LIVEREV_A     0.018576289  0.07916293 -0.02760870  0.039572283  0.100686724
-## STREV_A      -0.008094714  0.18549918 -0.05726280  0.071516325  0.168363849
-## MIEV_A        0.028409449  0.14401369 -0.07645073  0.053650584  0.165271970
-## ANGEV_A       0.018350973  0.11838125 -0.03805768  0.031157979  0.128101910
-## CHDEV_A       0.031048489  0.19869351 -0.05962878  0.055425990  0.209826672
-## DEPEV_A      -0.004438928  0.18560129 -0.01529074  0.207586337  0.196824402
-## ANXEV_A      -0.010043466  0.14575429 -0.02568373  0.158800930  0.173763740
-## SMKEV_A       0.041181787  0.09947590 -0.17262238  0.074981553  0.119505806
-## LONELY_A      0.002691289  0.17289919 -0.03200982  0.230460495  0.167644298
-##                   CHLEV_A     HYPEV_A    LIVEREV_A      STREV_A      MIEV_A
-## SEX_A         0.021127680  0.05423407  0.009693572  0.011639088  0.08433142
-## AGEP_A        0.284328985  0.34209884  0.016115589  0.139175239  0.15381091
-## DIBEV_A       0.208487756  0.23178220  0.072418033  0.086102588  0.12502861
-## BMICATD_A     0.082147845  0.17341375  0.030471640  0.002839360  0.02013263
-## WEIGHTLBTC_A  0.003976267  0.06474373  0.028112502 -0.003818800  0.01475723
-## HEIGHTTC_A   -0.018003272  0.03320370  0.018576289 -0.008094714  0.02840945
-## DIFF_A        0.152534322  0.22975433  0.079162926  0.185499179  0.14401369
-## EDUCP_A      -0.056092511 -0.13083352 -0.027608704 -0.057262802 -0.07645073
-## LSATIS4_A     0.031446812  0.06032681  0.039572283  0.071516325  0.05365058
-## PHSTAT_A      0.151099376  0.21246622  0.100686724  0.168363849  0.16527197
-## CHLEV_A       1.000000000  0.31430006  0.038146069  0.103987519  0.14086062
-## HYPEV_A       0.314300064  1.00000000  0.059690041  0.129990851  0.14116621
-## LIVEREV_A     0.038146069  0.05969004  1.000000000  0.025463955  0.03144171
-## STREV_A       0.103987519  0.12999085  0.025463955  1.000000000  0.15520085
-## MIEV_A        0.140860623  0.14116621  0.031441707  0.155200853  1.00000000
-## ANGEV_A       0.099905416  0.09999424  0.030857971  0.087701153  0.25774256
-## CHDEV_A       0.181473694  0.19108511  0.045231681  0.153817963  0.48942259
-## DEPEV_A       0.093178456  0.05774919  0.069270653  0.055272006  0.03951677
-## ANXEV_A       0.075558933  0.05979777  0.069695063  0.048513010  0.02038479
-## SMKEV_A       0.082803116  0.08057892  0.033229619  0.057578805  0.09317592
-## LONELY_A      0.044993491  0.04885042  0.037017544  0.065097287  0.02951866
-##                  ANGEV_A     CHDEV_A      DEPEV_A     ANXEV_A      SMKEV_A
-## SEX_A         0.04248479  0.08022099 -0.119848227 -0.11969856  0.114058275
-## AGEP_A        0.09373836  0.23845609 -0.056868260 -0.10152267  0.089318299
-## DIBEV_A       0.07984732  0.15260434  0.065172375  0.03934966  0.039916828
-## BMICATD_A     0.02240145  0.02393478  0.064069899  0.04850517  0.001860314
-## WEIGHTLBTC_A  0.01608586  0.02165611  0.038366728  0.02882669  0.003876908
-## HEIGHTTC_A    0.01835097  0.03104849 -0.004438928 -0.01004347  0.041181787
-## DIFF_A        0.11838125  0.19869351  0.185601291  0.14575429  0.099475898
-## EDUCP_A      -0.03805768 -0.05962878 -0.015290738 -0.02568373 -0.172622380
-## LSATIS4_A     0.03115798  0.05542599  0.207586337  0.15880093  0.074981553
-## PHSTAT_A      0.12810191  0.20982667  0.196824402  0.17376374  0.119505806
-## CHLEV_A       0.09990542  0.18147369  0.093178456  0.07555893  0.082803116
-## HYPEV_A       0.09999424  0.19108511  0.057749186  0.05979777  0.080578915
-## LIVEREV_A     0.03085797  0.04523168  0.069270653  0.06969506  0.033229619
-## STREV_A       0.08770115  0.15381796  0.055272006  0.04851301  0.057578805
-## MIEV_A        0.25774256  0.48942259  0.039516774  0.02038479  0.093175922
-## ANGEV_A       1.00000000  0.31381798  0.056192328  0.04165611  0.058650120
-## CHDEV_A       0.31381798  1.00000000  0.038875943  0.01733705  0.089428087
-## DEPEV_A       0.05619233  0.03887594  1.000000000  0.56631441  0.106655756
-## ANXEV_A       0.04165611  0.01733705  0.566314410  1.00000000  0.099829174
-## SMKEV_A       0.05865012  0.08942809  0.106655756  0.09982917  1.000000000
-## LONELY_A      0.03659329  0.02740855  0.306615320  0.25119671  0.079439704
-##                   LONELY_A
-## SEX_A        -0.0771051854
-## AGEP_A        0.0064457321
-## DIBEV_A       0.0463990941
-## BMICATD_A     0.0006269059
-## WEIGHTLBTC_A  0.0311768927
-## HEIGHTTC_A    0.0026912892
-## DIFF_A        0.1728991856
-## EDUCP_A      -0.0320098163
-## LSATIS4_A     0.2304604955
-## PHSTAT_A      0.1676442975
-## CHLEV_A       0.0449934906
-## HYPEV_A       0.0488504175
-## LIVEREV_A     0.0370175437
-## STREV_A       0.0650972871
-## MIEV_A        0.0295186646
-## ANGEV_A       0.0365932872
-## CHDEV_A       0.0274085493
-## DEPEV_A       0.3066153201
-## ANXEV_A       0.2511967150
-## SMKEV_A       0.0794397042
-## LONELY_A      1.0000000000</code></pre>
+## SEX_A         0.316690735 -0.08360934 -0.01863335  0.004632828  0.004457287
+## AGEP_A       -0.063600389  0.31477002 -0.11016759  0.014765722  0.132158188
+## DIBEV_A       0.018261953  0.18926808 -0.10219806  0.043048336  0.213970354
+## BMI_A         0.433793646  0.10614987 -0.05900237  0.020539433  0.066071958
+## WEIGHTLBTC_A  0.799050011  0.11185314 -0.05375175  0.032437704  0.080806904
+## HEIGHTTC_A    1.000000000  0.05452161 -0.01570732  0.032379136  0.057532948
+## DIFF_A        0.054521614  1.00000000 -0.15337103  0.186227732  0.420770390
+## EDUCP_A      -0.015707315 -0.15337103  1.00000000 -0.059392669 -0.199170105
+## LSATIS4_A     0.032379136  0.18622773 -0.05939267  1.000000000  0.244884587
+## PHSTAT_A      0.057532948  0.42077039 -0.19917011  0.244884587  1.000000000
+## CHLEV_A      -0.019786386  0.15297892 -0.05612826  0.030514010  0.150759149
+## HYPEV_A       0.029607578  0.22892321 -0.13011996  0.060304278  0.210468137
+## LIVEREV_A     0.017035766  0.07729228 -0.02571346  0.040307109  0.099159485
+## STREV_A      -0.007063409  0.18515854 -0.05704914  0.072169771  0.169030185
+## MIEV_A        0.027371753  0.14294796 -0.07638558  0.052379410  0.164950289
+## ANGEV_A       0.016897151  0.11717014 -0.03693541  0.030444629  0.126490897
+## CHDEV_A       0.030910824  0.19881538 -0.05955282  0.054684040  0.209356347
+## DEPEV_A      -0.005955520  0.18432282 -0.01516619  0.207701915  0.195869944
+## ANXEV_A      -0.011148911  0.14453906 -0.02472458  0.157912776  0.172831804
+## SMKEV_A       0.038074023  0.09867733 -0.17135141  0.074308246  0.119130056
+## LONELY_A      0.002122330  0.17130038 -0.03226413  0.231547322  0.167520598
+##                   CHLEV_A     HYPEV_A   LIVEREV_A      STREV_A        MIEV_A
+## SEX_A         0.021368849  0.05277607  0.01058681  0.013346295  0.0841688395
+## AGEP_A        0.282071105  0.34090294  0.01567923  0.138577050  0.1529576131
+## DIBEV_A       0.209288407  0.23069476  0.07282944  0.086237097  0.1255046833
+## BMI_A         0.006274395  0.06173383  0.02148333 -0.011456133  0.0004131829
+## WEIGHTLBTC_A -0.003624974  0.05463547  0.02490805 -0.009061361  0.0085733704
+## HEIGHTTC_A   -0.019786386  0.02960758  0.01703577 -0.007063409  0.0273717526
+## DIFF_A        0.152978921  0.22892321  0.07729228  0.185158543  0.1429479625
+## EDUCP_A      -0.056128263 -0.13011996 -0.02571346 -0.057049144 -0.0763855841
+## LSATIS4_A     0.030514010  0.06030428  0.04030711  0.072169771  0.0523794095
+## PHSTAT_A      0.150759149  0.21046814  0.09915948  0.169030185  0.1649502893
+## CHLEV_A       1.000000000  0.31392741  0.03855910  0.103776276  0.1415641119
+## HYPEV_A       0.313927413  1.00000000  0.05866770  0.128914428  0.1408405918
+## LIVEREV_A     0.038559104  0.05866770  1.00000000  0.024991730  0.0307939580
+## STREV_A       0.103776276  0.12891443  0.02499173  1.000000000  0.1554809976
+## MIEV_A        0.141564112  0.14084059  0.03079396  0.155480998  1.0000000000
+## ANGEV_A       0.099560708  0.09981232  0.03034655  0.088247669  0.2576738693
+## CHDEV_A       0.182038627  0.19005451  0.04429578  0.155848535  0.4894396811
+## DEPEV_A       0.094523341  0.05873421  0.06853906  0.055226736  0.0388140447
+## ANXEV_A       0.075986053  0.06001145  0.06978593  0.048334657  0.0197300994
+## SMKEV_A       0.083160636  0.08061033  0.03380487  0.057719750  0.0930917737
+## LONELY_A      0.045270265  0.04770248  0.03713462  0.064889091  0.0290181633
+##                   ANGEV_A     CHDEV_A     DEPEV_A     ANXEV_A      SMKEV_A
+## SEX_A         0.042301310  0.08045400 -0.11721330 -0.11833688  0.114485589
+## AGEP_A        0.093236622  0.23634108 -0.05637971 -0.10148712  0.088677637
+## DIBEV_A       0.079182141  0.15359455  0.06588226  0.03924959  0.039306953
+## BMI_A         0.005270771  0.00362147  0.02985158  0.02687922 -0.019535789
+## WEIGHTLBTC_A  0.010858902  0.01424486  0.02860150  0.02285849 -0.006836127
+## HEIGHTTC_A    0.016897151  0.03091082 -0.00595552 -0.01114891  0.038074023
+## DIFF_A        0.117170135  0.19881538  0.18432282  0.14453906  0.098677329
+## EDUCP_A      -0.036935411 -0.05955282 -0.01516619 -0.02472458 -0.171351407
+## LSATIS4_A     0.030444629  0.05468404  0.20770192  0.15791278  0.074308246
+## PHSTAT_A      0.126490897  0.20935635  0.19586994  0.17283180  0.119130056
+## CHLEV_A       0.099560708  0.18203863  0.09452334  0.07598605  0.083160636
+## HYPEV_A       0.099812325  0.19005451  0.05873421  0.06001145  0.080610328
+## LIVEREV_A     0.030346553  0.04429578  0.06853906  0.06978593  0.033804867
+## STREV_A       0.088247669  0.15584853  0.05522674  0.04833466  0.057719750
+## MIEV_A        0.257673869  0.48943968  0.03881404  0.01973010  0.093091774
+## ANGEV_A       1.000000000  0.31244772  0.05516231  0.04136061  0.057255610
+## CHDEV_A       0.312447720  1.00000000  0.03936575  0.01707741  0.089603276
+## DEPEV_A       0.055162308  0.03936575  1.00000000  0.56554136  0.106852107
+## ANXEV_A       0.041360613  0.01707741  0.56554136  1.00000000  0.100201447
+## SMKEV_A       0.057255610  0.08960328  0.10685211  0.10020145  1.000000000
+## LONELY_A      0.036150975  0.02848432  0.30553093  0.24904912  0.078219204
+##                  LONELY_A
+## SEX_A        -0.075645427
+## AGEP_A        0.006805329
+## DIBEV_A       0.047308365
+## BMI_A         0.020770139
+## WEIGHTLBTC_A  0.026246070
+## HEIGHTTC_A    0.002122330
+## DIFF_A        0.171300378
+## EDUCP_A      -0.032264130
+## LSATIS4_A     0.231547322
+## PHSTAT_A      0.167520598
+## CHLEV_A       0.045270265
+## HYPEV_A       0.047702479
+## LIVEREV_A     0.037134616
+## STREV_A       0.064889091
+## MIEV_A        0.029018163
+## ANGEV_A       0.036150975
+## CHDEV_A       0.028484320
+## DEPEV_A       0.305530926
+## ANXEV_A       0.249049123
+## SMKEV_A       0.078219204
+## LONELY_A      1.000000000</code></pre>
 <pre class="r"><code>cor_pt = as.data.frame(as.table(cor_matrix)) |&gt; 
   ggplot(aes(Var1, Var2, fill = Freq)) +
   geom_tile() +
@@ -1581,54 +1536,64 @@ knitr::kable(high_cor_unique, caption = &quot;Variables with Correlation &gt; 0.
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">HEIGHTTC_A</td>
 <td align="left">WEIGHTLBTC_A</td>
-<td align="right">0.9123249</td>
+<td align="left">BMI_A</td>
+<td align="right">0.8595445</td>
 </tr>
 <tr class="even">
-<td align="left">ANXEV_A</td>
-<td align="left">DEPEV_A</td>
-<td align="right">0.5663144</td>
+<td align="left">HEIGHTTC_A</td>
+<td align="left">WEIGHTLBTC_A</td>
+<td align="right">0.7990500</td>
 </tr>
 <tr class="odd">
+<td align="left">ANXEV_A</td>
+<td align="left">DEPEV_A</td>
+<td align="right">0.5655414</td>
+</tr>
+<tr class="even">
 <td align="left">CHDEV_A</td>
 <td align="left">MIEV_A</td>
-<td align="right">0.4894226</td>
+<td align="right">0.4894397</td>
+</tr>
+<tr class="odd">
+<td align="left">HEIGHTTC_A</td>
+<td align="left">BMI_A</td>
+<td align="right">0.4337936</td>
 </tr>
 <tr class="even">
 <td align="left">PHSTAT_A</td>
 <td align="left">DIFF_A</td>
-<td align="right">0.4204920</td>
+<td align="right">0.4207704</td>
 </tr>
 <tr class="odd">
 <td align="left">HYPEV_A</td>
 <td align="left">AGEP_A</td>
-<td align="right">0.3420988</td>
+<td align="right">0.3409029</td>
 </tr>
 <tr class="even">
 <td align="left">HEIGHTTC_A</td>
 <td align="left">SEX_A</td>
-<td align="right">0.3216152</td>
+<td align="right">0.3166907</td>
 </tr>
 <tr class="odd">
 <td align="left">DIFF_A</td>
 <td align="left">AGEP_A</td>
-<td align="right">0.3144083</td>
+<td align="right">0.3147700</td>
 </tr>
 <tr class="even">
 <td align="left">HYPEV_A</td>
 <td align="left">CHLEV_A</td>
-<td align="right">0.3143001</td>
+<td align="right">0.3139274</td>
 </tr>
 <tr class="odd">
 <td align="left">CHDEV_A</td>
 <td align="left">ANGEV_A</td>
-<td align="right">0.3138180</td>
+<td align="right">0.3124477</td>
 </tr>
 <tr class="even">
 <td align="left">LONELY_A</td>
 <td align="left">DEPEV_A</td>
-<td align="right">0.3066153</td>
+<td align="right">0.3055309</td>
 </tr>
 </tbody>
 </table>
@@ -1641,7 +1606,7 @@ modeling goals.</p>
 <div id="test-for-confounders" class="section level1">
 <h1>Test for confounders</h1>
 <p>Build model without confounders.</p>
-<pre class="r"><code>model_formula_noconf = DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+<pre class="r"><code>model_formula_noconf = DIBEV_A ~ BMI_A + 
                            DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
@@ -1659,37 +1624,36 @@ summary(glm_model_noconf)</code></pre>
 ##     data = df_model)
 ## 
 ## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  -0.8305458  0.4033405  -2.059 0.039478 *  
-## WEIGHTLBTC_A  0.0019753  0.0002656   7.438 1.02e-13 ***
-## HEIGHTTC_A   -0.0439723  0.0066774  -6.585 4.54e-11 ***
-## DIFF_A1       0.3412926  0.0532778   6.406 1.49e-10 ***
-## DIFF_A2       0.5243196  0.0738511   7.100 1.25e-12 ***
-## DIFF_A3       0.4421386  0.1352006   3.270 0.001075 ** 
-## LSATIS4_A1   -0.1863379  0.0963371  -1.934 0.053085 .  
-## PHSTAT_A1     0.7172978  0.0522966  13.716  &lt; 2e-16 ***
-## CHLEV_A1      0.8235807  0.0461509  17.845  &lt; 2e-16 ***
-## HYPEV_A1      0.9971622  0.0496452  20.086  &lt; 2e-16 ***
-## LIVEREV_A1    0.6341245  0.1336490   4.745 2.09e-06 ***
-## STREV_A1      0.0919913  0.0817218   1.126 0.260308    
-## MIEV_A1       0.3108152  0.0867263   3.584 0.000339 ***
-## ANGEV_A1      0.0361691  0.1113181   0.325 0.745244    
-## CHDEV_A1      0.3221200  0.0719183   4.479 7.50e-06 ***
-## DEPEV_A1      0.1203290  0.0633300   1.900 0.057429 .  
-## ANXEV_A1     -0.1859314  0.0650717  -2.857 0.004272 ** 
-## SMKEV_A1     -0.0202076  0.0442679  -0.456 0.648041    
-## LONELY_A1    -0.0254681  0.0537393  -0.474 0.635557    
-## LONELY_A2     0.0152676  0.0568901   0.268 0.788414    
-## LONELY_A3    -0.2178835  0.1394693  -1.562 0.118233    
-## LONELY_A4     0.1244614  0.1225349   1.016 0.309762    
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -3.5427775  0.0609937 -58.084  &lt; 2e-16 ***
+## BMI_A        0.0045238  0.0009097   4.973 6.60e-07 ***
+## DIFF_A1      0.3704607  0.0525365   7.051 1.77e-12 ***
+## DIFF_A2      0.5655243  0.0727491   7.774 7.63e-15 ***
+## DIFF_A3      0.4626678  0.1324988   3.492 0.000480 ***
+## LSATIS4_A1  -0.2153881  0.0955241  -2.255 0.024146 *  
+## PHSTAT_A1    0.7313760  0.0518013  14.119  &lt; 2e-16 ***
+## CHLEV_A1     0.8365472  0.0457264  18.295  &lt; 2e-16 ***
+## HYPEV_A1     0.9940706  0.0490901  20.250  &lt; 2e-16 ***
+## LIVEREV_A1   0.6551598  0.1321641   4.957 7.15e-07 ***
+## STREV_A1     0.0954260  0.0812440   1.175 0.240170    
+## MIEV_A1      0.2864116  0.0859808   3.331 0.000865 ***
+## ANGEV_A1     0.0214956  0.1106096   0.194 0.845911    
+## CHDEV_A1     0.3149750  0.0712286   4.422 9.78e-06 ***
+## DEPEV_A1     0.1448220  0.0626850   2.310 0.020871 *  
+## ANXEV_A1    -0.1797469  0.0645031  -2.787 0.005326 ** 
+## SMKEV_A1    -0.0581652  0.0435699  -1.335 0.181881    
+## LONELY_A1   -0.0119111  0.0532171  -0.224 0.822896    
+## LONELY_A2    0.0354261  0.0562925   0.629 0.529138    
+## LONELY_A3   -0.1720655  0.1370491  -1.256 0.209296    
+## LONELY_A4    0.1464263  0.1212910   1.207 0.227343    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 17357  on 23625  degrees of freedom
-## Residual deviance: 14865  on 23604  degrees of freedom
-## AIC: 14909
+##     Null deviance: 17654  on 24038  degrees of freedom
+## Residual deviance: 15150  on 24018  degrees of freedom
+## AIC: 15192
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>Model without confounders result:</p>
@@ -1740,24 +1704,10 @@ P-value
 Intercept
 </td>
 <td style="text-align:right;">
--0.8305
+-3.5428
 </td>
 <td style="text-align:right;">
-0.436 (0.198 - 0.961)
-</td>
-<td style="text-align:right;">
-0.03948
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-WEIGHTLBTC_A (Per lb)
-</td>
-<td style="text-align:right;">
-0.0020
-</td>
-<td style="text-align:right;">
-1.002 (1.001 - 1.002)
+0.029 (0.026 - 0.033)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1765,13 +1715,13 @@ WEIGHTLBTC_A (Per lb)
 </tr>
 <tr>
 <td style="text-align:left;">
-HEIGHTTC_A (Per unit)
+BMI_A
 </td>
 <td style="text-align:right;">
--0.0440
+0.0045
 </td>
 <td style="text-align:right;">
-0.957 (0.945 - 0.97)
+1.005 (1.003 - 1.006)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1782,10 +1732,10 @@ HEIGHTTC_A (Per unit)
 DIFF_A: Some Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.3413
+0.3705
 </td>
 <td style="text-align:right;">
-1.407 (1.267 - 1.561)
+1.448 (1.306 - 1.605)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1796,10 +1746,10 @@ DIFF_A: Some Difficulty (vs No Difficulty)
 DIFF_A: A lot of Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.5243
+0.5655
 </td>
 <td style="text-align:right;">
-1.689 (1.461 - 1.951)
+1.76 (1.525 - 2.029)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1810,13 +1760,13 @@ DIFF_A: A lot of Difficulty (vs No Difficulty)
 DIFF_A: Cannot do (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-0.4421
+0.4627
 </td>
 <td style="text-align:right;">
-1.556 (1.189 - 2.022)
+1.588 (1.221 - 2.053)
 </td>
 <td style="text-align:right;">
-0.00107
+&lt; 0.001
 </td>
 </tr>
 <tr>
@@ -1824,13 +1774,13 @@ DIFF_A: Cannot do (vs No Difficulty)
 LSATIS4_A: Dissatisfied (vs Satisfied)
 </td>
 <td style="text-align:right;">
--0.1863
+-0.2154
 </td>
 <td style="text-align:right;">
-0.83 (0.686 - 1.001)
+0.806 (0.667 - 0.97)
 </td>
 <td style="text-align:right;">
-0.05309
+0.02415
 </td>
 </tr>
 <tr>
@@ -1838,10 +1788,10 @@ LSATIS4_A: Dissatisfied (vs Satisfied)
 PHSTAT_A: Fair/Poor Health (vs Good Health)
 </td>
 <td style="text-align:right;">
-0.7173
+0.7314
 </td>
 <td style="text-align:right;">
-2.049 (1.849 - 2.27)
+2.078 (1.877 - 2.3)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1852,10 +1802,10 @@ PHSTAT_A: Fair/Poor Health (vs Good Health)
 CHLEV_A: High Cholesterol (Yes)
 </td>
 <td style="text-align:right;">
-0.8236
+0.8365
 </td>
 <td style="text-align:right;">
-2.279 (2.082 - 2.495)
+2.308 (2.111 - 2.525)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1866,10 +1816,10 @@ CHLEV_A: High Cholesterol (Yes)
 HYPEV_A: Hypertension (Yes)
 </td>
 <td style="text-align:right;">
-0.9972
+0.9941
 </td>
 <td style="text-align:right;">
-2.711 (2.46 - 2.989)
+2.702 (2.455 - 2.976)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1880,10 +1830,10 @@ HYPEV_A: Hypertension (Yes)
 LIVEREV_A: Liver Disease (Yes)
 </td>
 <td style="text-align:right;">
-0.6341
+0.6552
 </td>
 <td style="text-align:right;">
-1.885 (1.447 - 2.444)
+1.925 (1.482 - 2.489)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1894,13 +1844,13 @@ LIVEREV_A: Liver Disease (Yes)
 STREV_A: Stroke (Yes)
 </td>
 <td style="text-align:right;">
-0.0920
+0.0954
 </td>
 <td style="text-align:right;">
-1.096 (0.933 - 1.285)
+1.1 (0.937 - 1.288)
 </td>
 <td style="text-align:right;">
-0.26031
+0.24017
 </td>
 </tr>
 <tr>
@@ -1908,10 +1858,10 @@ STREV_A: Stroke (Yes)
 MIEV_A: Myocardial Infarction (Yes)
 </td>
 <td style="text-align:right;">
-0.3108
+0.2864
 </td>
 <td style="text-align:right;">
-1.365 (1.15 - 1.616)
+1.332 (1.124 - 1.575)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1922,13 +1872,13 @@ MIEV_A: Myocardial Infarction (Yes)
 ANGEV_A: Angina (Yes)
 </td>
 <td style="text-align:right;">
-0.0362
+0.0215
 </td>
 <td style="text-align:right;">
-1.037 (0.832 - 1.287)
+1.022 (0.821 - 1.267)
 </td>
 <td style="text-align:right;">
-0.74524
+0.84591
 </td>
 </tr>
 <tr>
@@ -1936,10 +1886,10 @@ ANGEV_A: Angina (Yes)
 CHDEV_A: CHD (Yes)
 </td>
 <td style="text-align:right;">
-0.3221
+0.3150
 </td>
 <td style="text-align:right;">
-1.38 (1.198 - 1.588)
+1.37 (1.191 - 1.574)
 </td>
 <td style="text-align:right;">
 &lt; 0.001
@@ -1950,13 +1900,13 @@ CHDEV_A: CHD (Yes)
 DEPEV_A: Depression (Yes)
 </td>
 <td style="text-align:right;">
-0.1203
+0.1448
 </td>
 <td style="text-align:right;">
-1.128 (0.996 - 1.276)
+1.156 (1.022 - 1.306)
 </td>
 <td style="text-align:right;">
-0.05743
+0.02087
 </td>
 </tr>
 <tr>
@@ -1964,13 +1914,13 @@ DEPEV_A: Depression (Yes)
 ANXEV_A: Anxiety (Yes)
 </td>
 <td style="text-align:right;">
--0.1859
+-0.1797
 </td>
 <td style="text-align:right;">
-0.83 (0.73 - 0.943)
+0.835 (0.736 - 0.948)
 </td>
 <td style="text-align:right;">
-0.00427
+0.00533
 </td>
 </tr>
 <tr>
@@ -1978,13 +1928,13 @@ ANXEV_A: Anxiety (Yes)
 SMKEV_A: Smoker (Yes)
 </td>
 <td style="text-align:right;">
--0.0202
+-0.0582
 </td>
 <td style="text-align:right;">
-0.98 (0.898 - 1.069)
+0.943 (0.866 - 1.027)
 </td>
 <td style="text-align:right;">
-0.64804
+0.18188
 </td>
 </tr>
 <tr>
@@ -1992,13 +1942,13 @@ SMKEV_A: Smoker (Yes)
 LONELY_A: Rarely Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
--0.0255
+-0.0119
 </td>
 <td style="text-align:right;">
-0.975 (0.877 - 1.083)
+0.988 (0.89 - 1.096)
 </td>
 <td style="text-align:right;">
-0.63556
+0.82290
 </td>
 </tr>
 <tr>
@@ -2006,13 +1956,13 @@ LONELY_A: Rarely Lonely (vs Never Lonely)
 LONELY_A: Sometimes Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.0153
+0.0354
 </td>
 <td style="text-align:right;">
-1.015 (0.908 - 1.135)
+1.036 (0.927 - 1.157)
 </td>
 <td style="text-align:right;">
-0.78841
+0.52914
 </td>
 </tr>
 <tr>
@@ -2020,13 +1970,13 @@ LONELY_A: Sometimes Lonely (vs Never Lonely)
 LONELY_A: Usually Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
--0.2179
+-0.1721
 </td>
 <td style="text-align:right;">
-0.804 (0.608 - 1.051)
+0.842 (0.64 - 1.096)
 </td>
 <td style="text-align:right;">
-0.11823
+0.20930
 </td>
 </tr>
 <tr>
@@ -2034,13 +1984,13 @@ LONELY_A: Usually Lonely (vs Never Lonely)
 LONELY_A: Always Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.1245
+0.1464
 </td>
 <td style="text-align:right;">
-1.133 (0.888 - 1.435)
+1.158 (0.91 - 1.464)
 </td>
 <td style="text-align:right;">
-0.30976
+0.22734
 </td>
 </tr>
 </tbody>
@@ -2145,7 +2095,7 @@ SEX_A1
 NA
 </td>
 <td style="text-align:right;">
-1.307
+1.331
 </td>
 <td style="text-align:right;">
 NA
@@ -2159,49 +2109,7 @@ AGEP_A (Per Year)
 NA
 </td>
 <td style="text-align:right;">
-1.021
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Underweight (vs Healthy)
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0.330
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Overweight (vs Healthy)
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.656
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMICATD_A: Obese (vs Healthy)
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.714
+1.013
 </td>
 <td style="text-align:right;">
 NA
@@ -2212,13 +2120,13 @@ NA
 WEIGHTLBTC_A (Per lb)
 </td>
 <td style="text-align:right;">
-1.002
+NA
 </td>
 <td style="text-align:right;">
 1.001
 </td>
 <td style="text-align:right;">
--0.1
+NA
 </td>
 </tr>
 <tr>
@@ -2226,13 +2134,13 @@ WEIGHTLBTC_A (Per lb)
 HEIGHTTC_A (Per unit)
 </td>
 <td style="text-align:right;">
-0.957
+NA
 </td>
 <td style="text-align:right;">
-0.972
+0.977
 </td>
 <td style="text-align:right;">
-1.5
+NA
 </td>
 </tr>
 <tr>
@@ -2240,13 +2148,13 @@ HEIGHTTC_A (Per unit)
 DIFF_A: Some Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.407
+1.448
 </td>
 <td style="text-align:right;">
-1.175
+1.331
 </td>
 <td style="text-align:right;">
--16.5
+-8.1
 </td>
 </tr>
 <tr>
@@ -2254,13 +2162,13 @@ DIFF_A: Some Difficulty (vs No Difficulty)
 DIFF_A: A lot of Difficulty (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.689
+1.760
 </td>
 <td style="text-align:right;">
-1.373
+1.595
 </td>
 <td style="text-align:right;">
--18.7
+-9.4
 </td>
 </tr>
 <tr>
@@ -2268,13 +2176,13 @@ DIFF_A: A lot of Difficulty (vs No Difficulty)
 DIFF_A: Cannot do (vs No Difficulty)
 </td>
 <td style="text-align:right;">
-1.556
+1.588
 </td>
 <td style="text-align:right;">
-1.273
+1.405
 </td>
 <td style="text-align:right;">
--18.2
+-11.6
 </td>
 </tr>
 <tr>
@@ -2285,7 +2193,7 @@ EDUCP_A: Medium Edu (vs Low Edu)
 NA
 </td>
 <td style="text-align:right;">
-0.896
+0.925
 </td>
 <td style="text-align:right;">
 NA
@@ -2299,7 +2207,7 @@ EDUCP_A: High Edu (vs Low Edu)
 NA
 </td>
 <td style="text-align:right;">
-0.725
+0.701
 </td>
 <td style="text-align:right;">
 NA
@@ -2310,13 +2218,13 @@ NA
 LSATIS4_A: Dissatisfied (vs Satisfied)
 </td>
 <td style="text-align:right;">
-0.830
+0.806
 </td>
 <td style="text-align:right;">
-0.884
+0.805
 </td>
 <td style="text-align:right;">
-6.5
+-0.2
 </td>
 </tr>
 <tr>
@@ -2324,13 +2232,13 @@ LSATIS4_A: Dissatisfied (vs Satisfied)
 PHSTAT_A: Fair/Poor Health (vs Good Health)
 </td>
 <td style="text-align:right;">
-2.049
+2.078
 </td>
 <td style="text-align:right;">
-2.004
+2.022
 </td>
 <td style="text-align:right;">
--2.2
+-2.7
 </td>
 </tr>
 <tr>
@@ -2338,13 +2246,13 @@ PHSTAT_A: Fair/Poor Health (vs Good Health)
 CHLEV_A: High Cholesterol (Yes)
 </td>
 <td style="text-align:right;">
-2.279
+2.308
 </td>
 <td style="text-align:right;">
-2.107
+2.204
 </td>
 <td style="text-align:right;">
--7.5
+-4.5
 </td>
 </tr>
 <tr>
@@ -2352,13 +2260,13 @@ CHLEV_A: High Cholesterol (Yes)
 HYPEV_A: Hypertension (Yes)
 </td>
 <td style="text-align:right;">
-2.711
+2.702
 </td>
 <td style="text-align:right;">
-2.128
+2.438
 </td>
 <td style="text-align:right;">
--21.5
+-9.8
 </td>
 </tr>
 <tr>
@@ -2366,13 +2274,13 @@ HYPEV_A: Hypertension (Yes)
 LIVEREV_A: Liver Disease (Yes)
 </td>
 <td style="text-align:right;">
-1.885
+1.925
 </td>
 <td style="text-align:right;">
-1.928
+1.950
 </td>
 <td style="text-align:right;">
-2.2
+1.3
 </td>
 </tr>
 <tr>
@@ -2380,13 +2288,13 @@ LIVEREV_A: Liver Disease (Yes)
 STREV_A: Stroke (Yes)
 </td>
 <td style="text-align:right;">
-1.096
+1.100
 </td>
 <td style="text-align:right;">
-1.112
+1.063
 </td>
 <td style="text-align:right;">
-1.4
+-3.3
 </td>
 </tr>
 <tr>
@@ -2394,13 +2302,13 @@ STREV_A: Stroke (Yes)
 MIEV_A: Myocardial Infarction (Yes)
 </td>
 <td style="text-align:right;">
-1.365
+1.332
 </td>
 <td style="text-align:right;">
-1.329
+1.272
 </td>
 <td style="text-align:right;">
--2.6
+-4.5
 </td>
 </tr>
 <tr>
@@ -2408,13 +2316,13 @@ MIEV_A: Myocardial Infarction (Yes)
 ANGEV_A: Angina (Yes)
 </td>
 <td style="text-align:right;">
-1.037
+1.022
 </td>
 <td style="text-align:right;">
-1.008
+1.010
 </td>
 <td style="text-align:right;">
--2.8
+-1.2
 </td>
 </tr>
 <tr>
@@ -2422,13 +2330,13 @@ ANGEV_A: Angina (Yes)
 CHDEV_A: CHD (Yes)
 </td>
 <td style="text-align:right;">
-1.380
+1.370
 </td>
 <td style="text-align:right;">
-1.258
+1.285
 </td>
 <td style="text-align:right;">
--8.9
+-6.2
 </td>
 </tr>
 <tr>
@@ -2436,13 +2344,13 @@ CHDEV_A: CHD (Yes)
 DEPEV_A: Depression (Yes)
 </td>
 <td style="text-align:right;">
-1.128
+1.156
 </td>
 <td style="text-align:right;">
-1.175
+1.231
 </td>
 <td style="text-align:right;">
-4.2
+6.5
 </td>
 </tr>
 <tr>
@@ -2450,13 +2358,13 @@ DEPEV_A: Depression (Yes)
 ANXEV_A: Anxiety (Yes)
 </td>
 <td style="text-align:right;">
-0.830
+0.835
 </td>
 <td style="text-align:right;">
-0.921
+0.897
 </td>
 <td style="text-align:right;">
-10.9
+7.3
 </td>
 </tr>
 <tr>
@@ -2464,13 +2372,13 @@ ANXEV_A: Anxiety (Yes)
 SMKEV_A: Smoker (Yes)
 </td>
 <td style="text-align:right;">
-0.980
+0.943
 </td>
 <td style="text-align:right;">
-0.916
+0.882
 </td>
 <td style="text-align:right;">
--6.5
+-6.6
 </td>
 </tr>
 <tr>
@@ -2478,13 +2386,13 @@ SMKEV_A: Smoker (Yes)
 LONELY_A: Rarely Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.975
+0.988
 </td>
 <td style="text-align:right;">
-1.042
+1.031
 </td>
 <td style="text-align:right;">
-6.9
+4.3
 </td>
 </tr>
 <tr>
@@ -2492,13 +2400,13 @@ LONELY_A: Rarely Lonely (vs Never Lonely)
 LONELY_A: Sometimes Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-1.015
+1.036
 </td>
 <td style="text-align:right;">
-1.071
+1.049
 </td>
 <td style="text-align:right;">
-5.5
+1.3
 </td>
 </tr>
 <tr>
@@ -2506,13 +2414,13 @@ LONELY_A: Sometimes Lonely (vs Never Lonely)
 LONELY_A: Usually Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-0.804
+0.842
 </td>
 <td style="text-align:right;">
-0.835
+0.854
 </td>
 <td style="text-align:right;">
-3.8
+1.5
 </td>
 </tr>
 <tr>
@@ -2520,13 +2428,27 @@ LONELY_A: Usually Lonely (vs Never Lonely)
 LONELY_A: Always Lonely (vs Never Lonely)
 </td>
 <td style="text-align:right;">
-1.133
+1.158
 </td>
 <td style="text-align:right;">
-1.162
+1.143
 </td>
 <td style="text-align:right;">
-2.6
+-1.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI_A
+</td>
+<td style="text-align:right;">
+1.005
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
 </td>
 </tr>
 </tbody>
@@ -2582,9 +2504,20 @@ id="confounder-adjusted-performance-evaluation-of-the-latest-predictive-model"
 class="section level2">
 <h2>Confounder-Adjusted Performance Evaluation of the Latest Predictive
 Model</h2>
+<p>To address the high degree of correlation between height and weight
+(a potential source of multicollinearity and confounding), we removed
+these two variables from the model and replaced them with a newly
+constructed continuous BMI variable. Calculated using the standard
+formula <span class="math inline">\(\frac{\text{weight
+[kg]}}{\left(\text{height [m]}\right)^2}\)</span> from the dataset’s raw
+height and weight data, this continuous BMI metric integrates key
+information from both predictors. By doing so, we not only eliminate the
+issues arising from their high correlation but also effectively account
+for potential confounding by encapsulating the combined effects of
+height and weight in a single, interpretable variable.</p>
 <pre class="r"><code># Full model (includes all original predictors)
 model_full &lt;- glm(
-  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
               DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + HYPEV_A +
               LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + CHDEV_A + DEPEV_A +
               ANXEV_A + SMKEV_A + LONELY_A,
@@ -2595,13 +2528,84 @@ model_full &lt;- glm(
 
 # Reduced model (only includes statistically significant predictors, p &lt; 0.05)
 model_significant &lt;- glm(
-  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
               DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
               LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
   data = df_model,
   family = binomial(link = &quot;logit&quot;),
   na.action = na.omit 
-)</code></pre>
+)
+
+model_full_stats &lt;- glance(model_full) %&gt;%
+  select(AIC, BIC) %&gt;%
+  mutate(
+    model = &quot;Full Model&quot;,
+    n_predictors = length(coef(model_full)) - 1,
+    n_obs = nobs(model_full)
+  )
+
+model_significant_stats &lt;- glance(model_significant) %&gt;%
+  select(AIC, BIC) %&gt;%
+  mutate(
+    model = &quot;Reduced (Significant Variables) Model&quot;,
+    n_predictors = length(coef(model_significant)) - 1,
+    n_obs = nobs(model_significant)
+  )
+
+# Combine and clean results
+model_compare &lt;- bind_rows(model_full_stats, model_significant_stats) %&gt;%
+  # NOTE: Rename for graphing purpose, but remember these are AIC/BIC values!
+  # AIC and BIC are measures of fit (lower is better), unlike R^2 (higher is better).
+  rename(
+    Fit_Metric_1 = AIC,
+    Fit_Metric_2 = BIC
+  ) %&gt;%
+  select(model, n_obs, n_predictors, Fit_Metric_1, Fit_Metric_2)
+
+cat(&quot;=== Model Comparison: Full vs Reduced (Significant Variables) ===\n&quot;)</code></pre>
+<pre><code>## === Model Comparison: Full vs Reduced (Significant Variables) ===</code></pre>
+<pre class="r"><code>print(model_compare, digits = 4) </code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   model                             n_obs n_predictors Fit_Metric_1 Fit_Metric_2
+##   &lt;chr&gt;                             &lt;int&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Full Model                        24038           24       15090.       15293.
+## 2 Reduced (Significant Variables) … 24038           15       15095.       15224.</code></pre>
+<pre class="r"><code># Create clean visualization with consistent styling
+# FIX: Plotting BIC (Fit_Metric_2) which is a measure of model fit (lower is better)
+plot_fit_comparison &lt;- ggplot(model_compare, 
+                              aes(x = model, y = Fit_Metric_2, fill = model)) +
+  # Bar plot with soft colors and black borders
+  geom_col(alpha = 0.8, width = 0.6, color = &quot;black&quot;, linewidth = 0.5) +
+  # Add value labels on top of bars (rounded to 4 decimals)
+  geom_text(
+    aes(label = sprintf(&quot;%.4f&quot;, Fit_Metric_2)),
+    vjust = -0.3, size = 4.5, fontface = &quot;bold&quot;
+  ) +
+  # Customize labels and title
+  labs(
+    x = &quot;Model Type&quot;,
+    y = &quot;BIC (Bayesian Information Criterion)&quot;,
+    title = &quot;Model Fit Comparison: Full Model vs Reduced Model (Lower is Better)&quot;,
+    subtitle = paste0(&quot;Outcome: DIBEV_A (Diabetes Status)&quot;),
+    fill = &quot;Model&quot;
+  ) +
+  # Improve theme for academic use
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;, hjust = 0.5),
+    plot.subtitle = element_text(size = 10, hjust = 0.5, color = &quot;#666666&quot;),
+    axis.title = element_text(size = 10, face = &quot;italic&quot;),
+    axis.text.x = element_text(size = 9, hjust = 1),
+    legend.position = &quot;none&quot;,
+    panel.grid.major.y = element_line(color = &quot;#EEEEEE&quot;),
+    panel.grid.minor.y = element_blank()
+  ) +
+  # Adjust y-axis to prevent label cutoff and add padding
+  ylim(0, max(model_compare$Fit_Metric_2) * 1.3)
+
+# Print the plot
+print(plot_fit_comparison)</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-18-1.png" width="100%" /></p>
 </div>
 </div>
 

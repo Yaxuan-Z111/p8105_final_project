@@ -61,10 +61,10 @@ The original detailed model :
 
 $$
 \text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
-+ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMICATD_A} + \beta_4 \cdot \text{WEIGHTLBTC_A} + \beta_5 \cdot \text{HEIGHTTC_A} \\
-+ \beta_6 \cdot \text{DIFF_A} + \beta_7 \cdot \text{EDUCP_A} + \beta_8 \cdot \text{LSATIS4_A} + \beta_9 \cdot \text{PHSTAT_A} + \beta_{10} \cdot \text{CHLEV_A} \\
-+ \beta_{11} \cdot \text{HYPEV_A} + \beta_{12} \cdot \text{LIVEREV_A} + \beta_{13} \cdot \text{STREV_A} + \beta_{14} \cdot \text{MIEV_A} + \beta_{15} \cdot \text{ANGEV_A} \\
-+ \beta_{16} \cdot \text{CHDEV_A} + \beta_{17} \cdot \text{DEPEV_A} + \beta_{18} \cdot \text{ANXEV_A} + \beta_{19} \cdot \text{SMKEV_A} + \beta_{20} \cdot \text{LONELY_A}
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{WEIGHTLBTC_A} + \beta_4 \cdot \text{HEIGHTTC_A} \\
++ \beta_5 \cdot \text{DIFF_A} + \beta_6 \cdot \text{EDUCP_A} + \beta_7 \cdot \text{LSATIS4_A} + \beta_8 \cdot \text{PHSTAT_A} + \beta_9 \cdot \text{CHLEV_A} \\
++ \beta_{10} \cdot \text{HYPEV_A} + \beta_{11} \cdot \text{LIVEREV_A} + \beta_{12} \cdot \text{STREV_A} + \beta_{13} \cdot \text{MIEV_A} + \beta_{14} \cdot \text{ANGEV_A} \\
++ \beta_{15} \cdot \text{CHDEV_A} + \beta_{16} \cdot \text{DEPEV_A} + \beta_{17} \cdot \text{ANXEV_A} + \beta_{18} \cdot \text{SMKEV_A} + \beta_{19} \cdot \text{LONELY_A}
 $$
   
 # Build Model
@@ -78,7 +78,6 @@ df_model =
     
     # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
     SEX_A = factor(SEX_A), # Assume 1/2 coding is acceptable
-    BMICATD_A = factor(BMICATD_A), # Codes 0, 1, 2, 3
     DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
     EDUCP_A = factor(EDUCP_A), # Codes 0, 1, 2
     LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
@@ -98,7 +97,7 @@ df_model =
 ```
 
 ```{r}
-model_formula <- DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A + 
+model_formula <- DIBEV_A ~ SEX_A + AGEP_A + WEIGHTLBTC_A + HEIGHTTC_A +
                            DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
@@ -172,11 +171,6 @@ clean_term_labels <- function(df) {
       Term = case_when(
         term == "(Intercept)" ~ "Intercept",
         term == "SEX_A2" ~ "SEX_A: Female (vs Male)",
-        
-        # BMI (0: Healthy Weight)
-        term == "BMICATD_A1" ~ "BMICATD_A: Underweight (vs Healthy)",
-        term == "BMICATD_A2" ~ "BMICATD_A: Overweight (vs Healthy)",
-        term == "BMICATD_A3" ~ "BMICATD_A: Obese (vs Healthy)",
         
         # Difficulty Walking (0: No Difficulty)
         term == "DIFF_A1" ~ "DIFF_A: Some Difficulty (vs No Difficulty)",
@@ -301,7 +295,7 @@ ggplot(forest_data, aes(x = OR, y = Term)) +
 print(forest_plots)
 ```
 
-This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., underweight BMI, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., overweight/obese BMI, liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
+This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., height, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
 
 # Interpretation of Model Coefficients
 
@@ -360,14 +354,17 @@ Those with high education had markedly lower odds of diabetes.
 
 ---
 
-### BMI Category
+### BMI 
+
+The original dataset included a categorical BMI variable, with normal weight (BMI category 0) as the reference group:
+
 Reference = BMI category 0 (Normal weight)
 
 - Underweight: OR = 1.887, *p* < 0.001  
 - Overweight: OR = 2.314, *p* < 0.001  
 - Obesity (Class I–III): OR = 4.491, *p* < 0.001  
 
-BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model.
+BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model. Furthermore, we derived a new continuous BMI variable using the standard BMI formula (weight in kilograms divided by height in meters squared) from the dataset’s height and weight measurements. This continuous transformation integrates information on both height and weight, thereby helping to account for potential confounding by these two variables.
 
 ---
 
@@ -534,7 +531,7 @@ By choosing $r > 0.3$, we are strategically focusing our analysis on variables t
 Build model without confounders.
 
 ```{r}
-model_formula_noconf = DIBEV_A ~ WEIGHTLBTC_A + HEIGHTTC_A + 
+model_formula_noconf = DIBEV_A ~ BMI_A + 
                            DIFF_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
                            HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
                            CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
@@ -660,10 +657,11 @@ In contrast, the odds ratios for mobility difficulty (DIFF_A) and hypertension (
 
 ## Confounder-Adjusted Performance Evaluation of the Latest Predictive Model
 
+To address the high degree of correlation between height and weight (a potential source of multicollinearity and confounding), we removed these two variables from the model and replaced them with a newly constructed continuous BMI variable. Calculated using the standard formula $\frac{\text{weight [kg]}}{\left(\text{height [m]}\right)^2}$ from the dataset’s raw height and weight data, this continuous BMI metric integrates key information from both predictors. By doing so, we not only eliminate the issues arising from their high correlation but also effectively account for potential confounding by encapsulating the combined effects of height and weight in a single, interpretable variable.
 ```{r}
 # Full model (includes all original predictors)
 model_full <- glm(
-  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
               DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + HYPEV_A +
               LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + CHDEV_A + DEPEV_A +
               ANXEV_A + SMKEV_A + LONELY_A,
@@ -674,13 +672,79 @@ model_full <- glm(
 
 # Reduced model (only includes statistically significant predictors, p < 0.05)
 model_significant <- glm(
-  formula = DIBEV_A ~ SEX_A + AGEP_A + BMICATD_A + WEIGHTLBTC_A + HEIGHTTC_A +
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
               DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
               LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
   data = df_model,
   family = binomial(link = "logit"),
   na.action = na.omit 
 )
+
+model_full_stats <- glance(model_full) %>%
+  select(AIC, BIC) %>%
+  mutate(
+    model = "Full Model",
+    n_predictors = length(coef(model_full)) - 1,
+    n_obs = nobs(model_full)
+  )
+
+model_significant_stats <- glance(model_significant) %>%
+  select(AIC, BIC) %>%
+  mutate(
+    model = "Reduced (Significant Variables) Model",
+    n_predictors = length(coef(model_significant)) - 1,
+    n_obs = nobs(model_significant)
+  )
+
+# Combine and clean results
+model_compare <- bind_rows(model_full_stats, model_significant_stats) %>%
+  # NOTE: Rename for graphing purpose, but remember these are AIC/BIC values!
+  # AIC and BIC are measures of fit (lower is better), unlike R^2 (higher is better).
+  rename(
+    Fit_Metric_1 = AIC,
+    Fit_Metric_2 = BIC
+  ) %>%
+  select(model, n_obs, n_predictors, Fit_Metric_1, Fit_Metric_2)
+
+cat("=== Model Comparison: Full vs Reduced (Significant Variables) ===\n")
+print(model_compare, digits = 4) 
+
+
+# Create clean visualization with consistent styling
+# FIX: Plotting BIC (Fit_Metric_2) which is a measure of model fit (lower is better)
+plot_fit_comparison <- ggplot(model_compare, 
+                              aes(x = model, y = Fit_Metric_2, fill = model)) +
+  # Bar plot with soft colors and black borders
+  geom_col(alpha = 0.8, width = 0.6, color = "black", linewidth = 0.5) +
+  # Add value labels on top of bars (rounded to 4 decimals)
+  geom_text(
+    aes(label = sprintf("%.4f", Fit_Metric_2)),
+    vjust = -0.3, size = 4.5, fontface = "bold"
+  ) +
+  # Customize labels and title
+  labs(
+    x = "Model Type",
+    y = "BIC (Bayesian Information Criterion)",
+    title = "Model Fit Comparison: Full Model vs Reduced Model (Lower is Better)",
+    subtitle = paste0("Outcome: DIBEV_A (Diabetes Status)"),
+    fill = "Model"
+  ) +
+  # Improve theme for academic use
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 10, hjust = 0.5, color = "#666666"),
+    axis.title = element_text(size = 10, face = "italic"),
+    axis.text.x = element_text(size = 9, hjust = 1),
+    legend.position = "none",
+    panel.grid.major.y = element_line(color = "#EEEEEE"),
+    panel.grid.minor.y = element_blank()
+  ) +
+  # Adjust y-axis to prevent label cutoff and add padding
+  ylim(0, max(model_compare$Fit_Metric_2) * 1.3)
+
+# Print the plot
+print(plot_fit_comparison)
 ```
 
 
