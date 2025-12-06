@@ -1,6 +1,21 @@
 ---
 title: "Report"
 ---
+
+```{r include = FALSE}
+library(tidyverse)
+library(dplyr)
+library(broom)
+library(knitr)
+library(kableExtra)
+library("here")
+library(ggplot2)
+```
+
+```{r}
+source(here("data", "datacleaning.R"))
+```
+
 # Introduction and Motivation
 
 ## Background
@@ -55,8 +70,8 @@ There are also new questions considered during the course of analysis. As we fin
 ## Source
 We use data from the 2024 National Health Interview Survey (NHIS), a nationally representative, cross-sectional survey of the civilian noninstitutionalized U.S. population conducted by the National Center for Health Statistics (NCHS). T2D status, anxiety, depression, smoking, and relevant demographic and clinical covariates are derived from the publicly available NHIS sample adult-level files. We use the NHIS 2024 Adult Sample, which includes demographic variables, chronic disease history, mental health indicators, lifestyle factors, and functional limitations.
 
+## Scraping method
 Data are directly accessible through CDC database. 
-
 
 ## Data cleaning
 The data-cleaning process began with importing the 2024 National Health Interview Survey (NHIS) adult dataset from an Excel file. Given that the raw dataset contained over 600 variables, the first step involved systematically reducing dimensionality. Guided by prior literature and the study’s conceptual framework, variables unrelated to diabetes risk were removed, along with variables that exhibited substantial missingness or lacked analytical relevance.
@@ -102,7 +117,7 @@ $$
 where \(Y\) is the binary outcome and \(X_j\) denotes the \(j\)-th predictor.
 
 The fitted model in R takes the following form:
-```r
+```{r}
 glm(
   DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
     DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A +
@@ -110,4 +125,751 @@ glm(
   data = df_model,
   family = binomial(link = "logit")
 )
+```
 
+## Correlation Analysis
+To better understand the relationships between the variables in our dataset, we find the need to conduct a correlation analysis. The original dataset was obtained from the 2024 NHIS (National Health Interview Survey), which contains information on demographic characteristics, health conditions, and behavioral factors for a nationally representative sample of adults. The cleaned dataset included variables such as age, sex, weight, height, and various health indicators.  
+
+***Correlation analysis*** serves as a preliminary step to identify variables that are linearly associated. Understanding these relationships helps us:
+-	Detect potential multicollinearity before performing regression analyses or more complex modeling.
+-	Provide evidence-based justification for including or excluding certain variables in our following statistical models.
+
+We computed ***pairwise Pearson correlations*** for all numeric variables. Correlations with an absolute value greater than 0.3 are considered moderate or strong associations. Additionally, diagonal elements (self-correlations) were excluded from interpretation, and symmetric duplicates were removed to ensure clarity.  
+
+To understand ***Coefficient of determination*** ($R^2$), $R^2$ represents the proportion of the variance in one variable that is predictable from the other variable.
+For our selected threshold of $r = 0.3$:
+$$R^2 = (0.3)^2 = 0.09$$
+This means that for two variables correlated at $r = 0.3$, 9% of the variation in one variable is explained by the other variable. 
+
+```{r}
+nhis24_df_fit_corr = nhis24_df_fit |> 
+  select(-BMI_A)
+
+numeric_vars <- nhis24_df_fit_corr[, sapply(nhis24_df_fit_corr, is.numeric)]
+
+cor_matrix <- cor(numeric_vars, use = "pairwise.complete.obs")
+
+cor_pt = as.data.frame(as.table(cor_matrix)) |> 
+  ggplot(aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red",
+    midpoint = 0, 
+    name = "Correlation"  
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+cor_pt
+```
+
+Key Findings:
+From our analysis, the following moderate-to-strong correlations were observed:
+```{r}
+# > 0.03 in cor_matrix
+# Convert correlation matrix to a data frame
+cor_df <- as.data.frame(as.table(cor_matrix))
+
+# Rename columns
+colnames(cor_df) <- c("Var1", "Var2", "Correlation")
+# Filter |correlation| > 0.3 but exclude self-correlations
+high_cor <- cor_df |> 
+  filter(abs(Correlation) > 0.3 & Var1 != Var2)
+
+# remove duplicate
+high_cor_unique <- high_cor |>
+  rowwise() |>
+  mutate(pair = paste(sort(c(Var1, Var2)), collapse = "_")) |>
+  distinct(pair, .keep_all = TRUE) |>
+  select(-pair) |> 
+  arrange(desc(Correlation))
+
+knitr::kable(high_cor_unique, caption = "Variables with Correlation > 0.3")
+```
+
+The strong correlation between height and weight (r = 0.799) raised significant concerns about multicollinearity in subsequent regression modeling. Multicollinearity can inflate standard errors, destabilize coefficient estimates, and reduce the reliability of statistical inference. Rather than including both highly correlated variables separately, we adopted a strategic solution: we excluded height and weight from the model and instead created a continuous BMI variable using the standard formula (weight in kilograms divided by height in meters squared).  
+
+As highlighted in the correlation analysis above, height and weight exhibited a strong linear association, an observation that raised concerns about potential multicollinearity in subsequent regression modeling. Multicollinearity can distort coefficient estimates and reduce model reliability, so we opted to exclude these two highly correlated variables from the model. In their place, we introduced a continuous BMI variable using the raw height and weight data. This replacement strategy offers dual advantages: it eliminates the multicollinearity risk posed by height and weight while integrating their combined biological information into a single, interpretable metric, thereby adequately addressing confounding from these two factors.  
+
+## Model Specification
+
+Below is the specification of the initial full logistic regression model (prior to further variable selection):
+
+$$
+\text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMI_A} + \beta_4 \cdot \text{DIFF_A} + \beta_5 \cdot \text{EDUCP_A} \\
++ \beta_6 \cdot \text{LSATIS4_A} + \beta_7 \cdot \text{PHSTAT_A} + \beta_8 \cdot \text{CHLEV_A} + \beta_9 \cdot \text{HYPEV_A} + \beta_{10} \cdot \text{LIVEREV_A} \\
++ \beta_{11} \cdot \text{STREV_A} + \beta_{12} \cdot \text{MIEV_A} + \beta_{13} \cdot \text{ANGEV_A} + \beta_{14} \cdot \text{CHDEV_A} + \beta_{15} \cdot \text{DEPEV_A} \\
++ \beta_{16} \cdot \text{ANXEV_A} + \beta_{17} \cdot \text{SMKEV_A} + \beta_{18} \cdot \text{LONELY_A}
+$$
+
+## Build Model
+
+```{r}
+df_model = 
+  nhis24_df_fit |>
+  mutate(
+    # Outcome: DIBEV_A
+    DIBEV_A = factor(DIBEV_A, levels = c(0, 1)),
+    
+    # Covariates - Dichotomous/Ordinal/Categorical (MUST be factor)
+    SEX_A = factor(SEX_A), # Assume 1/2 coding is acceptable
+    DIFF_A = factor(DIFF_A), # Codes 0, 1, 2, 3
+    EDUCP_A = factor(EDUCP_A), # Codes 0, 1, 2
+    LSATIS4_A = factor(LSATIS4_A), # Codes 0, 1
+    PHSTAT_A = factor(PHSTAT_A), # Codes 0, 1
+    CHLEV_A = factor(CHLEV_A), # Codes 0, 1
+    HYPEV_A = factor(HYPEV_A), # Codes 0, 1
+    LIVEREV_A = factor(LIVEREV_A), # Codes 0, 1
+    STREV_A = factor(STREV_A), # Codes 0, 1
+    MIEV_A = factor(MIEV_A), # Codes 0, 1
+    ANGEV_A = factor(ANGEV_A), # Codes 0, 1
+    CHDEV_A = factor(CHDEV_A), # Codes 0, 1
+    DEPEV_A = factor(DEPEV_A), # Codes 0, 1
+    ANXEV_A = factor(ANXEV_A), # Codes 0, 1
+    SMKEV_A = factor(SMKEV_A), # Codes 0, 1
+    LONELY_A = factor(LONELY_A) # Codes 0, 1, 2, 3, 4
+  ) 
+```
+
+```{r}
+model_formula <- DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+                           DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + 
+                           HYPEV_A + LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + 
+                           CHDEV_A + DEPEV_A + ANXEV_A + SMKEV_A + LONELY_A
+
+glm_model <- glm(
+  model_formula, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(glm_model)
+```
+
+## Visualization and Model Diagnostics
+
+### Bar chart of P-value
+```{r}
+glm_summary = summary(glm_model)
+
+p_values_df = data.frame(
+  Variable = rownames(glm_summary$coefficients),
+  P_value = glm_summary$coefficients[, "Pr(>|z|)"]
+)
+
+# Remove intercept
+p_values_df = 
+  p_values_df[p_values_df$Variable != "(Intercept)", ]
+
+P_value_hisg =
+  p_values_df|>
+  ggplot(aes(x = reorder(Variable, P_value), y = P_value)) +
+  geom_bar(
+    stat = "identity",
+    fill = ifelse(p_values_df$P_value < 0.05, "red", "skyblue")
+  ) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "black") +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 0.5)) +
+  labs(
+    title = "P-values from Logistic Regression",
+    x = "Variables",
+    y = "P-value"
+  ) +
+  theme_minimal()
+
+P_value_hisg
+```
+  
+### Model Results
+
+Tidy results.
+
+```{r}
+tidy_logit <- function(model) {
+  broom::tidy(model, conf.int = TRUE) |>
+    mutate(
+      Beta     = estimate,
+      OR       = exp(estimate),
+      Lower_CI = exp(conf.low),
+      Upper_CI = exp(conf.high),
+      p.value  = format.pval(p.value, digits = 3, eps = 0.001)
+    ) |>
+    select(term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}
+```
+
+Clean up term names for presentation.
+
+```{r}
+clean_term_labels <- function(df) {
+  df |>
+    mutate(
+      term = gsub("`", "", term),
+      Term = case_when(
+        term == "(Intercept)" ~ "Intercept",
+        term == "SEX_A2" ~ "SEX_A: Female (vs Male)",
+        
+        # Difficulty Walking (0: No Difficulty)
+        term == "DIFF_A1" ~ "DIFF_A: Some Difficulty (vs No Difficulty)",
+        term == "DIFF_A2" ~ "DIFF_A: A lot of Difficulty (vs No Difficulty)",
+        term == "DIFF_A3" ~ "DIFF_A: Cannot do (vs No Difficulty)",
+        
+        # Education (0: Low Education)
+        term == "EDUCP_A1" ~ "EDUCP_A: Medium Edu (vs Low Edu)",
+        term == "EDUCP_A2" ~ "EDUCP_A: High Edu (vs Low Edu)",
+        
+        # Life Satisfaction (0: Satisfied/Very Satisfied)
+        term == "LSATIS4_A1" ~ "LSATIS4_A: Dissatisfied (vs Satisfied)",
+        
+        # Health Status (0: Good/VGood/Excellent Health)
+        term == "PHSTAT_A1" ~ "PHSTAT_A: Fair/Poor Health (vs Good Health)",
+        
+        # Loneliness (0: Never Lonely)
+        term == "LONELY_A1" ~ "LONELY_A: Rarely Lonely (vs Never Lonely)",
+        term == "LONELY_A2" ~ "LONELY_A: Sometimes Lonely (vs Never Lonely)",
+        term == "LONELY_A3" ~ "LONELY_A: Usually Lonely (vs Never Lonely)",
+        term == "LONELY_A4" ~ "LONELY_A: Always Lonely (vs Never Lonely)",
+        
+        # Chronic Dichotomous Conditions (1: Yes vs 0: No)
+        term == "CHLEV_A1" ~ "CHLEV_A: High Cholesterol (Yes)",
+        term == "HYPEV_A1" ~ "HYPEV_A: Hypertension (Yes)",
+        term == "LIVEREV_A1" ~ "LIVEREV_A: Liver Disease (Yes)",
+        term == "STREV_A1" ~ "STREV_A: Stroke (Yes)",
+        term == "MIEV_A1" ~ "MIEV_A: Myocardial Infarction (Yes)",
+        term == "ANGEV_A1" ~ "ANGEV_A: Angina (Yes)",
+        term == "CHDEV_A1" ~ "CHDEV_A: CHD (Yes)",
+        term == "DEPEV_A1" ~ "DEPEV_A: Depression (Yes)",
+        term == "ANXEV_A1" ~ "ANXEV_A: Anxiety (Yes)",
+        term == "SMKEV_A1" ~ "SMKEV_A: Smoker (Yes)",
+        
+        # Continuous Variables
+        term == "AGEP_A" ~ "AGEP_A (Per Year)",
+        term == "WEIGHTLBTC_A" ~ "WEIGHTLBTC_A (Per lb)",
+        term == "HEIGHTTC_A" ~ "HEIGHTTC_A (Per unit)",
+        
+        TRUE ~ term
+      )
+    ) |>
+    select(Term, Beta, OR, Lower_CI, Upper_CI, p.value)
+}
+```
+
+Generate kable table.
+
+```{r}
+format_logit_table <- function(df,
+                               caption,
+                               footnote_text = "Reference Outcome: No Diabetes (DIBEV_A = 0).") {
+  df |>
+    dplyr::mutate(
+      OR_CI = paste0(
+        round(OR, 3), " (",
+        round(Lower_CI, 3), " - ",
+        round(Upper_CI, 3), ")"
+      ),
+      Beta = round(Beta, 4)
+    ) |>
+    dplyr::select(Term, Beta, OR_CI, p.value) |>
+    knitr::kable(
+      caption   = caption,
+      col.names = c("Predictor Term", "Coefficient (Beta)", "Adjusted OR (95% CI)", "P-value"),
+      align     = c("l", "r", "r", "r"),
+      booktabs  = TRUE
+    ) |>
+    kableExtra::kable_styling(
+      full_width    = TRUE,
+      position      = "left",
+      latex_options = "hold_position"
+    ) |>
+    kableExtra::add_header_above(c(" " = 2, "Odds Ratio" = 1, " " = 1)) |>
+    kableExtra::footnote(
+      general        = footnote_text,
+      threeparttable = TRUE
+    )
+}
+```
+
+```{r}
+model_results_tidy = 
+  glm_model |>
+  tidy_logit() |>
+  clean_term_labels()
+
+model_results_tidy |> 
+  format_logit_table(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios)"
+  )
+```
+  
+### Forest Results
+First of all, we filter out terms that are very close to 1 with wide CIs and non-significant to reduce clutter. Secondly, we order the terms for better visualization, e.g., by OR value.
+```{r}
+forest_data = 
+  model_results_tidy |>
+  filter(Term != "Intercept") |>
+  mutate(Term = fct_reorder(Term, OR, .desc = TRUE)) 
+
+forest_plots = 
+ggplot(forest_data, aes(x = OR, y = Term)) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  geom_pointrange(aes(xmin = Lower_CI, xmax = Upper_CI), size = 0.3) +
+  scale_x_log10(breaks = c(0.1, 0.2, 0.5, 1, 2, 5, 10),
+                labels = c("0.1", "0.2", "0.5", "1", "2", "5", "10")) + 
+  labs(
+    title = "Forest Plot of Adjusted Odds Ratios for Diabetes Diagnosis",
+    x = "Adjusted Odds Ratio (log scale)",
+    y = "Predictor Term"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.y = element_text(size = 9, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    panel.grid.minor.x = element_blank() # Remove minor grid lines on x-axis
+  )
+
+print(forest_plots)
+```
+
+This forest plot displays adjusted odds ratios (ORs) for diabetes diagnosis, where the y-axis lists predictors (with reference groups in parentheses), and the x-axis (log scale) shows ORs (dashed red line at OR=1, no association). Based on the plots, we used the 95% confidence interval (CI) exclusion of 1 as the measure of statistical significance, several variables demonstrated a significant independent association with a diabetes diagnosis. Predictors with OR < 1 and 95% CIs not crossing 1 (e.g., height, higher education, lower loneliness, smoking, anxiety) are linked to lower diabetes risk; those with OR > 1 and significant CIs (e.g., liver disease, fair/poor health, high cholesterol, hypertension) increase risk; and factors like stroke history, severe mobility difficulty, and some loneliness categories have CIs crossing 1, showing no significant association.
+
+### Interpretation of Model Coefficients
+
+Below is the interpretation of the logistic regression output, with each variable summarized under its own subsection.
+
+---
+
+#### Sex
+##### Male vs Female
+- Coefficient β = –0.4402  
+- OR = 1.211 (95% CI:1.11 - 1.322), *p* < 0.001  
+
+Males had significantly lower odds of diabetes compared with females after adjusting for all covariates.
+
+---
+
+#### Age
+##### Continuous (per year increase)
+- OR =1.013(95% CI:1.009 - 1.016), *p*= 0.00335
+
+Older age was a small but statistically significant risk factor for diabetes.
+
+---
+
+### Smoking
+#### Smoker vs Non-Smoker
+- OR = 0.878 (95% CI: 0.805 - 0.958), *p* = 0.0534  
+
+Smoking showed a borderline non-significant inverse association.  
+There is no strong evidence of an association between smoking and diabetes in this adjusted model.
+
+---
+
+#### Loneliness
+Compared with the “Never Lonely” reference group:
+
+- Rarely lonely: OR = 1.03 (0.926 - 1.143), *p* = 0.58808  
+- Sometimes lonely: OR = 1.051 (0.94 - 1.174), *p* = 0.38022  
+- Usually lonely: OR = 0.855 (0.65 - 1.113), *p* = 0.25409  
+- Always lonely: OR = 1.142 (0.897 - 1.445), *p* = 0.27280  
+
+None of the loneliness categories were statistically significant.  
+Loneliness does not appear to be independently associated with diabetes risk.
+
+---
+
+#### Education
+##### Medium Education vs Low Education
+- OR = 0.921 (0.833 - 1.018), *p* = 0.10919  
+
+##### High Education vs Low Education
+- OR = 0.696 (0.626 - 0.774), *p* < 0.001  
+
+Higher education was protective.  
+Those with high education had markedly lower odds of diabetes.
+
+---
+
+#### BMI 
+
+- OR=1.005 (95% CI:1.003 - 1.007),	*p* < 0.001 
+BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model. Furthermore, we derived a new continuous BMI variable using the standard BMI formula (weight in kilograms divided by height in meters squared) from the dataset’s height and weight measurements. This continuous transformation integrates information on both height and weight, thereby helping to account for potential confounding by these two variables.
+And this is virified as very significant.
+
+---
+
+#### Difficulty Walking (Mobility)
+Reference = No difficulty
+
+- Some difficulty: OR = 1.325 (1.191 - 1.473), *p* = < 0.001  
+- A lot of difficulty: OR = 1.585 (1.368 - 1.834), *p* < 0.001  
+- Cannot do at all: OR = 1.377 (1.054 - 1.785), *p* = 0.01725  
+
+Greater mobility limitations were associated with higher odds of diabetes.
+
+---
+
+#### Life Satisfaction Dissatisfied vs satisfied:
+- OR = 0.803 (0.664 - 0.967), *p* = 0.2083 → Not significant  
+
+---
+
+#### General Health Status
+##### Fair/Poor vs Good/Very Good/Excellent
+- OR = 2.022 (1.824 - 2.24), *p* < 0.001  
+
+Poor health was a strong predictor of diabetes.
+
+---
+
+#### High Cholesterol
+- OR = 2.213 (2.022 - 2.423), *p* < 0.001  
+
+A strong and significant association.
+
+---
+
+#### Hypertension
+- OR = 2.439 (2.211 - 2.692), *p* < 0.001  
+
+Hypertension was one of the largest predictors, more than doubling the odds of diabetes.
+
+---
+
+#### Liver Disease
+- OR = 1.96 (1.509 - 2.534), *p* < 0.001  
+
+Individuals with liver disease had nearly double the odds of diabetes.
+
+---
+
+#### Stroke
+- OR = 1.068 (0.91 - 1.25), *p* = 0.41833  
+
+Not statistically significant.
+
+---
+
+#### Myocardial Infarction
+- OR = 1.272 (1.074 - 1.503), *p* = 0.00502  
+
+History of myocardial infarction was positively associated with diabetes.
+
+---
+
+#### Angina
+- OR = 1.014 (0.815 - 1.256), *p* = 0.90285  
+
+Almost No association.
+
+---
+
+#### Coronary Heart Disease (CHD)
+- OR = 1.282 (1.113 - 1.474), *p* = < 0.001  
+
+CHD was a significant predictor of diabetes.
+
+---
+
+#### Depression
+- OR = 1.231 (1.087 - 1.393), *p* = 0.00101 
+
+Depression was significantly associated with increased diabetes odds.
+
+---
+
+#### Anxiety
+- OR = 0.894 (0.786 - 1.016), *p* = 0.08827  
+
+Anxiety was not significantly related to diabetes.
+
+---
+### Summary of Findings
+
+This comprehensive exploratory analysis identified multiple strong and independent predictors of diabetes diagnosis using multivariable logistic regression. The analysis proceeded systematically: we began with correlation analysis to understand variable relationships and identify multicollinearity concerns, addressed the height-weight collinearity by creating a continuous BMI variable, and then estimated a fully adjusted logistic regression model.  
+Our findings highlight the multifactorial nature of diabetes, involving biological, behavioral, and socioeconomic determinants. The strongest risk factors included hypertension, high cholesterol, liver disease, fair/poor self-rated health, and mobility limitations, each more than doubling or substantially increasing diabetes odds. BMI showed a clear dose-response relationship, while depression emerged as a significant psychosocial risk factor. Higher education demonstrated a robust protective effect, likely operating through multiple pathways.  
+Notably, several variables showed no significant independent associations after adjustment for other factors, including stroke history, angina, anxiety, loneliness, and life satisfaction. The paradoxical inverse association with smoking requires cautious interpretation and further investigation.
+
+## Additional analyses
+### Rationale for Adjust for confounders
+To produce valid and interpretable estimates of diabetes risk factors, we prespecified a set of core confounders that represent fundamental upstream characteristics known to influence multiple health domains.  
+We identified age, sex, BMI, and education as essential confounders because these variables are:  
+1.***Strongly associated with diabetes risk***: Each has well-established independent associations with diabetes prevalence and incidence
+2.***Associated with our exposures of interest***: These background characteristics influence the likelihood of developing conditions like hypertension, experiencing functional limitations, and having comorbid chronic diseases
+3.***Upstream determinants***: As broad demographic and socioeconomic factors, they occur temporally prior to many of the health conditions we examine, making them plausible common causes of both exposures and outcomes.  
+By adjusting for these core confounders, we aim to isolate the independent associations between specific health conditions (such as hypertension, functional limitations, and depression) and diabetes diagnosis, reducing bias and improving the interpretability of our estimated associations.
+
+### Build model without confounders.
+
+```{r}
+model_formula_conf = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+              DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A
+
+model_formula_noconf = DIBEV_A ~ DIFF_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A
+
+glm_model_noconf = glm(
+  model_formula_noconf, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+glm_model_conf = glm(
+  model_formula_conf, 
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(glm_model_noconf)
+
+```
+
+### Model without confounders result:
+
+```{r}
+model_results_tidy_noconf =
+  glm_model_noconf |>
+  tidy_logit() |>
+  clean_term_labels() 
+
+model_results_tidy_noconf |> 
+  format_logit_table(
+    caption = "Multivariable Logistic Regression of Diabetes Diagnosis (Adjusted Odds Ratios) Without Confounders"
+  )
+```
+
+### Compare with the original data.
+
+```{r}
+compare_table = 
+  glm_model_conf |> 
+  tidy_logit() |>
+  clean_term_labels() |> 
+  select(
+    Term,
+    Beta_full     = Beta,
+    OR_full       = OR,
+    Lower_full    = Lower_CI,
+    Upper_full    = Upper_CI,
+    p_full        = p.value
+  ) |>
+  full_join(
+    model_results_tidy_noconf |>
+      select(
+        Term,
+        Beta_noconf  = Beta,
+        OR_noconf    = OR,
+        Lower_noconf = Lower_CI,
+        Upper_noconf = Upper_CI,
+        p_noconf     = p.value
+      ),
+    by = "Term"
+  ) |>
+  mutate(
+    OR_change_pct   = (OR_full - OR_noconf) / OR_noconf * 100,
+    Beta_change_pct = (Beta_full - Beta_noconf) / Beta_noconf * 100
+  ) |> 
+  filter(
+    Term != "Intercept"
+  )
+
+compare_table |>
+  mutate(
+    OR_full     = round(OR_full, 3),
+    OR_noconf   = round(OR_noconf, 3),
+    OR_change_pct = round(OR_change_pct, 1)
+  ) |>
+  select(
+    Term,
+    OR_noconf,
+    OR_full,
+    OR_change_pct
+  ) |>
+  knitr::kable(
+    caption   = "Comparison of Odds Ratios With and Without Prespecified Confounders",
+    col.names = c(
+      "Predictor Term",
+      "OR (Model without confounders)",
+      "OR (Full model)",
+      "% Change in OR"
+    ),
+    align    = c("l", "r", "r", "r"),
+    booktabs = TRUE
+  ) |>
+  kableExtra::kable_styling(
+    full_width    = FALSE,
+    position      = "left",
+    latex_options = "hold_position"
+  )
+```
+
+### Bar chart of % change in OR
+
+```{r}
+compare_table |>
+  filter(!is.na(OR_noconf), !is.na(OR_full)) |>
+  mutate(
+    big_change = ifelse(abs(OR_change_pct) >= 10, ">= 10%", "< 10%")
+  ) |>
+  ggplot(aes(x = Term, y = OR_change_pct, fill = big_change)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_fill_manual(values = c("< 10%" = "grey80", ">= 10%" = "tomato")) +
+  labs(
+    title = "% Change in Odds Ratio After Adjusting for Confounders",
+    x = "Predictor Term",
+    y = "% Change in OR (Full vs. Reduced Model)",
+    fill = "Absolute change"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+
+```
+
+### Summary of confounder findings
+
+In our confounding assessment, adding the prespecified core covariates (age, sex, BMI, and education) attenuated the associations for several predictors. The ORs for functional limitation (DIFF_A) decreased by 10.2% for “Some Difficulty,” 12.5% for “A lot of Difficulty,” and 18.2% for “Cannot do,” while the OR for hypertension decreased by 10.5% after adjustment. This pattern indicates meaningful confounding by these upstream background factors, with the model without confounders likely overestimating the strength of association for DIFF_A and HYPEV_A (biased away from the null). A plausible explanation is that older age and higher BMI are associated with both greater functional limitation/hypertension and a higher probability of diabetes diagnosis; without adjustment, part of this shared risk may be incorrectly attributed to DIFF_A or HYPEV_A. After adjustment, these associations remained statistically significant but were more conservative, supporting the fully adjusted model as the primary set of estimates.
+
+### Implications for Model Selection
+This confounding analysis demonstrates that the fully adjusted model provides more valid and interpretable estimates of independent associations. The unadjusted model systematically overestimates associations for several key predictors, particularly functional limitations and hypertension, by failing to account for the influence of fundamental demographic and anthropometric factors. These findings reinforce our decision to prioritize the fully adjusted model as the basis for subsequent analyses and support the importance of careful confounder selection in observational epidemiological research.
+
+### Confounder-Adjusted Performance Evaluation of the Latest Predictive Model
+
+To address the high degree of correlation between height and weight (a potential source of multicollinearity and confounding), we removed these two variables from the model and replaced them with a newly constructed continuous BMI variable. Calculated using the standard formula $\frac{\text{weight [kg]}}{\left(\text{height [m]}\right)^2}$ from the dataset’s raw height and weight data, this continuous BMI metric integrates key information from both predictors. By doing so, we not only eliminate the issues arising from their high correlation but also effectively account for potential confounding by encapsulating the combined effects of height and weight in a single, interpretable variable.
+```{r}
+# Full model (includes all original predictors)
+model_full <- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+              DIFF_A + EDUCP_A + LSATIS4_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + STREV_A + MIEV_A + ANGEV_A + CHDEV_A + DEPEV_A +
+              ANXEV_A + SMKEV_A + LONELY_A,
+  data = df_model,
+  family = binomial(link = "logit"),
+  na.action = na.omit 
+)
+
+# Reduced model (only includes statistically significant predictors, p < 0.05)
+model_significant <- glm(
+  formula = DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+              DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A +
+              LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
+  data = df_model,
+  family = binomial(link = "logit"),
+  na.action = na.omit 
+)
+
+model_full_stats <- glance(model_full)  |> 
+  select(AIC, BIC) |>
+  mutate(
+    model = "Full Model",
+    n_predictors = length(coef(model_full)) - 1,
+    n_obs = nobs(model_full)
+  )
+
+model_significant_stats <- glance(model_significant) |>
+  select(AIC, BIC) |>
+  mutate(
+    model = "Reduced (Significant Variables) Model",
+    n_predictors = length(coef(model_significant)) - 1,
+    n_obs = nobs(model_significant)
+  )
+
+# Combine and clean results
+model_compare <- bind_rows(model_full_stats, model_significant_stats) |>
+  # NOTE: Rename for graphing purpose, but remember these are AIC/BIC values!
+  # AIC and BIC are measures of fit (lower is better), unlike R^2 (higher is better).
+  rename(
+    Fit_Metric_1 = AIC,
+    Fit_Metric_2 = BIC
+  ) |>
+  select(model, n_obs, n_predictors, Fit_Metric_1, Fit_Metric_2)
+
+cat("=== Model Comparison: Full vs Reduced (Significant Variables) ===\n")
+print(model_compare, digits = 4) 
+
+
+# Create clean visualization with consistent styling
+# FIX: Plotting BIC (Fit_Metric_2) which is a measure of model fit (lower is better)
+plot_fit_comparison <- ggplot(model_compare, 
+                              aes(x = model, y = Fit_Metric_2, fill = model)) +
+  # Bar plot with soft colors and black borders
+  geom_col(alpha = 0.8, width = 0.6, color = "black", linewidth = 0.5) +
+  # Add value labels on top of bars (rounded to 4 decimals)
+  geom_text(
+    aes(label = sprintf("%.4f", Fit_Metric_2)),
+    vjust = -0.3, size = 4.5, fontface = "bold"
+  ) +
+  # Customize labels and title
+  labs(
+    x = "Model Type",
+    y = "BIC (Bayesian Information Criterion)",
+    title = "Model Fit Comparison: Full Model vs Reduced Model (Lower is Better)",
+    subtitle = paste0("Outcome: DIBEV_A (Diabetes Status)"),
+    fill = "Model"
+  ) +
+  # Improve theme for academic use
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 10, hjust = 0.5, color = "#666666"),
+    axis.title = element_text(size = 10, face = "italic"),
+    axis.text.x = element_text(size = 9, hjust = 1),
+    legend.position = "none",
+    panel.grid.major.y = element_line(color = "#EEEEEE"),
+    panel.grid.minor.y = element_blank()
+  ) +
+  # Adjust y-axis to prevent label cutoff and add padding
+  ylim(0, max(model_compare$Fit_Metric_2) * 1.3)
+
+# Print the plot
+print(plot_fit_comparison)
+```
+
+
+## Final Model Selection and Discussion
+
+Final Model Selection and DiscussionAfter conducting exploratory analysis, confounding adjustment, and rigorous model comparison, we ultimately selected the reduced logistic regression model—retaining only statistically significant predictors with $p < 0.05$ —as the optimal framework for predicting diabetes diagnosis (DIBEV_A). This decision is grounded in comprehensive evaluation of model performance metrics and adherence to core statistical principles, ensuring the final model balances predictive accuracy, parsimony, and interpretability, which are critical for both scientific validity and practical application.
+
+We compared two candidate models to identify the most robust predictive framework: the full model, which included all 18 initial predictors spanning demographic, anthropometric, lifestyle, and chronic disease domains, and the reduced model, which excluded six non-significant variables (LSATIS4_A, STREV_A, ANGEV_A, ANXEV_A, SMKEV_A , and LONELY_A) while retaining 12 statistically significant predictors. Both models were fitted on the same sample of 23,626 observations, ensuring a fair comparison of their performance. Key fit metrics revealed distinct differences: the full model included 24 predictors (accounting for factor levels) with an Akaike Information Criterion (AIC) of 15,090 and a Bayesian Information Criterion (BIC) of 15,293, whereas the reduced model included 15 predictors with an AIC of 15,095 and a BIC of 15,224.
+
+The primary rationale for prioritizing the reduced model lies in its superior performance as measured by BIC, a metric that penalizes model complexity more heavily than AIC, making it particularly well-suited for avoiding overfitting in large datasets like the 2024 NHIS sample. The reduced model achieved a BIC of 15,224, which is 69 points lower than the full model’s BIC of 15,293. A BIC difference greater than 10 constitutes strong evidence in favor of the model with the lower value, and the substantial 69-point difference here confirms the reduced model offers a far better trade-off between fit and complexity. It retains the predictive power of the full model while eliminating redundant variables that do not contribute meaningfully to explaining diabetes risk, reducing the likelihood of overfitting and enhancing the model’s generalizability to external populations. 
+
+While the full model exhibited a slightly lower AIC (15,090 vs. 15,095 for the reduced model), the 5-point difference is trivial in practical terms—AIC differences of less than 10 are typically considered negligible in model selection. This minor trade-off in AIC is more than justified by the reduced model’s advantages in parsimony and interpretability. Excluding the six non-significant variables simplifies the model structure without sacrificing predictive performance: life satisfaction, stroke, and angina showed no independent association with diabetes after adjusting for other covariates; the apparent protective effect of anxiety in unadjusted analyses was attributed to confounding (as demonstrated in our confounder analysis) and became non-significant in the full model; and smoking and loneliness showed no robust evidence of association with diabetes in this nationally representative sample, consistent with some prior research highlighting context-dependent relationships for these factors (e.g., smoking may interact with unmeasured metabolic variables not included in the model). 
+
+Additionally, the reduced model maintains the critical adjustments made to address multicollinearity and confounding. As identified in our correlation analysis, height and weight exhibited strong linear association, which posed a risk of multicollinearity in regression modeling. We resolved this issue by replacing these two variables with a newly derived continuous BMI variable, which integrates anthropometric information from both predictors while mitigating collinearity. Our confounder analysis further confirmed that the significant predictors retained in the reduced model—including BMI, hypertension, high cholesterol, education, and depression—have robust associations with diabetes that are not substantially altered by adjustment for demographic factors, ensuring the model’s stability and reliability.
+
+### Final Model Specification
+
+The optimal reduced logistic regression model is formally defined as
+$$
+\text{Logit}(P(\text{DIBEV_A}=1)) = \log\left(\frac{P(\text{DIBEV_A}=1)}{1-P(\text{DIBEV_A}=1)}\right) = \beta_0 \\
++ \beta_1 \cdot \text{SEX_A} + \beta_2 \cdot \text{AGEP_A} + \beta_3 \cdot \text{BMI_A} \\
++ \beta_4 \cdot \text{DIFF_A} + \beta_5 \cdot \text{EDUCP_A} + \beta_6 \cdot \text{PHSTAT_A} \\
++ \beta_7 \cdot \text{CHLEV_A} + \beta_8 \cdot \text{HYPEV_A} + \beta_9 \cdot \text{LIVEREV_A} \\
++ \beta_{10} \cdot \text{MIEV_A} + \beta_{11} \cdot \text{CHDEV_A} + \beta_{12} \cdot \text{DEPEV_A}
+$$
+The retained predictors cover key domains relevant to diabetes risk: demographics (sex, age), anthropometrics (continuous BMI), mobility (difficulty walking), socioeconomic status (education), general health status, chronic conditions, and mental health (depression). This comprehensive yet parsimonious set of predictors ensures the model captures the multifactorial nature of diabetes while remaining easy to interpret and communicate to stakeholders such as clinicians and public health officials.
+
+### Summary and Conclusions
+
+In summary, the reduced model represents the optimal choice for this analysis. It offers superior parsimony, a substantially lower BIC indicating better fit adjusted for complexity, and retains only clinically and statistically meaningful predictors of diabetes diagnosis. By prioritizing this model, we ensure that our findings are both statistically rigorous and practically useful, providing actionable insights into the key factors associated with diabetes risk in a nationally representative adult population.
+
+# Discussion
+## Key Insights
+From our study, we can see that diabetes is shaped by interacting biological, behavioral, and psychosocial factors. Mental health indicators (depression, anxiety, loneliness) show independent associations even after accounting for traditional cardiometabolic factors.Education shows a protective socioeconomic effect, consistent with prior literature.Functional limitations strongly predict diabetes, suggesting disability may both reflect and contribute to metabolic disease.  
+The strenght of out study is that we based our study on a large, nationally representative dataset from a trusted source which is CDC. We applied standardized cleaning pipeline and generated a comprehensive inclusion of demographic, lifestyle, physical health, and mental health predictors.
+However, we also have out limitations in that we lacked cross-sectional, which indicates that we cannot infer causality efficiently. Besides, our study is based on a datasource with self-reported chronic conditions, which made it hard to verify and open to survey bias. Finally, some variables (e.g., diet, physical activity) are not included in this study, which leaves opportunity for further studies. 
+
+## Conclusion
+Our multivariable analysis provides a holistic view of diabetes risk in U.S. adults. The strongest predictors include age, comorbid cardiometabolic conditions, general health, and functional limitations. Notably, psychosocial and mental-health factors also show meaningful associations, highlighting the importance of integrated public health approaches.  
+Future work could incorporate: interaction effects, stratified analysis (by sex or age group), predictive modeling (random forests, gradient boosting), geospatial mapping.
