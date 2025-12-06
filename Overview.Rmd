@@ -93,3 +93,4 @@ Jinyao Jiao (jj3564)
 
 Click on the video below to explore the capabilities of this site and enjoy a summary of our key highlights.
 
+<iframe width="956" height="514" src="https://www.youtube.com/embed/r0dJqg8Jv-4" title="Multivariable Logistic Analysis of Type II Diabetes Risk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
