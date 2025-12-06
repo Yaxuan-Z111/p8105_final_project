@@ -1,6 +1,5 @@
 ---
-title: "report"
-output: html_document
+title: "Report"
 ---
 # Introduction and Motivation
 
