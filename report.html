@@ -720,8 +720,10 @@ cor_pt = as.data.frame(as.table(cor_matrix)) |&gt;
 
 cor_pt</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Key Findings: From our analysis, the following moderate-to-strong
-correlations were observed:</p>
+<div id="key-findings" class="section level3">
+<h3>Key Findings:</h3>
+<p>From our analysis, the following moderate-to-strong correlations were
+observed:</p>
 <pre class="r"><code># &gt; 0.03 in cor_matrix
 # Convert correlation matrix to a data frame
 cor_df &lt;- as.data.frame(as.table(cor_matrix))
@@ -823,6 +825,7 @@ offers dual advantages: it eliminates the multicollinearity risk posed
 by height and weight while integrating their combined biological
 information into a single, interpretable metric, thereby adequately
 addressing confounding from these two factors.</p>
+</div>
 </div>
 <div id="model-specification" class="section level2">
 <h2>Model Specification</h2>
@@ -1545,11 +1548,10 @@ diabetes.</p>
 <hr />
 </div>
 </div>
-</div>
-<div id="smoking" class="section level3">
-<h3>Smoking</h3>
-<div id="smoker-vs-non-smoker" class="section level4">
-<h4>Smoker vs Non-Smoker</h4>
+<div id="smoking" class="section level4">
+<h4>Smoking</h4>
+<div id="smoker-vs-non-smoker" class="section level5">
+<h5>Smoker vs Non-Smoker</h5>
 <ul>
 <li>OR = 0.878 (95% CI: 0.805 - 0.958), <em>p</em> = 0.0534</li>
 </ul>
@@ -1558,6 +1560,7 @@ association.<br />
 There is no strong evidence of an association between smoking and
 diabetes in this adjusted model.</p>
 <hr />
+</div>
 </div>
 <div id="loneliness" class="section level4">
 <h4>Loneliness</h4>
@@ -1750,8 +1753,11 @@ paradoxical inverse association with smoking requires cautious
 interpretation and further investigation.</p>
 </div>
 </div>
-<div id="additional-analyses" class="section level2">
-<h2>Additional analyses</h2>
+</div>
+<div id="additional-analyses" class="section level1">
+<h1>Additional analyses</h1>
+<div id="confounders" class="section level2">
+<h2>Confounders</h2>
 <div id="rationale-for-adjust-for-confounders" class="section level3">
 <h3>Rationale for Adjust for confounders</h3>
 <p>To produce valid and interpretable estimates of diabetes risk
@@ -2379,6 +2385,9 @@ attributed to DIFF_A or HYPEV_A. After adjustment, these associations
 remained statistically significant but were more conservative,
 supporting the fully adjusted model as the primary set of estimates.</p>
 </div>
+</div>
+<div id="final-model" class="section level2">
+<h2>Final Model</h2>
 <div id="implications-for-model-selection" class="section level3">
 <h3>Implications for Model Selection</h3>
 <p>This confounding analysis demonstrates that the fully adjusted model
@@ -2499,9 +2508,8 @@ plot_fit_comparison &lt;- ggplot(model_compare,
 print(plot_fit_comparison)</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 </div>
-</div>
-<div id="final-model-selection-and-discussion" class="section level2">
-<h2>Final Model Selection and Discussion</h2>
+<div id="final-model-selection-and-discussion" class="section level3">
+<h3>Final Model Selection and Discussion</h3>
 <p>Final Model Selection and DiscussionAfter conducting exploratory
 analysis, confounding adjustment, and rigorous model comparison, we
 ultimately selected the reduced logistic regression model—retaining only
@@ -2566,6 +2574,7 @@ retained in the reduced model—including BMI, hypertension, high
 cholesterol, education, and depression—have robust associations with
 diabetes that are not substantially altered by adjustment for
 demographic factors, ensuring the model’s stability and reliability.</p>
+</div>
 <div id="final-model-specification" class="section level3">
 <h3>Final Model Specification</h3>
 <p>The optimal reduced logistic regression model is formally defined as

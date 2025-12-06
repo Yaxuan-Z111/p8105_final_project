@@ -165,7 +165,7 @@ cor_pt = as.data.frame(as.table(cor_matrix)) |>
 cor_pt
 ```
 
-Key Findings:
+### Key Findings:
 From our analysis, the following moderate-to-strong correlations were observed:
 ```{r}
 # > 0.03 in cor_matrix
@@ -461,8 +461,8 @@ Older age was a small but statistically significant risk factor for diabetes.
 
 ---
 
-### Smoking
-#### Smoker vs Non-Smoker
+#### Smoking
+##### Smoker vs Non-Smoker
 - OR = 0.878 (95% CI: 0.805 - 0.958), *p* = 0.0534  
 
 Smoking showed a borderline non-significant inverse association.  
@@ -595,7 +595,8 @@ This comprehensive exploratory analysis identified multiple strong and independe
 Our findings highlight the multifactorial nature of diabetes, involving biological, behavioral, and socioeconomic determinants. The strongest risk factors included hypertension, high cholesterol, liver disease, fair/poor self-rated health, and mobility limitations, each more than doubling or substantially increasing diabetes odds. BMI showed a clear dose-response relationship, while depression emerged as a significant psychosocial risk factor. Higher education demonstrated a robust protective effect, likely operating through multiple pathways.  
 Notably, several variables showed no significant independent associations after adjustment for other factors, including stroke history, angina, anxiety, loneliness, and life satisfaction. The paradoxical inverse association with smoking requires cautious interpretation and further investigation.
 
-## Additional analyses
+# Additional analyses
+## Confounders
 ### Rationale for Adjust for confounders
 To produce valid and interpretable estimates of diabetes risk factors, we prespecified a set of core confounders that represent fundamental upstream characteristics known to influence multiple health domains.  
 We identified age, sex, BMI, and education as essential confounders because these variables are:  
@@ -740,6 +741,7 @@ compare_table |>
 
 In our confounding assessment, adding the prespecified core covariates (age, sex, BMI, and education) attenuated the associations for several predictors. The ORs for functional limitation (DIFF_A) decreased by 10.2% for “Some Difficulty,” 12.5% for “A lot of Difficulty,” and 18.2% for “Cannot do,” while the OR for hypertension decreased by 10.5% after adjustment. This pattern indicates meaningful confounding by these upstream background factors, with the model without confounders likely overestimating the strength of association for DIFF_A and HYPEV_A (biased away from the null). A plausible explanation is that older age and higher BMI are associated with both greater functional limitation/hypertension and a higher probability of diabetes diagnosis; without adjustment, part of this shared risk may be incorrectly attributed to DIFF_A or HYPEV_A. After adjustment, these associations remained statistically significant but were more conservative, supporting the fully adjusted model as the primary set of estimates.
 
+## Final Model
 ### Implications for Model Selection
 This confounding analysis demonstrates that the fully adjusted model provides more valid and interpretable estimates of independent associations. The unadjusted model systematically overestimates associations for several key predictors, particularly functional limitations and hypertension, by failing to account for the influence of fundamental demographic and anthropometric factors. These findings reinforce our decision to prioritize the fully adjusted model as the basis for subsequent analyses and support the importance of careful confounder selection in observational epidemiological research.
 
@@ -836,7 +838,7 @@ print(plot_fit_comparison)
 ```
 
 
-## Final Model Selection and Discussion
+### Final Model Selection and Discussion
 
 Final Model Selection and DiscussionAfter conducting exploratory analysis, confounding adjustment, and rigorous model comparison, we ultimately selected the reduced logistic regression model—retaining only statistically significant predictors with $p < 0.05$ —as the optimal framework for predicting diabetes diagnosis (DIBEV_A). This decision is grounded in comprehensive evaluation of model performance metrics and adherence to core statistical principles, ensuring the final model balances predictive accuracy, parsimony, and interpretability, which are critical for both scientific validity and practical application.
 
