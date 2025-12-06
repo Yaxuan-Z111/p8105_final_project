@@ -1,0 +1,114 @@
+---
+title: "report"
+output: html_document
+---
+# Introduction and Motivation
+
+## Background
+In the 1970s, the World Health Organization (WHO) introduced the term Non-Insulin Dependent Diabetes Mellitus (NIDDM) to differentiate forms of diabetes based on therapeutic requirements and underlying physiological mechanisms. This classification distinguished insulin-dependent diabetes (now known as Type 1) from cases typically managed without insulin. As scientific understanding evolved, it became clear that NIDDM was characterized primarily by insulin resistance and impaired β-cell function. Consequently, in the 1990s the terminology shifted to Type 2 Diabetes (T2D), reflecting its biological rather than treatment-based foundations [1]. Today, T2D accounts for over 90% of diabetes cases globally, and its prevalence is projected to increase from 460 million in 2017 to 693 million by 2045 [2]. The global burden is particularly severe in low- and middle-income countries [1], and disparities exist even within nations: Saeedi et al. [4] estimate a rise in global diabetes prevalence from 9.3% in 2019 to 10.9% by 2045, with substantial urban–rural differences. While the genetic basis of T2D is well-documented [3], emerging evidence suggests that modifiable postnatal exposures, including education, may play a direct role in shaping T2D risk independent of BMI [5].
+
+## Current Gaps
+Despite extensive research, major knowledge gaps remain in understanding how behavioral, psychosocial, socioeconomic, and chronic disease–related factors interact to influence T2D development. Although Yu et al. [16] identify diet and pollution as potential contributors—possibly through epigenetic mechanisms—these biological pathways remain insufficiently understood. Likewise, findings from the EPIC-InterAct study indicate a 67% higher T2D risk among individuals with lower educational attainment even after adjusting for lifestyle and metabolic factors [17], yet the mechanisms beyond behavioral explanation remain unclear. Existing literature also tends to overemphasize prenatal and genetic determinants [2,11], while underexploring critical postnatal influences such as mental health, daily behavior, socioeconomic context, and environmental exposures. Additionally, mobility-related behaviors such as travel remain poorly understood, with inconsistent evidence regarding their contribution to metabolic health. Persistent geographic and socioeconomic disparities further demonstrate that generalized prevention strategies are inadequate for addressing the heterogeneity of T2D burden [18].
+
+## Motivation
+Given the complex and multilayered determinants of T2D, there is a pressing need for integrative research that simultaneously examines lifestyle behaviors, mental health, socioeconomic circumstances, and chronic comorbidities. Existing studies rarely analyze how these determinants interact rather than operate independently, leaving critical questions about their combined effects unanswered. With growing evidence that modifiable exposures can meaningfully alter T2D risk—even among genetically predisposed individuals—there is strong motivation to develop more nuanced, context-sensitive prevention strategies. This study aims to address these gaps by investigating the joint and interactive contributions of behavioral, psychosocial, and socioeconomic factors to T2D susceptibility, ultimately contributing toward more precise, equitable, and evidence-based public health interventions.
+ 
+## Related work
+There has be extended research on Type II Diabetes in academic and our work have been inspired by many of the excellent works. We have taken into consideration the choice of variables to study by looking at previous research works, some of them are:   
+[1] Z. L. Teo, Y.-C. Tham, M. Yu, M. L. Chee, T. H. Rim, N. Cheung, M. M.Bikbov, Y. X. Wang, Y. Tang, Y. Lu, I. Y. Wong, D. S. W. Ting, G. S. W. Tan, J. B. Jonas, C. Sabanayagam, T. Y. Wong, and C.-Y. Cheng, Global Prevalence of Diabetic Retinopathy and Projection of Burden through 2045: Systematic Review and Meta-analysis, Ophthalmology, 128 (2021), pp. 1580–1591. Publisher: Elsevier.  
+[2] N. H. Cho, J. E. Shaw, S. Karuranga, Y. Huang, J. D. d. R. Fernandes, A. W. Ohlrogge, and B. Malanda, IDF Diabetes Atlas: Global estimates of diabetes prevalence for 2017 and projections for 2045, Diabetes Research and Clinical Practice, 138 (2018), pp. 271–281. Publisher: Elsevier.  
+[3] S. E. Kahn, M. E. Cooper, and S. D. Prato, Pathophysiology and treatment of type 2 diabetes: perspectives on the past, present, and future, 383, pp. 1068–1083. Publisher: Elsevier.  
+[4] P. Saeedi, I. Petersohn, P. Salpea, B. Malanda, S. Karuranga, N. Un-win, S. Colagiuri, L. Guariguata, A. A. Motala, K. Ogurtsova, J. E. Shaw, D. Bright, and R. Williams, Global and regional diabetes prevalence estimates for 2019 and projections for 2030 and 2045: Results from the International Diabetes Federation Diabetes Atlas, 9th edition, Diabetes Research and Clinical Practice, 157 (2019), p. 107843.  
+[5] X. Zhang et al., Educational attainment and diabetes prevalence in us adults, 2001–2020, JAMA Network Open, 7 (2024), p. e246599.  
+[6] T. A. Khan, D. Field, V. Chen, S. Ahmad, S. B. Mejia, H. Kahleová, D. Rahe-lić, J. Salas-Salvadó, L. A. Leiter, M. Uusitupa, C. W. C. Kendall, and J. L.Sievenpiper, Combination of multiple low-risk lifestyle behaviors and incident type 2 diabetes: A systematic review and dose-response meta-analysis of prospective cohort studies, 46, pp. 643–656.  
+[7] W. C. Knowler, E. Barrett-Connor, S. E. Fowler, R. F. Hamman, J. M. Lachin, E. A. Walker, D. M. Nathan, and Diabetes Prevention Program Research Group, Reduction in the incidence of type 2 diabetes with lifestyle intervention or metformin, The New England Journal of Medicine, 346 (2002), pp. 393–403.  
+[8] P. E. McBride, Triglycerides and risk for coronary heart disease, JAMA, 298 (2007), pp. 336–338.  
+[9] C. Willi, P. Bodenmann, W. A. Ghali, P. D. Faris, and J. Cornuz, Active smoking and the risk of type 2 diabetesa systematic review and meta-analysis, JAMA, 298 (2007), pp. 2654–2664.  
+[10] P. Theofilou, Is there a relation between depression and anxiety to clinical characteristics among patients with t2d in greece?, 20, p. e060723218470.  
+[11] C. Herder, J.-F. Fürstos, B. Nowotny, A. Begun, K. Strassburger, K. Müssig, J. Szendroedi, A. Icks, and M. Roden, Associations between inflammation-related biomarkers and depressive symptoms in individuals with recently diagnosed type 1 and type 2 diabetes, Brain, Behavior, and Immunity, 61 (2017), pp. 137–145.  
+[12] M. de Jong, M. Woodward, and S. A. E. Peters, Diabetes, Glycated Hemoglobin, and the Risk of Myocardial Infarction in Women and Men: A Prospective Cohort Study of the UK Biobank, (2024).  
+[13] O. Aoun, M. François, J.-P. Demoncheaux, and C. Rapp, Mind the eye-squirter! an anthia sexmaculata sexmaculata-related necrotic burn, Journal of Travel Medicine, 25 (2018), p. tay033.  
+[14] E. S. Schellenberg, D. M. Dryden, B. Vandermeer, C. Ha, and C. Korownyk, Lifestyle interventions for patients with and at risk for type 2 diabetes: a systematic review and meta-analysis, Annals of Internal Medicine, 159 (2013), pp. 543–551.  
+[15] K. Thomas and D. Gunnell, Suicide in england and wales 1861– 2007: a time-trends analysis, International Journal of Epidemiology, 39 (2010), pp. 1464–1475.  
+[16] S. Stringhini et al., Education and the risk of type 2 diabetes: the epic-interact study, Diabetologia, 55 (2012), pp. 2930–2938.  
+[17] L. Yu, W. Liu, Y. Zhang, Q. Tan, J. Song, L. Fan, X. You, M. Zhou, B. Wang, and W. Chen, Styrene and ethylbenzene exposure and type 2 diabetes mellitus: A longitudinal gene– environment interaction study, Eco-Environment & Health, 3 (2024), pp. 452–457.  
+[18] H. Kolb and S. Martin, Environmental/lifestyle factors in the pathogenesis and prevention of type 2 diabetes, BMC Medicine, 15 (2017).   
+  
+# Initial questions
+Our study began by trying to answer:
+- How do modifiable behavioral, psychosocial, socioeconomic, and medical factors interact to shape Type 2 Diabetes (T2D) risk in U.S. adults?
+
+To further break it down, we aimed to investigate:
+- How do behavioral factors (smoking, physical inactivity, mobility limitations) contribute to T2D risk?
+
+- How do psychosocial factors (depression, mental health, stress) influence T2D susceptibility?
+
+- How does socioeconomic status (particularly education) influence T2D susceptibility?
+
+- How do cardiometabolic comorbidities (hypertension, high cholesterol, liver disease, coronary heart disease) influence T2D susceptibility?
+
+As the project developed, the question also evolved in the process.
+We shifted from examing individual risk factors in isolation to understanding how they "collectively contribute" and "jointly shape" diabetes susceptibility through interactions.
+There are also new questions considered during the course of analysis. As we find variables with high correlation, how do we deal with them in the model?
+
+# Data
+
+## Source
+We use data from the 2024 National Health Interview Survey (NHIS), a nationally representative, cross-sectional survey of the civilian noninstitutionalized U.S. population conducted by the National Center for Health Statistics (NCHS). T2D status, anxiety, depression, smoking, and relevant demographic and clinical covariates are derived from the publicly available NHIS sample adult-level files. We use the NHIS 2024 Adult Sample, which includes demographic variables, chronic disease history, mental health indicators, lifestyle factors, and functional limitations.
+
+Data are directly accessible through CDC database. 
+
+
+## Data cleaning
+The data-cleaning process began with importing the 2024 National Health Interview Survey (NHIS) adult dataset from an Excel file. Given that the raw dataset contained over 600 variables, the first step involved systematically reducing dimensionality. Guided by prior literature and the study’s conceptual framework, variables unrelated to diabetes risk were removed, along with variables that exhibited substantial missingness or lacked analytical relevance.
+
+After this initial screening, we identified and retained a subset of variables broadly supported by existing epidemiological research as potential determinants of Type 2 Diabetes. These variables—which included demographic factors, lifestyle behaviors, psychosocial indicators, and comorbid health conditions—were extracted to form a refined dataset that served as the foundation for subsequent analysis.
+
+Following variable selection, we performed targeted recoding and cleaning steps, such as standardizing categorical responses, addressing missing or invalid values, and ensuring consistency across health and demographic variables. This curated dataset constitutes the final analytic cohort used for exploratory analysis and multivariable modeling.
+
+These selected variables were then compiled into a new, streamlined analytic dataset that served as the foundation for all subsequent analyses：
+- Sex is converted to binary coding (1 for male, 0 for female). 
+
+- The primary outcome variable, diabetes status (DIBEV_A), is recoded from categorical responses to binary format (1 for yes, 0 for no), with all undefined responses removed.
+
+- Walking difficulty (DIFF_A) is transformed into an ordinal scale ranging from 0 to 3, representing increasing levels of difficulty. 
+
+- Education level (EDUCP_A) is collapsed into three broader categories: less than high school (0), high school or some college (1), and college degree or higher (2). 
+
+- Life satisfaction and health status variables are dichotomized into two meaningful groups each. 
+
+- Multiple chronic disease indicators, including high cholesterol, hypertension, liver disease, stroke, myocardial infarction, angina, and coronary heart disease, are recoded to binary variables (1 for ever diagnosed, 0 for never diagnosed). 
+
+- The loneliness scale is reverse-coded to create an intuitive ordering where higher values indicate greater loneliness (0-4 scale). 
+
+- Smoking history, depression, and anxiety variables are converted to binary indicators. 
+
+Throughout the process, observations with "refused," "don't know," or "not ascertained" responses (typically coded as 7, 8, or 9) are systematically filtered out to ensure data quality. 
+Finally, the cleaned dataset is subset to include only the 20 relevant variables needed for subsequent analysis: sex, age, diabetes status, weight, height, walking difficulty, education, life satisfaction, health status, the seven chronic disease indicators, depression, anxiety, smoking history, and loneliness.
+
+# Exploratory analysis
+This analysis investigates factors associated with the likelihood of diabetes diagnosis using data from the 2024 National Health Interview Survey (NHIS), a nationally representative sample of adults. Our outcome variable, DIBEV_A, is a binary indicator representing whether an individual has been diagnosed with diabetes (0 = No diabetes, 1 = Diabetes diagnosis). We employed a multivariable logistic regression approach to examine the independent associations between diabetes and a comprehensive set of demographic, lifestyle, physical health, and chronic disease indicators.
+
+## Methodology
+To model the association between multiple predictors and the binary diabetes outcome, we employed a generalized linear model (GLM) with a binomial distribution and logit link. Logistic regression is appropriate when modeling the probability of an event, ensuring that predicted values remain within the interval \([0,1]\). 
+
+The logistic regression model can be written as:
+
+$$
+\text{logit}\big(P(Y=1 \mid X)\big)
+= \log \left( \frac{P(Y=1 \mid X)}{1 - P(Y=1 \mid X)} \right)
+= \beta_0 + \sum_{j=1}^{p} \beta_j X_j ,
+$$
+
+where \(Y\) is the binary outcome and \(X_j\) denotes the \(j\)-th predictor.
+
+The fitted model in R takes the following form:
+```r
+glm(
+  DIBEV_A ~ SEX_A + AGEP_A + BMI_A +
+    DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A +
+    HYPEV_A + LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A,
+  data = df_model,
+  family = binomial(link = "logit")
+)
+

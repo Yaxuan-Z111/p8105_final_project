@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>report</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Overview.html">Overview</a>
+</li>
+<li>
+  <a href="Proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="introduction.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data Description</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="https://github.com/Yaxuan-Z111/p8105_final_project.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">report</h1>
+
+</div>
+
+
+<div id="introduction-and-motivation" class="section level1">
+<h1>Introduction and Motivation</h1>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>In the 1970s, the World Health Organization (WHO) introduced the term
+Non-Insulin Dependent Diabetes Mellitus (NIDDM) to differentiate forms
+of diabetes based on therapeutic requirements and underlying
+physiological mechanisms. This classification distinguished
+insulin-dependent diabetes (now known as Type 1) from cases typically
+managed without insulin. As scientific understanding evolved, it became
+clear that NIDDM was characterized primarily by insulin resistance and
+impaired β-cell function. Consequently, in the 1990s the terminology
+shifted to Type 2 Diabetes (T2D), reflecting its biological rather than
+treatment-based foundations [1]. Today, T2D accounts for over 90% of
+diabetes cases globally, and its prevalence is projected to increase
+from 460 million in 2017 to 693 million by 2045 [2]. The global burden
+is particularly severe in low- and middle-income countries [1], and
+disparities exist even within nations: Saeedi et al. [4] estimate a rise
+in global diabetes prevalence from 9.3% in 2019 to 10.9% by 2045, with
+substantial urban–rural differences. While the genetic basis of T2D is
+well-documented [3], emerging evidence suggests that modifiable
+postnatal exposures, including education, may play a direct role in
+shaping T2D risk independent of BMI [5].</p>
+</div>
+<div id="current-gaps" class="section level2">
+<h2>Current Gaps</h2>
+<p>Despite extensive research, major knowledge gaps remain in
+understanding how behavioral, psychosocial, socioeconomic, and chronic
+disease–related factors interact to influence T2D development. Although
+Yu et al. [16] identify diet and pollution as potential
+contributors—possibly through epigenetic mechanisms—these biological
+pathways remain insufficiently understood. Likewise, findings from the
+EPIC-InterAct study indicate a 67% higher T2D risk among individuals
+with lower educational attainment even after adjusting for lifestyle and
+metabolic factors [17], yet the mechanisms beyond behavioral explanation
+remain unclear. Existing literature also tends to overemphasize prenatal
+and genetic determinants [2,11], while underexploring critical postnatal
+influences such as mental health, daily behavior, socioeconomic context,
+and environmental exposures. Additionally, mobility-related behaviors
+such as travel remain poorly understood, with inconsistent evidence
+regarding their contribution to metabolic health. Persistent geographic
+and socioeconomic disparities further demonstrate that generalized
+prevention strategies are inadequate for addressing the heterogeneity of
+T2D burden [18].</p>
+</div>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Given the complex and multilayered determinants of T2D, there is a
+pressing need for integrative research that simultaneously examines
+lifestyle behaviors, mental health, socioeconomic circumstances, and
+chronic comorbidities. Existing studies rarely analyze how these
+determinants interact rather than operate independently, leaving
+critical questions about their combined effects unanswered. With growing
+evidence that modifiable exposures can meaningfully alter T2D risk—even
+among genetically predisposed individuals—there is strong motivation to
+develop more nuanced, context-sensitive prevention strategies. This
+study aims to address these gaps by investigating the joint and
+interactive contributions of behavioral, psychosocial, and socioeconomic
+factors to T2D susceptibility, ultimately contributing toward more
+precise, equitable, and evidence-based public health interventions.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related work</h2>
+<p>There has be extended research on Type II Diabetes in academic and
+our work have been inspired by many of the excellent works. We have
+taken into consideration the choice of variables to study by looking at
+previous research works, some of them are:<br />
+[1] Z. L. Teo, Y.-C. Tham, M. Yu, M. L. Chee, T. H. Rim, N. Cheung, M.
+M.Bikbov, Y. X. Wang, Y. Tang, Y. Lu, I. Y. Wong, D. S. W. Ting, G. S.
+W. Tan, J. B. Jonas, C. Sabanayagam, T. Y. Wong, and C.-Y. Cheng, Global
+Prevalence of Diabetic Retinopathy and Projection of Burden through
+2045: Systematic Review and Meta-analysis, Ophthalmology, 128 (2021),
+pp. 1580–1591. Publisher: Elsevier.<br />
+[2] N. H. Cho, J. E. Shaw, S. Karuranga, Y. Huang, J. D. d. R.
+Fernandes, A. W. Ohlrogge, and B. Malanda, IDF Diabetes Atlas: Global
+estimates of diabetes prevalence for 2017 and projections for 2045,
+Diabetes Research and Clinical Practice, 138 (2018), pp. 271–281.
+Publisher: Elsevier.<br />
+[3] S. E. Kahn, M. E. Cooper, and S. D. Prato, Pathophysiology and
+treatment of type 2 diabetes: perspectives on the past, present, and
+future, 383, pp. 1068–1083. Publisher: Elsevier.<br />
+[4] P. Saeedi, I. Petersohn, P. Salpea, B. Malanda, S. Karuranga, N.
+Un-win, S. Colagiuri, L. Guariguata, A. A. Motala, K. Ogurtsova, J. E.
+Shaw, D. Bright, and R. Williams, Global and regional diabetes
+prevalence estimates for 2019 and projections for 2030 and 2045: Results
+from the International Diabetes Federation Diabetes Atlas, 9th edition,
+Diabetes Research and Clinical Practice, 157 (2019), p. 107843.<br />
+[5] X. Zhang et al., Educational attainment and diabetes prevalence in
+us adults, 2001–2020, JAMA Network Open, 7 (2024), p. e246599.<br />
+[6] T. A. Khan, D. Field, V. Chen, S. Ahmad, S. B. Mejia, H. Kahleová,
+D. Rahe-lić, J. Salas-Salvadó, L. A. Leiter, M. Uusitupa, C. W. C.
+Kendall, and J. L.Sievenpiper, Combination of multiple low-risk
+lifestyle behaviors and incident type 2 diabetes: A systematic review
+and dose-response meta-analysis of prospective cohort studies, 46,
+pp. 643–656.<br />
+[7] W. C. Knowler, E. Barrett-Connor, S. E. Fowler, R. F. Hamman, J. M.
+Lachin, E. A. Walker, D. M. Nathan, and Diabetes Prevention Program
+Research Group, Reduction in the incidence of type 2 diabetes with
+lifestyle intervention or metformin, The New England Journal of
+Medicine, 346 (2002), pp. 393–403.<br />
+[8] P. E. McBride, Triglycerides and risk for coronary heart disease,
+JAMA, 298 (2007), pp. 336–338.<br />
+[9] C. Willi, P. Bodenmann, W. A. Ghali, P. D. Faris, and J. Cornuz,
+Active smoking and the risk of type 2 diabetesa systematic review and
+meta-analysis, JAMA, 298 (2007), pp. 2654–2664.<br />
+[10] P. Theofilou, Is there a relation between depression and anxiety to
+clinical characteristics among patients with t2d in greece?, 20,
+p. e060723218470.<br />
+[11] C. Herder, J.-F. Fürstos, B. Nowotny, A. Begun, K. Strassburger, K.
+Müssig, J. Szendroedi, A. Icks, and M. Roden, Associations between
+inflammation-related biomarkers and depressive symptoms in individuals
+with recently diagnosed type 1 and type 2 diabetes, Brain, Behavior, and
+Immunity, 61 (2017), pp. 137–145.<br />
+[12] M. de Jong, M. Woodward, and S. A. E. Peters, Diabetes, Glycated
+Hemoglobin, and the Risk of Myocardial Infarction in Women and Men: A
+Prospective Cohort Study of the UK Biobank, (2024).<br />
+[13] O. Aoun, M. François, J.-P. Demoncheaux, and C. Rapp, Mind the
+eye-squirter! an anthia sexmaculata sexmaculata-related necrotic burn,
+Journal of Travel Medicine, 25 (2018), p. tay033.<br />
+[14] E. S. Schellenberg, D. M. Dryden, B. Vandermeer, C. Ha, and C.
+Korownyk, Lifestyle interventions for patients with and at risk for type
+2 diabetes: a systematic review and meta-analysis, Annals of Internal
+Medicine, 159 (2013), pp. 543–551.<br />
+[15] K. Thomas and D. Gunnell, Suicide in england and wales 1861– 2007:
+a time-trends analysis, International Journal of Epidemiology, 39
+(2010), pp. 1464–1475.<br />
+[16] S. Stringhini et al., Education and the risk of type 2 diabetes:
+the epic-interact study, Diabetologia, 55 (2012), pp. 2930–2938.<br />
+[17] L. Yu, W. Liu, Y. Zhang, Q. Tan, J. Song, L. Fan, X. You, M. Zhou,
+B. Wang, and W. Chen, Styrene and ethylbenzene exposure and type 2
+diabetes mellitus: A longitudinal gene– environment interaction study,
+Eco-Environment &amp; Health, 3 (2024), pp. 452–457.<br />
+[18] H. Kolb and S. Martin, Environmental/lifestyle factors in the
+pathogenesis and prevention of type 2 diabetes, BMC Medicine, 15
+(2017).</p>
+</div>
+</div>
+<div id="initial-questions" class="section level1">
+<h1>Initial questions</h1>
+<p>Our study began by trying to answer: - How do modifiable behavioral,
+psychosocial, socioeconomic, and medical factors interact to shape Type
+2 Diabetes (T2D) risk in U.S. adults?</p>
+<p>To further break it down, we aimed to investigate: - How do
+behavioral factors (smoking, physical inactivity, mobility limitations)
+contribute to T2D risk?</p>
+<ul>
+<li><p>How do psychosocial factors (depression, mental health, stress)
+influence T2D susceptibility?</p></li>
+<li><p>How does socioeconomic status (particularly education) influence
+T2D susceptibility?</p></li>
+<li><p>How do cardiometabolic comorbidities (hypertension, high
+cholesterol, liver disease, coronary heart disease) influence T2D
+susceptibility?</p></li>
+</ul>
+<p>As the project developed, the question also evolved in the process.
+We shifted from examing individual risk factors in isolation to
+understanding how they “collectively contribute” and “jointly shape”
+diabetes susceptibility through interactions. There are also new
+questions considered during the course of analysis. As we find variables
+with high correlation, how do we deal with them in the model?</p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<div id="source" class="section level2">
+<h2>Source</h2>
+<p>We use data from the 2024 National Health Interview Survey (NHIS), a
+nationally representative, cross-sectional survey of the civilian
+noninstitutionalized U.S. population conducted by the National Center
+for Health Statistics (NCHS). T2D status, anxiety, depression, smoking,
+and relevant demographic and clinical covariates are derived from the
+publicly available NHIS sample adult-level files. We use the NHIS 2024
+Adult Sample, which includes demographic variables, chronic disease
+history, mental health indicators, lifestyle factors, and functional
+limitations.</p>
+<p>Data are directly accessible through CDC database.</p>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
+<p>The data-cleaning process began with importing the 2024 National
+Health Interview Survey (NHIS) adult dataset from an Excel file. Given
+that the raw dataset contained over 600 variables, the first step
+involved systematically reducing dimensionality. Guided by prior
+literature and the study’s conceptual framework, variables unrelated to
+diabetes risk were removed, along with variables that exhibited
+substantial missingness or lacked analytical relevance.</p>
+<p>After this initial screening, we identified and retained a subset of
+variables broadly supported by existing epidemiological research as
+potential determinants of Type 2 Diabetes. These variables—which
+included demographic factors, lifestyle behaviors, psychosocial
+indicators, and comorbid health conditions—were extracted to form a
+refined dataset that served as the foundation for subsequent
+analysis.</p>
+<p>Following variable selection, we performed targeted recoding and
+cleaning steps, such as standardizing categorical responses, addressing
+missing or invalid values, and ensuring consistency across health and
+demographic variables. This curated dataset constitutes the final
+analytic cohort used for exploratory analysis and multivariable
+modeling.</p>
+<p>These selected variables were then compiled into a new, streamlined
+analytic dataset that served as the foundation for all subsequent
+analyses： - Sex is converted to binary coding (1 for male, 0 for
+female).</p>
+<ul>
+<li><p>The primary outcome variable, diabetes status (DIBEV_A), is
+recoded from categorical responses to binary format (1 for yes, 0 for
+no), with all undefined responses removed.</p></li>
+<li><p>Walking difficulty (DIFF_A) is transformed into an ordinal scale
+ranging from 0 to 3, representing increasing levels of
+difficulty.</p></li>
+<li><p>Education level (EDUCP_A) is collapsed into three broader
+categories: less than high school (0), high school or some college (1),
+and college degree or higher (2).</p></li>
+<li><p>Life satisfaction and health status variables are dichotomized
+into two meaningful groups each.</p></li>
+<li><p>Multiple chronic disease indicators, including high cholesterol,
+hypertension, liver disease, stroke, myocardial infarction, angina, and
+coronary heart disease, are recoded to binary variables (1 for ever
+diagnosed, 0 for never diagnosed).</p></li>
+<li><p>The loneliness scale is reverse-coded to create an intuitive
+ordering where higher values indicate greater loneliness (0-4
+scale).</p></li>
+<li><p>Smoking history, depression, and anxiety variables are converted
+to binary indicators.</p></li>
+</ul>
+<p>Throughout the process, observations with “refused,” “don’t know,” or
+“not ascertained” responses (typically coded as 7, 8, or 9) are
+systematically filtered out to ensure data quality. Finally, the cleaned
+dataset is subset to include only the 20 relevant variables needed for
+subsequent analysis: sex, age, diabetes status, weight, height, walking
+difficulty, education, life satisfaction, health status, the seven
+chronic disease indicators, depression, anxiety, smoking history, and
+loneliness.</p>
+</div>
+</div>
+<div id="exploratory-analysis" class="section level1">
+<h1>Exploratory analysis</h1>
+<p>This analysis investigates factors associated with the likelihood of
+diabetes diagnosis using data from the 2024 National Health Interview
+Survey (NHIS), a nationally representative sample of adults. Our outcome
+variable, DIBEV_A, is a binary indicator representing whether an
+individual has been diagnosed with diabetes (0 = No diabetes, 1 =
+Diabetes diagnosis). We employed a multivariable logistic regression
+approach to examine the independent associations between diabetes and a
+comprehensive set of demographic, lifestyle, physical health, and
+chronic disease indicators.</p>
+<div id="methodology" class="section level2">
+<h2>Methodology</h2>
+<p>To model the association between multiple predictors and the binary
+diabetes outcome, we employed a generalized linear model (GLM) with a
+binomial distribution and logit link. Logistic regression is appropriate
+when modeling the probability of an event, ensuring that predicted
+values remain within the interval <span
+class="math inline">\([0,1]\)</span>.</p>
+<p>The logistic regression model can be written as:</p>
+<p><span class="math display">\[
+\text{logit}\big(P(Y=1 \mid X)\big)
+= \log \left( \frac{P(Y=1 \mid X)}{1 - P(Y=1 \mid X)} \right)
+= \beta_0 + \sum_{j=1}^{p} \beta_j X_j ,
+\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the binary outcome
+and <span class="math inline">\(X_j\)</span> denotes the <span
+class="math inline">\(j\)</span>-th predictor.</p>
+<p>The fitted model in R takes the following form: ```r glm( DIBEV_A ~
+SEX_A + AGEP_A + BMI_A + DIFF_A + EDUCP_A + PHSTAT_A + CHLEV_A + HYPEV_A
++ LIVEREV_A + MIEV_A + CHDEV_A + DEPEV_A, data = df_model, family =
+binomial(link = “logit”) )</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
