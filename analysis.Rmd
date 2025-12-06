@@ -405,10 +405,10 @@ There is no strong evidence of an association between smoking and diabetes in th
 ### Loneliness
 Compared with the “Never Lonely” reference group:
 
-- Rarely lonely: OR = 1.042, *p* = 0.4543  
-- Sometimes lonely: OR = 1.071, *p* = 0.2363  
-- Usually lonely: OR = 0.835, *p* = 0.2029  
-- Always lonely: OR = 1.162, *p* = 0.2244  
+- Rarely lonely: OR = 1.03 (0.926 - 1.143), *p* = 0.58808  
+- Sometimes lonely: OR = 1.051 (0.94 - 1.174), *p* = 0.38022  
+- Usually lonely: OR = 0.855 (0.65 - 1.113), *p* = 0.25409  
+- Always lonely: OR = 1.142 (0.897 - 1.445), *p* = 0.27280  
 
 None of the loneliness categories were statistically significant.  
 Loneliness does not appear to be independently associated with diabetes risk.
@@ -417,10 +417,10 @@ Loneliness does not appear to be independently associated with diabetes risk.
 
 ### Education
 #### Medium Education vs Low Education
-- OR = 0.896 (95% CI: 0.809–0.993), *p* = 0.0364  
+- OR = 0.921 (0.833 - 1.018), *p* = 0.10919  
 
 #### High Education vs Low Education
-- OR = 0.725 (95% CI: 0.651–0.807), *p* < 0.001  
+- OR = 0.696 (0.626 - 0.774), *p* < 0.001  
 
 Higher education was protective.  
 Those with high education had markedly lower odds of diabetes.
@@ -432,90 +432,91 @@ Those with high education had markedly lower odds of diabetes.
 - OR=1.005 (95% CI:1.003 - 1.007),	*p* < 0.001 
 BMI demonstrated a strong dose-response relationship, with obesity being the strongest risk factor in the model. Furthermore, we derived a new continuous BMI variable using the standard BMI formula (weight in kilograms divided by height in meters squared) from the dataset’s height and weight measurements. This continuous transformation integrates information on both height and weight, thereby helping to account for potential confounding by these two variables.
 And this is virified as very significant.
+
 ---
 
 ### Difficulty Walking (Mobility)
 Reference = No difficulty
 
-- Some difficulty: OR = 1.173, *p* = 0.0037  
-- A lot of difficulty: OR = 1.373, *p* < 0.001  
-- Cannot do at all: OR = 1.273, *p* = 0.0831  
+- Some difficulty: OR = 1.325 (1.191 - 1.473), *p* = < 0.001  
+- A lot of difficulty: OR = 1.585 (1.368 - 1.834), *p* < 0.001  
+- Cannot do at all: OR = 1.377 (1.054 - 1.785), *p* = 0.01725  
 
 Greater mobility limitations were associated with higher odds of diabetes.
 
 ---
 
-### Life Satisfaction
-- Dissatisfied vs satisfied: OR = 0.884, *p* = 0.2083 → Not significant  
+### Life Satisfaction Dissatisfied vs satisfied:
+- OR = 0.803 (0.664 - 0.967), *p* = 0.2083 → Not significant  
 
 ---
 
 ### General Health Status
 #### Fair/Poor vs Good/Very Good/Excellent
-- OR = 2.004 (95% CI: 1.805–2.224), *p* < 0.001  
+- OR = 2.022 (1.824 - 2.24), *p* < 0.001  
 
 Poor health was a strong predictor of diabetes.
 
 ---
 
 ### High Cholesterol
-- OR = 2.107, *p* < 0.001  
+- OR = 2.213 (2.022 - 2.423), *p* < 0.001  
 
 A strong and significant association.
 
 ---
 
 ### Hypertension
-- OR = 2.128, *p* < 0.001  
+- OR = 2.439 (2.211 - 2.692), *p* < 0.001  
 
 Hypertension was one of the largest predictors, more than doubling the odds of diabetes.
 
 ---
 
 ### Liver Disease
-- OR = 1.928, *p* < 0.001  
+- OR = 1.96 (1.509 - 2.534), *p* < 0.001  
 
 Individuals with liver disease had nearly double the odds of diabetes.
 
 ---
 
 ### Stroke
-- OR = 1.112, *p* = 0.199  
+- OR = 1.068 (0.91 - 1.25), *p* = 0.41833  
 
 Not statistically significant.
 
 ---
 
 ### Myocardial Infarction
-- OR = 1.329 (95% CI: 1.118–1.577), *p* = 0.0012  
+- OR = 1.272 (1.074 - 1.503), *p* = 0.00502  
 
 History of myocardial infarction was positively associated with diabetes.
 
 ---
 
 ### Angina
-- OR = 1.008, *p* = 0.942  
+- OR = 1.014 (0.815 - 1.256), *p* = 0.90285  
 
-No association.
+Almost No association.
 
 ---
 
 ### Coronary Heart Disease (CHD)
-- OR = 1.258 (95% CI: 1.089–1.451), *p* = 0.0018  
+- OR = 1.282 (1.113 - 1.474), *p* = < 0.001  
 
 CHD was a significant predictor of diabetes.
 
 ---
 
 ### Depression
-- OR = 1.175 (95% CI: 1.035–1.333), *p* = 0.0122  
+- OR = 1.231 (1.087 - 1.393), *p* = 0.00101 
 
 Depression was significantly associated with increased diabetes odds.
 
 ---
 
 ### Anxiety
-- OR = 0.921 (95% CI: 0.808–1.049), *p* = 0.216  
+- OR = 0.894 (0.786 - 1.016), *p* = 0.08827  
 
 Anxiety was not significantly related to diabetes.
 
