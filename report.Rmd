@@ -15,9 +15,17 @@ library(ggplot2)
 ```{r}
 source(here("data", "datacleaning.R"))
 ```
+# Title
+## Multivariable Logistic Analysis of Type II Diabetes Risk Considering Demographic, Mental Health and Lifestyles
+
+# Group Members
+Yaxuan Zheng (yz5248)  
+Yirou Hu (yh3964)  
+Ruihan Ding (rd3227)  
+Su Yan (sy3352)  
+Jinyao Jiao (jj3564)  
 
 # Introduction and Motivation
-
 ## Background
 In the 1970s, the World Health Organization (WHO) introduced the term Non-Insulin Dependent Diabetes Mellitus (NIDDM) to differentiate forms of diabetes based on therapeutic requirements and underlying physiological mechanisms. This classification distinguished insulin-dependent diabetes (now known as Type 1) from cases typically managed without insulin. As scientific understanding evolved, it became clear that NIDDM was characterized primarily by insulin resistance and impaired β-cell function. Consequently, in the 1990s the terminology shifted to Type 2 Diabetes (T2D), reflecting its biological rather than treatment-based foundations [1]. Today, T2D accounts for over 90% of diabetes cases globally, and its prevalence is projected to increase from 460 million in 2017 to 693 million by 2045 [2]. The global burden is particularly severe in low- and middle-income countries [1], and disparities exist even within nations: Saeedi et al. [4] estimate a rise in global diabetes prevalence from 9.3% in 2019 to 10.9% by 2045, with substantial urban–rural differences. While the genetic basis of T2D is well-documented [3], emerging evidence suggests that modifiable postnatal exposures, including education, may play a direct role in shaping T2D risk independent of BMI [5].
 
